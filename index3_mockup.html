@@ -411,7 +411,11 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
 
         <!-- MINI-EVALUACIONES -->
         <div data-asec-panel="evals" style="display:none">
-          <div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Próximamente — resultados de mini-evaluaciones por colaborador y módulo.</div></div>
+          <div class="admin-grid" id="admin-kpis-evals"></div>
+          <table class="admin-table" id="tabla-evals">
+            <tr><th>Colaborador</th><th>Local</th><th>Módulo</th><th>Resultado</th><th>Fecha</th></tr>
+            <tr><td colspan="5" style="text-align:center;color:var(--gray);padding:24px">Cargando resultados...</td></tr>
+          </table>
         </div>
 
         <!-- RANKING -->
@@ -628,7 +632,7 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
 
         <div class="mini-eval-cta">
           <div><div class="t">¿Listo para repasar?</div><div class="d">3 preguntas rápidas sobre este módulo · 2 min</div></div>
-          <button class="btn-gold-sm" onclick="ir('minieval', null)">Empezar mini-evaluación</button>
+          <button class="btn-gold-sm" onclick="iniciarMiniEval('mod-cafe')">Empezar mini-evaluación</button>
         </div>
       </div>
 
@@ -753,7 +757,7 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
 
         <div class="mini-eval-cta">
           <div><div class="t">¿Listo para repasar?</div><div class="d">3 preguntas rápidas sobre este módulo · 2 min</div></div>
-          <button class="btn-gold-sm" onclick="ir('minieval', null)">Empezar mini-evaluación</button>
+          <button class="btn-gold-sm" onclick="iniciarMiniEval('mod-helad')">Empezar mini-evaluación</button>
         </div>
       </div>
 
@@ -834,7 +838,7 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
 
         <div class="mini-eval-cta">
           <div><div class="t">¿Listo para repasar?</div><div class="d">3 preguntas rápidas sobre este módulo · 2 min</div></div>
-          <button class="btn-gold-sm" onclick="ir('minieval', null)">Empezar mini-evaluación</button>
+          <button class="btn-gold-sm" onclick="iniciarMiniEval('mod-icepops')">Empezar mini-evaluación</button>
         </div>
       </div>
 
@@ -883,7 +887,7 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
 
         <div class="mini-eval-cta">
           <div><div class="t">¿Listo para repasar?</div><div class="d">3 preguntas rápidas sobre este módulo · 2 min</div></div>
-          <button class="btn-gold-sm" onclick="ir('minieval', null)">Empezar mini-evaluación</button>
+          <button class="btn-gold-sm" onclick="iniciarMiniEval('mod-pasteleria')">Empezar mini-evaluación</button>
         </div>
       </div>
 
@@ -958,7 +962,7 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
 
         <div class="mini-eval-cta">
           <div><div class="t">¿Listo para repasar?</div><div class="d">3 preguntas rápidas sobre este módulo · 2 min</div></div>
-          <button class="btn-gold-sm" onclick="ir('minieval', null)">Empezar mini-evaluación</button>
+          <button class="btn-gold-sm" onclick="iniciarMiniEval('mod-choco')">Empezar mini-evaluación</button>
         </div>
       </div>
 
@@ -1049,7 +1053,7 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
 
         <div class="mini-eval-cta">
           <div><div class="t">¿Listo para repasar?</div><div class="d">3 preguntas rápidas sobre este módulo · 2 min</div></div>
-          <button class="btn-gold-sm" onclick="ir('minieval', null)">Empezar mini-evaluación</button>
+          <button class="btn-gold-sm" onclick="iniciarMiniEval('mod-sistema')">Empezar mini-evaluación</button>
         </div>
       </div>
 
@@ -1174,7 +1178,7 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
 
         <div class="mini-eval-cta">
           <div><div class="t">¿Listo para repasar?</div><div class="d">3 preguntas rápidas sobre este módulo · 2 min</div></div>
-          <button class="btn-gold-sm" onclick="ir('minieval', null)">Empezar mini-evaluación</button>
+          <button class="btn-gold-sm" onclick="iniciarMiniEval('mod-atencion')">Empezar mini-evaluación</button>
         </div>
       </div>
 
@@ -1186,28 +1190,11 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
         <div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Contenido próximamente — a definir con Gabi (checklists de apertura/cierre, manejo de caja, supervisión de equipo, reportes).</div></div>
       </div>
 
-      <!-- MINI EVALUACIÓN -->
+            <!-- MINI EVALUACIÓN -->
       <div data-panel="minieval" style="display:none">
-        <div class="mod-header"><div class="mod-num-big">2</div><div class="mod-title">Mini-evaluación — Cafetería</div></div>
-        <div class="eval-q">
-          <div class="q">1. ¿Qué cápsula se usa para el Vainilla Macchiato?</div>
-          <div class="eval-opts">
-            <div class="eval-opt correct">Vainilla / Finezzo ✓</div>
-            <div class="eval-opt">Ristretto / Forte</div>
-            <div class="eval-opt">Descafeinada</div>
-          </div>
-        </div>
-        <div class="eval-q">
-          <div class="q">2. ¿Cuántos push de salsa lleva el Caramel Choco Style?</div>
-          <div class="eval-opts">
-            <div class="eval-opt">3 push de cada salsa</div>
-            <div class="eval-opt correct">1 push de cada salsa ✓</div>
-            <div class="eval-opt">Solo syrup, sin salsa</div>
-          </div>
-        </div>
-        <div class="card" style="text-align:center;margin-top:18px">
-          <div style="font-family:Montserrat,sans-serif;font-weight:900;font-size:22px;color:var(--green)">2 / 2 correctas</div>
-          <div style="font-size:11px;color:var(--gray);margin-top:4px">¡Sumaste puntos al ranking!</div>
+        <div class="mod-header"><div class="mod-num-big" id="minieval-num">·</div><div class="mod-title" id="minieval-title">Mini-evaluación</div></div>
+        <div id="minieval-body">
+          <div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Cargando preguntas...</div></div>
         </div>
       </div>
 
@@ -1279,6 +1266,112 @@ function mostrarInstruccionesPWA() {
     ? 'En Safari: tocá el botón "Compartir" (cuadrado con flecha) y elegí "Agregar a pantalla de inicio".'
     : 'En Chrome: tocá los 3 puntitos de arriba a la derecha y elegí "Agregar a pantalla de inicio" o "Instalar app".';
   alert(msg);
+}
+
+// ═══════════════════════════════════════════════════════════
+// MINI-EVALUACIONES — preguntas reales del Sheet + guardado de resultados
+// ═══════════════════════════════════════════════════════════
+const NOMBRES_MODULO = {
+  'mod-cafe':'Cafetería', 'mod-helad':'Heladería', 'mod-icepops':'Icepops', 'mod-pasteleria':'Pastelería',
+  'mod-choco':'Chocolatería', 'mod-sistema':'Sistema y Caja', 'mod-atencion':'Atención al Cliente'
+};
+const NUM_MODULO = { 'mod-cafe':1,'mod-helad':2,'mod-icepops':3,'mod-pasteleria':4,'mod-choco':5,'mod-sistema':6,'mod-atencion':7 };
+let miniEvalActual = { modulo:null, preguntas:[], respuestas:[] };
+
+function iniciarMiniEval(modulo) {
+  ir('minieval', null);
+  document.getElementById('minieval-title').textContent = 'Mini-evaluación — ' + (NOMBRES_MODULO[modulo] || modulo);
+  document.getElementById('minieval-num').textContent = NUM_MODULO[modulo] || '·';
+  document.getElementById('minieval-body').innerHTML = '<div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Cargando preguntas...</div></div>';
+
+  llamarBackend('getPreguntas', { modulo }).then(res => {
+    if (!res.ok || !res.preguntas || !res.preguntas.length) {
+      document.getElementById('minieval-body').innerHTML = '<div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Todavía no hay preguntas cargadas para este módulo.</div></div>';
+      return;
+    }
+    miniEvalActual = { modulo, preguntas: res.preguntas, respuestas: new Array(res.preguntas.length).fill(null) };
+    renderMiniEval();
+  }).catch(() => {
+    document.getElementById('minieval-body').innerHTML = '<div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--red)">Error de conexión al cargar preguntas.</div></div>';
+  });
+}
+
+function renderMiniEval() {
+  const html = miniEvalActual.preguntas.map((p, qi) => {
+    const opts = p.opciones.map((op, oi) => {
+      const idx = oi + 1;
+      const seleccionada = miniEvalActual.respuestas[qi] === idx;
+      return `<div class="eval-opt${seleccionada ? ' seleccionada' : ''}" style="${seleccionada ? 'border-color:var(--gold-dark);background:#FBF6EB' : ''}" onclick="seleccionarRespuesta(${qi},${idx})">${op}</div>`;
+    }).join('');
+    return `<div class="eval-q"><div class="q">${qi+1}. ${p.pregunta}</div><div class="eval-opts">${opts}</div></div>`;
+  }).join('');
+
+  const todasRespondidas = miniEvalActual.respuestas.every(r => r !== null);
+  const btn = todasRespondidas
+    ? `<button class="btn-gold-sm" style="margin-top:14px" onclick="finalizarMiniEval()">Ver resultado</button>`
+    : '';
+  document.getElementById('minieval-body').innerHTML = html + btn;
+}
+
+function seleccionarRespuesta(qi, idx) {
+  miniEvalActual.respuestas[qi] = idx;
+  renderMiniEval();
+}
+
+function finalizarMiniEval() {
+  let correctas = 0;
+  miniEvalActual.preguntas.forEach((p, qi) => { if (miniEvalActual.respuestas[qi] === p.correcta) correctas++; });
+  const total = miniEvalActual.preguntas.length;
+  const modulo = miniEvalActual.modulo;
+
+  if (currentUser) {
+    llamarBackend('guardarResultadoEval', { usuario: currentUser, modulo, correctas, total }).catch(() => {});
+  }
+
+  const html = miniEvalActual.preguntas.map((p, qi) => {
+    const opts = p.opciones.map((op, oi) => {
+      const idx = oi + 1;
+      let cls = '';
+      if (idx === p.correcta) cls = ' correct';
+      else if (miniEvalActual.respuestas[qi] === idx) cls = ' incorrecta';
+      const style = cls === ' incorrecta' ? 'style="border-color:var(--red);background:var(--red-bg);color:var(--red)"' : '';
+      return `<div class="eval-opt${cls}" ${style}>${op}${idx===p.correcta?' ✓':''}</div>`;
+    }).join('');
+    return `<div class="eval-q"><div class="q">${qi+1}. ${p.pregunta}</div><div class="eval-opts">${opts}</div></div>`;
+  }).join('');
+
+  const colorResultado = correctas === total ? 'var(--green)' : (correctas === 0 ? 'var(--red)' : 'var(--gold-dark)');
+  document.getElementById('minieval-body').innerHTML = html + `
+    <div class="card" style="text-align:center;margin-top:18px" id="minieval-resultado-card">
+      <div style="font-family:Montserrat,sans-serif;font-weight:900;font-size:22px;color:${colorResultado}">${correctas} / ${total} correctas</div>
+      <div style="font-size:11px;color:var(--gray);margin-top:4px">Resultado guardado en tu historial.</div>
+    </div>
+    <button class="btn-gold-sm" style="margin-top:10px" onclick="descargarPDFMiniEval('${modulo}', ${correctas}, ${total})">📄 Descargar PDF del resultado</button>
+  `;
+}
+
+function descargarPDFMiniEval(modulo, correctas, total) {
+  const nombre = (document.getElementById('hello-name-text') || {}).textContent || currentUser || '';
+  const fecha = new Date().toLocaleString('es-AR');
+  const ventana = window.open('', '_blank');
+  ventana.document.write(`
+    <html><head><title>Resultado mini-evaluación</title>
+    <style>
+      body{font-family:Arial,sans-serif;padding:40px;color:#111}
+      h1{color:#8A6A24;font-size:20px}
+      .box{border:1px solid #E8E6E1;border-radius:10px;padding:20px;margin-top:20px}
+      .v{font-size:32px;font-weight:900;color:#2E7D4F}
+    </style></head><body>
+    <h1>SisCap · Guía de Servicio</h1>
+    <p><strong>Colaborador:</strong> ${nombre}</p>
+    <p><strong>Módulo:</strong> ${NOMBRES_MODULO[modulo] || modulo}</p>
+    <p><strong>Fecha:</strong> ${fecha}</p>
+    <div class="box"><div class="v">${correctas} / ${total} correctas</div></div>
+    </body></html>
+  `);
+  ventana.document.close();
+  ventana.focus();
+  setTimeout(() => ventana.print(), 300);
 }
 
 function mostrarRegistro(mostrar) {
@@ -1413,10 +1506,50 @@ function adminNav(sec, el) {
   if (panel) panel.style.display = 'block';
   const titulosAdmin = { usuarios:'Usuarios', locales:'Accesos de Locales', invitados:'Invitados / Encargados', evals:'Mini-evaluaciones', ranking:'Ranking', uso:'Estadísticas de Uso' };
   document.getElementById('admin-title').textContent = titulosAdmin[sec] || sec;
+  if (sec === 'evals') cargarEvalsAdmin();
   if (window.innerWidth <= 760) {
     document.getElementById('sidebarAdmin').classList.remove('open');
     document.getElementById('sidebarOverlayAdmin').classList.remove('show');
   }
+}
+
+function cargarEvalsAdmin() {
+  llamarBackend('getResultadosEval', {}).then(res => {
+    if (!res.ok) return;
+    const resultados = res.resultados;
+    const total = resultados.length;
+    const promedio = total > 0 ? Math.round(resultados.reduce((a,r) => a + r.porcentaje, 0) / total) : 0;
+
+    const porModulo = {};
+    resultados.forEach(r => {
+      if (!porModulo[r.modulo]) porModulo[r.modulo] = [];
+      porModulo[r.modulo].push(r.porcentaje);
+    });
+    let masDebil = '—', masSolido = '—', peorProm = 101, mejorProm = -1;
+    Object.keys(porModulo).forEach(mod => {
+      const arr = porModulo[mod];
+      const prom = arr.reduce((a,b)=>a+b,0) / arr.length;
+      const nombreMod = NOMBRES_MODULO[mod] || mod;
+      if (prom < peorProm) { peorProm = prom; masDebil = nombreMod; }
+      if (prom > mejorProm) { mejorProm = prom; masSolido = nombreMod; }
+    });
+
+    document.getElementById('admin-kpis-evals').innerHTML = `
+      <div class="admin-kpi"><div class="v">${total}</div><div class="l">Mini-evals realizadas</div></div>
+      <div class="admin-kpi"><div class="v">${promedio}%</div><div class="l">Promedio general</div></div>
+      <div class="admin-kpi"><div class="v">${masDebil}</div><div class="l">Módulo más débil</div></div>
+      <div class="admin-kpi"><div class="v">${masSolido}</div><div class="l">Módulo más sólido</div></div>
+    `;
+
+    const filas = resultados.slice().reverse().map(r => {
+      const estadoClase = r.porcentaje >= 80 ? 'status-ok' : (r.porcentaje >= 60 ? 'status-pending' : 'status-off');
+      return `<tr><td>${r.nombre}</td><td>${r.local||'—'}</td><td>${NOMBRES_MODULO[r.modulo]||r.modulo}</td>
+        <td><span class="admin-status ${estadoClase}">${r.porcentaje}%</span></td><td>${r.fecha||''}</td></tr>`;
+    }).join('');
+    document.getElementById('tabla-evals').innerHTML =
+      `<tr><th>Colaborador</th><th>Local</th><th>Módulo</th><th>Resultado</th><th>Fecha</th></tr>` +
+      (filas || '<tr><td colspan="5" style="text-align:center;color:var(--gray);padding:24px">Todavía no hay resultados.</td></tr>');
+  });
 }
 
 function cargarUsuariosAdmin() {
