@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SisCap · Guía de Servicio — Maqueta</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --gold:#B8923A; --gold-light:#D4AF5C; --gold-dark:#8A6A24;
+  --black:#111111; --ink:#1a1a1a;
+  --white:#FFFFFF; --offwhite:#FAFAF9;
+  --line:#E8E6E1; --gray:#8a8a85; --gray-dark:#555;
+  --green:#2E7D4F; --green-bg:#EAF5EE;
+  --yellow:#B8860B; --yellow-bg:#FBF3E0;
+  --red:#B23A2E; --red-bg:#FBEAE7;
+  --teal:#2E7D6E; --teal-bg:#E8F4F1;
+  --r:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);height:100vh;overflow:hidden}
+
+.app-shell{display:flex;height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{width:240px;flex-shrink:0;background:var(--white);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:18px 0;overflow-y:auto}
+.sidebar-brand{display:flex;align-items:center;gap:10px;padding:0 18px 18px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.sidebar-brand .logo{font-family:'Georgia',serif;font-weight:700;font-style:italic;font-size:20px;color:var(--black);letter-spacing:.5px}
+.sidebar-brand .sub{font-size:9px;color:var(--gray);letter-spacing:.5px;margin-top:1px}
+.sidebar-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray);padding:0 18px;margin:14px 0 6px}
+.sidebar-item{display:flex;align-items:center;gap:12px;padding:11px 18px;cursor:pointer;color:#444;font-size:13px;font-weight:600;border-left:3px solid transparent;transition:.15s}
+.sidebar-item:hover{background:var(--offwhite);color:var(--black)}
+.sidebar-item.active{background:var(--offwhite);color:var(--gold-dark);border-left-color:var(--gold)}
+.icon{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.chip{width:18px;height:18px;border-radius:50%;background:var(--offwhite);border:1px solid var(--line);color:var(--gray-dark);font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sidebar-item.active .chip{background:var(--gold);color:var(--white);border-color:var(--gold)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--gold);margin-left:auto;flex-shrink:0;box-shadow:0 0 0 0 rgba(184,146,58,.5);animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(184,146,58,.5)}70%{box-shadow:0 0 0 6px rgba(184,146,58,0)}100%{box-shadow:0 0 0 0 rgba(184,146,58,0)}}
+.sidebar-footer{margin-top:auto;padding:14px 18px 0}
+.btn-mini{width:100%;padding:9px;background:transparent;border:1px solid var(--line);color:var(--gray-dark);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:Montserrat,sans-serif}
+.btn-mini:hover{border-color:var(--gold-dark);color:var(--gold-dark)}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--white);border-bottom:1px solid var(--line);padding:14px 22px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-title{font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;color:var(--black)}
+.timer-chip{font-size:11px;color:var(--gray-dark);background:var(--offwhite);border:1px solid var(--line);padding:5px 12px;border-radius:20px}
+.content{flex:1;overflow-y:auto;padding:28px;background:var(--white)}
+
+/* ── BIENVENIDA ── */
+.hello-label{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:6px}
+.hello-name{font-family:'Georgia',serif;font-weight:700;font-size:30px;margin-bottom:20px;color:var(--black)}
+.card{background:var(--offwhite);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:14px}
+.card-row{display:flex;align-items:center;gap:10px;color:var(--gray-dark);font-size:12px}
+.card-row strong{color:var(--gold-dark);font-family:Montserrat,sans-serif}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.mini-stat{background:var(--offwhite);border:1px solid var(--line);border-radius:var(--r);padding:16px;text-align:center}
+.mini-stat .val{font-family:Montserrat,sans-serif;font-weight:900;font-size:26px;color:var(--gold-dark)}
+.mini-stat .lab{font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+/* ── HISTORIA ── */
+.historia-hero{background:var(--black);padding:30px 26px;border-radius:var(--r);margin:-28px -28px 24px}
+.historia-hero h2{font-family:'Georgia',serif;font-style:italic;font-weight:700;font-size:26px;color:var(--gold-light)}
+.historia-body p{color:var(--gray-dark);font-size:13.5px;line-height:1.8;margin-bottom:14px;max-width:640px}
+
+/* ── TIMELINE ── */
+.timeline{display:flex;flex-direction:column}
+.tl-row{display:flex;gap:16px;padding:10px 0;border-bottom:1px solid var(--line)}
+.tl-row:last-child{border-bottom:none}
+.tl-year{width:56px;flex-shrink:0;font-family:Montserrat,sans-serif;font-weight:900;font-size:15px;color:var(--gold-dark)}
+.tl-text{font-size:12px;color:var(--gray-dark);line-height:1.6;padding-top:1px}
+
+/* ── MÓDULO ── */
+.mod-header{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.mod-num-big{width:36px;height:36px;border-radius:50%;background:var(--teal-bg);border:1px solid var(--teal);color:var(--teal);font-family:Montserrat,sans-serif;font-weight:800;display:flex;align-items:center;justify-content:center}
+.mod-title{font-family:Montserrat,sans-serif;font-weight:800;font-size:18px;color:var(--black)}
+.content-card{background:var(--offwhite);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:10px}
+.content-card .t{font-family:Montserrat,sans-serif;font-weight:700;font-size:13px;color:var(--black);margin-bottom:4px}
+.content-card .d{font-size:11.5px;color:var(--gray-dark);line-height:1.6}
+.mini-eval-cta{background:var(--black);border-radius:var(--r);padding:18px;margin-top:20px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.mini-eval-cta .t{font-family:Montserrat,sans-serif;font-weight:800;font-size:14px;color:var(--gold-light)}
+.mini-eval-cta .d{font-size:11px;color:#bbb;margin-top:3px}
+.btn-gold-sm{background:var(--gold);color:var(--white);border:none;padding:10px 18px;border-radius:8px;font-family:Montserrat,sans-serif;font-weight:700;font-size:12px;cursor:pointer;flex-shrink:0}
+
+/* ── SISTEMA UNIFORME DE CONTENIDO (todos los módulos) ── */
+.sec-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin:24px 0 10px}
+.sec-label:first-child{margin-top:0}
+.info-tag{
+  display:inline-flex;align-items:center;background:var(--offwhite);border:1px solid var(--line);
+  border-radius:20px;padding:4px 12px;font-size:11px;color:var(--gray-dark);font-weight:600
+}
+.info-tag.gold{background:#FBF6EB;border-color:var(--gold);color:var(--gold-dark)}
+.tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.stat-pill{
+  background:var(--offwhite);border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center
+}
+.stat-pill .n{font-family:Montserrat,sans-serif;font-weight:900;font-size:17px;color:var(--black)}
+.stat-pill .l{font-size:9px;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.step-list{display:flex;flex-direction:column;gap:8px}
+.step-row{display:flex;gap:10px;align-items:flex-start}
+.step-num{
+  width:20px;height:20px;border-radius:50%;background:var(--black);color:var(--white);
+  font-family:Montserrat,sans-serif;font-weight:800;font-size:10px;display:flex;align-items:center;
+  justify-content:center;flex-shrink:0;margin-top:1px
+}
+.step-text{font-size:12px;color:var(--gray-dark);line-height:1.6}
+.note-box{
+  background:var(--offwhite);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;
+  padding:10px 14px;font-size:11.5px;color:var(--gray-dark);line-height:1.6;margin-top:10px
+}
+.divider-line{border-top:1px solid var(--line);margin:22px 0}
+.mini-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:6px;margin-top:12px}
+.mini-label:first-of-type{margin-top:0}
+.speech-box{
+  background:var(--offwhite);border-radius:8px;padding:10px 12px;font-size:12px;
+  color:var(--gray-dark);font-style:italic;line-height:1.6
+}
+.highlight{
+  background:#FBF1DC;color:var(--gold-dark);font-weight:700;padding:1px 6px;
+  border-radius:4px;white-space:nowrap
+}
+
+/* ── MINI EVALUACIÓN ── */
+.eval-q{background:var(--offwhite);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.eval-q .q{font-size:13px;color:var(--black);margin-bottom:10px}
+.eval-opts{display:flex;flex-direction:column;gap:7px}
+.eval-opt{background:var(--white);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--gray-dark);cursor:pointer}
+.eval-opt:hover{border-color:var(--gold-dark)}
+.eval-opt.correct{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+
+/* ── RANKING ── */
+.rank-row{display:flex;align-items:center;gap:12px;background:var(--offwhite);border:1px solid var(--line);border-radius:var(--r);padding:12px 16px;margin-bottom:8px}
+.rank-pos{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Montserrat,sans-serif;font-weight:900;font-size:13px;flex-shrink:0}
+.rank-row.top1 .rank-pos{background:var(--gold);color:var(--white)}
+.rank-row.top2 .rank-pos{background:#ccc;color:var(--black)}
+.rank-row.top3 .rank-pos{background:#d8b08a;color:var(--black)}
+.rank-row:not(.top1):not(.top2):not(.top3) .rank-pos{background:var(--white);border:1px solid var(--line);color:var(--gray)}
+.rank-name{flex:1;font-size:13px;font-weight:600;color:var(--black)}
+.rank-local{font-size:10px;color:var(--gray)}
+.rank-pts{font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;color:var(--gold-dark)}
+.rank-medal{font-size:18px}
+
+/* ── RESPONSIVE / MOBILE ── */
+.mobile-topbar{display:none}
+.sidebar-overlay{display:none}
+@media(max-width:760px){
+  body{overflow:auto;height:auto}
+  .app-shell{flex-direction:column;height:100vh;overflow:hidden}
+  .mobile-topbar{
+    display:flex;align-items:center;justify-content:space-between;background:var(--white);
+    border-bottom:1px solid var(--line);padding:12px 16px;flex-shrink:0;
+    position:sticky;top:0;z-index:30
+  }
+  .mobile-topbar .logo{font-family:'Georgia',serif;font-weight:700;font-style:italic;font-size:18px;color:var(--black)}
+  .mobile-burger{background:none;border:1px solid var(--line);border-radius:8px;width:36px;height:36px;font-size:16px;cursor:pointer}
+  .sidebar{
+    position:fixed;top:0;left:0;height:100vh;z-index:50;
+    transform:translateX(-100%);transition:transform .25s ease;box-shadow:6px 0 24px rgba(0,0,0,.15)
+  }
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-overlay{
+    display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:40
+  }
+  .sidebar-overlay.show{display:block}
+  .main{width:100%}
+  .topbar{display:none}
+  .content{padding:18px}
+  .grid3{grid-template-columns:1fr}
+  .historia-hero{margin:-18px -18px 18px;padding:24px 18px}
+  .mod-header{flex-wrap:wrap}
+  .mini-eval-cta{flex-direction:column;align-items:stretch;text-align:center}
+  .mini-eval-cta .btn-gold-sm{margin-top:10px}
+}
+</style>
+</head>
+</head>
+<body>
+
+<div class="mobile-topbar">
+  <div class="logo">SisCap</div>
+  <button class="mobile-burger" onclick="toggleSidebarMobile()">☰</button>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebarMobile()"></div>
+
+<div class="app-shell">
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebarMain">
+    <div class="sidebar-brand">
+      <svg width="28" height="28" viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#FFFFFF" stroke="#111111" stroke-width="1.5"/><text x="14.5" y="22" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#111111" text-anchor="middle">S</text><path d="M20 8 L24 13 L30.5 5.5" fill="none" stroke="#B8923A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><div class="logo">SisCap</div><div class="sub">Guía de Servicio</div></div>
+    </div>
+
+    <div class="sidebar-item active" data-view="bienvenida" onclick="ir('bienvenida',this)"><span class="icon">🏠</span> Bienvenida</div>
+    <div class="sidebar-item" data-view="historia" onclick="ir('historia',this)"><span class="icon">📖</span> Nuestra Historia</div>
+    <div class="sidebar-item" data-view="ranking" onclick="ir('ranking',this)"><span class="icon">🏆</span> Ranking <span style="font-size:9px;color:#666;margin-left:auto">(a confirmar)</span></div>
+
+    <div class="sidebar-label">Módulos</div>
+    <div class="sidebar-item" data-view="mod-cafe" onclick="ir('mod-cafe',this)"><span class="chip">1</span> Cafetería <span class="dot"></span></div>
+    <div class="sidebar-item" data-view="mod-helad" onclick="ir('mod-helad',this)"><span class="chip">2</span> Heladería</div>
+    <div class="sidebar-item" data-view="mod-icepops" onclick="ir('mod-icepops',this)"><span class="chip">3</span> Icepops</div>
+    <div class="sidebar-item" data-view="mod-pasteleria" onclick="ir('mod-pasteleria',this)"><span class="chip">4</span> Pastelería</div>
+    <div class="sidebar-item" data-view="mod-choco" onclick="ir('mod-choco',this)"><span class="chip">5</span> Chocolatería <span class="dot"></span></div>
+    <div class="sidebar-item" data-view="mod-sistema" onclick="ir('mod-sistema',this)"><span class="chip">6</span> Sistema y Caja</div>
+    <div class="sidebar-item" data-view="mod-atencion" onclick="ir('mod-atencion',this)"><span class="chip">7</span> Atención al Cliente</div>
+
+    <div class="sidebar-footer"><button class="btn-mini">Salir</button></div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="title">Bienvenida</div>
+      <div class="timer-chip">⏱ 12 min en sesión</div>
+    </div>
+    <div class="content" id="content">
+
+      <!-- BIENVENIDA -->
+      <div data-panel="bienvenida">
+        <div class="hello-label">Hola,</div>
+        <div class="hello-name">María Pérez</div>
+        <div class="card">
+          <div style="font-size:13px;color:#ccc;margin-bottom:10px">Bienvenida a SisCap, la guía interna de Lucciano's. Elegí un módulo en el menú para repasar recetas, productos y procedimientos de tu sector.</div>
+          <div class="card-row">⏱ Llevás <strong>12 min</strong> en esta sesión</div>
+        </div>
+        <div class="grid3">
+          <div class="mini-stat"><div class="val">3</div><div class="lab">Módulos vistos</div></div>
+          <div class="mini-stat"><div class="val">85%</div><div class="lab">Promedio mini-evals</div></div>
+          <div class="mini-stat"><div class="val">#4</div><div class="lab">Tu puesto en ranking</div></div>
+        </div>
+      </div>
+
+      <!-- HISTORIA -->
+      <div data-panel="historia" style="display:none">
+        <div class="historia-hero">
+          <h2>Nuestra Historia</h2>
+          <div style="font-size:11px;color:#a07030;margin-top:4px;max-width:560px;line-height:1.6">
+            Lucciano's es una empresa familiar que surge a partir del deseo de atender al segmento de consumidores más exigentes de helado artesanal de nuestro país. Nacimos en 2011 con la aspiración de alcanzar un producto Premium.
+          </div>
+        </div>
+        <div class="historia-body">
+
+          <div class="content-card" style="padding:0;overflow:hidden">
+            <img src="fundadores.jpg" alt="Fundadores de Lucciano's" style="width:100%;display:block;max-height:340px;object-fit:cover"/>
+            <div style="padding:12px 16px">
+              <div class="t">Fundadores de Lucciano's</div>
+            </div>
+          </div>
+
+          <div class="content-card" style="display:flex;gap:14px;align-items:center;background:var(--black)">
+            <div style="width:64px;height:64px;border-radius:50%;background:var(--white);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;color:var(--black)">▶</div>
+            <div style="flex:1">
+              <div class="t" style="color:#fff;font-size:14px">Video Institucional</div>
+            </div>
+            <a href="https://youtu.be/9L3rywZ_vh8" target="_blank" style="background:var(--gold);color:var(--white);padding:9px 16px;border-radius:8px;font-family:Montserrat,sans-serif;font-weight:700;font-size:11px;text-decoration:none;flex-shrink:0">Ver video</a>
+          </div>
+
+          <div class="sidebar-label" style="padding:0;margin:18px 0 10px">Línea de tiempo</div>
+
+          <div class="timeline">
+            <div class="tl-row"><div class="tl-year">2011</div><div class="tl-text">Nace Lucciano's en Mar del Plata — apertura del primer local y fábrica.</div></div>
+            <div class="tl-row"><div class="tl-year">2013</div><div class="tl-text">Nacen los Icepops.</div></div>
+            <div class="tl-row"><div class="tl-year">2015</div><div class="tl-text">Nace Tonio Icepop. Primer local en Buenos Aires (Martínez). Empezamos a desarrollar productos en Italia.</div></div>
+            <div class="tl-row"><div class="tl-year">2016</div><div class="tl-text">Apertura de Inspiration Lab. Lanzamiento línea vegana "Raw".</div></div>
+            <div class="tl-row"><div class="tl-year">2017</div><div class="tl-text">Primer local fuera de la prov. de Buenos Aires (Rosario). Nace Minion Icepop.</div></div>
+            <div class="tl-row"><div class="tl-year">2019</div><div class="tl-text">Lucciano's es galardonado Mejor Helado Artesanal de Buenos Aires por el Gobierno de la Ciudad.</div></div>
+            <div class="tl-row"><div class="tl-year">2020</div><div class="tl-text">Desembarco en Estados Unidos — apertura primer local en The Florida Mall.</div></div>
+            <div class="tl-row"><div class="tl-year">2021</div><div class="tl-text">Cumplimos 10 años. Desembarco en Montevideo y Punta del Este. Abrimos la tienda online.</div></div>
+            <div class="tl-row"><div class="tl-year">2022</div><div class="tl-text">Icepop de la Estatua de la Libertad y del Coliseo Romano. Línea Retail Gluten Free. Mini Icepops.</div></div>
+            <div class="tl-row"><div class="tl-year">2023</div><div class="tl-text">El Papa Francisco se vuelve cliente de Lucciano's y envía una carta de felicitación.</div></div>
+            <div class="tl-row"><div class="tl-year">2024</div><div class="tl-text">Alfajores y Geladot's Lucciano's. Mini Alfajores. Christian y Daniel Otero, "Emprendedores del Año" — EY Entrepreneur Of The Year Argentina.</div></div>
+            <div class="tl-row"><div class="tl-year">2025</div><div class="tl-text">Avella Collection. Conitos Lucciano's. Desembarco en Italia (Roma) y España (Barcelona/Málaga). Apertura de Lucciano's Central en Mar del Plata. Tabletas de chocolate, pistacchio y Dubai. Viennesi. <strong style="color:var(--gold)">Llegamos al local N° 100.</strong></div></div>
+          </div>
+
+          <div class="sidebar-label" style="padding:0;margin:22px 0 10px">Nuestra Filosofía</div>
+          <div class="grid3" style="margin-top:0">
+            <div class="mini-stat" style="text-align:left;padding:14px">
+              <div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:11px;color:var(--gold);letter-spacing:1px;margin-bottom:6px">MISIÓN</div>
+              <div style="font-size:11px;color:#bbb;line-height:1.6">Revolucionar mundialmente la industria del helado ofreciendo experiencias inolvidables y calidad inmejorable.</div>
+            </div>
+            <div class="mini-stat" style="text-align:left;padding:14px">
+              <div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:11px;color:var(--gold);letter-spacing:1px;margin-bottom:6px">VISIÓN</div>
+              <div style="font-size:11px;color:#bbb;line-height:1.6">Regalar momentos de alegría con cada helado.</div>
+            </div>
+            <div class="mini-stat" style="text-align:left;padding:14px">
+              <div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:11px;color:var(--gold);letter-spacing:1px;margin-bottom:6px">VALORES</div>
+              <div style="font-size:11px;color:#bbb;line-height:1.6">Compromiso · Responsabilidad · Trabajo en equipo · Vocación de servicio · Pasión</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- MÓDULO -->
+      <div data-panel="mod-cafe" style="display:none">
+        <div class="mod-header"><div class="mod-num-big">1</div><div class="mod-title">Cafetería</div></div>
+        <div class="content-card">
+          <div class="t">Vajilla y Cápsulas Nespresso — referencia</div>
+          <img src="img/vajilla_capsulas.png" style="width:100%;border-radius:10px;display:block;margin-top:10px"/>
+        </div>
+        <div class="content-card">
+          <div class="t">Espresso · Cód. 75</div>
+          <img src="img/espresso_75.png" style="width:100%;border-radius:10px;display:block;margin-top:10px"/>
+        </div>
+        <div class="content-card">
+          <div class="t">Espresso Lungo · Cód. 76</div>
+          <img src="img/lungo_76.png" style="width:100%;border-radius:10px;display:block;margin-top:10px"/>
+        </div>
+        <div class="content-card">
+          <div class="t">Café Latte / Doble · Cód. 79 · Cappuccino · Cód. 36</div>
+          <img src="img/latte_79.png" style="width:100%;border-radius:10px;display:block;margin-top:10px"/>
+        </div>
+        <div class="sec-label">Cafés Especiales</div>
+        <div class="note-box" style="margin-top:0;margin-bottom:14px">Si se solicita <span class="highlight">FRÍO</span>: usar leche fría y hielo.</div>
+        <div class="content-card"><div class="t">Caramel Choco Style · Cód 168 · Grande</div><div class="d">1 push salsa chocolate + 1 push syrup caramelo → 60% leche → 30% café → espuma</div><div class="tag-row"><span class="info-tag gold">Cápsula Caramelo / Finezzo</span></div></div>
+        <div class="content-card"><div class="t">Temptation · Cód 282 · Grande</div><div class="d">1 push salsa chocolate + 1 push salsa DDL → 60% leche → 30% café → espuma</div><div class="tag-row"><span class="info-tag gold">Cápsula Ristretto / Forte</span></div></div>
+        <div class="content-card"><div class="t">Vainilla Macchiato · Cód 167 · Grande</div><div class="d">2 push syrup vainilla → 60% leche → 30% café → espuma</div><div class="tag-row"><span class="info-tag gold">Cápsula Vainilla / Finezzo</span></div></div>
+        <div class="content-card"><div class="t">Mocca Latte · Cód 283 · Grande</div><div class="d">2 push salsa chocolate → 60% leche → 30% café → espuma</div><div class="tag-row"><span class="info-tag gold">Cápsula Forte / Finezzo</span></div></div>
+        <div class="content-card"><div class="t">Iced Cappuccino · Cód 284 · Grande</div><div class="d">Hielo → 70% leche fría → 30% café → crema + cacao en polvo</div><div class="note-box">Leche fría y hielo — <span class="highlight">NO USAR LECHE CALIENTE</span>.</div><div class="tag-row" style="margin-top:8px"><span class="info-tag gold">Cápsula Finezzo</span></div></div>
+        <div class="content-card"><div class="t">Affogato · Cód 285 · Mediano</div><div class="d">1 bocha de helado a elección → espresso encima</div></div>
+        <div class="content-card"><div class="t">Espresso Pistacho</div><div class="d">10g Avella Pistacho → 1 shot ristretto → crema + hilos Avella</div><div class="note-box">Taza espresso chica</div></div>
+        <div class="content-card"><div class="t">Espresso Gianduia</div><div class="d">10g Avella Gianduia → 1 shot ristretto → crema + hilos Avella</div><div class="note-box">Taza espresso chica</div></div>
+
+        <div class="sec-label">Promociones</div>
+        <div class="content-card">
+          <div class="t">Con Lungo · Cód 76</div>
+          <div class="step-list">
+            <div class="step-row"><div class="step-text" style="flex:1">Café Lungo + Alfajor Blanco</div><div class="info-tag">611</div></div>
+            <div class="step-row"><div class="step-text" style="flex:1">Café Lungo + Alfajor Semiamargo</div><div class="info-tag">612</div></div>
+            <div class="step-row"><div class="step-text" style="flex:1">Café Lungo + Alfajor Dark</div><div class="info-tag">613</div></div>
+            <div class="step-row"><div class="step-text" style="flex:1">Café Lungo + Alfajor Nuez</div><div class="info-tag">614</div></div>
+          </div>
+        </div>
+        <div class="content-card">
+          <div class="t">Panificados</div>
+          <div class="step-list">
+            <div class="step-row"><div class="step-text" style="flex:1">Café latte + 2 medialunas + jugo</div><div class="info-tag">161</div></div>
+            <div class="step-row"><div class="step-text" style="flex:1">Café latte + 1/2 tostadas + jugo</div><div class="info-tag">335</div></div>
+            <div class="step-row"><div class="step-text" style="flex:1">Café latte + 1/2 tostado + jugo</div><div class="info-tag">220</div></div>
+            <div class="step-row"><div class="step-text" style="flex:1">Cappuccino + croissant</div><div class="info-tag">440</div></div>
+          </div>
+        </div>
+        <div class="content-card">
+          <div class="t">Con Espresso · Cód 75</div>
+          <div class="step-list">
+            <div class="step-row"><div class="step-text" style="flex:1">Espresso + Conito Blanco</div><div class="info-tag">650</div></div>
+            <div class="step-row"><div class="step-text" style="flex:1">Espresso + Conito Semiamargo</div><div class="info-tag">651</div></div>
+            <div class="step-row"><div class="step-text" style="flex:1">Espresso + Mini Alfajor a elección</div><div class="info-tag">626</div></div>
+          </div>
+        </div>
+
+        <div class="sec-label">Bebidas Frías</div>
+        <div class="content-card"><div class="t">Limonada</div><div class="d">3 limones · 500ml agua · 120g azúcar · hielo · licuar</div></div>
+        <div class="content-card"><div class="t">Limonada con Menta</div><div class="d">3 limones · 500ml agua · 120g azúcar · 6 hojas de menta · hielo · licuar</div></div>
+        <div class="content-card"><div class="t">Exprimido de Naranja</div><div class="d">Naranjas frescas · exprimir al momento</div></div>
+
+        <div class="mini-eval-cta">
+          <div><div class="t">¿Listo para repasar?</div><div class="d">3 preguntas rápidas sobre este módulo · 2 min</div></div>
+          <button class="btn-gold-sm" onclick="ir('minieval', null)">Empezar mini-evaluación</button>
+        </div>
+      </div>
+
+      <div data-panel="mod-helad" style="display:none">
+        <div class="mod-header"><div class="mod-num-big">2</div><div class="mod-title">Heladería</div></div>
+
+        <div class="sec-label">Gramajes</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+          <div class="stat-pill"><div class="n">120-130g</div><div class="l">Chico</div></div>
+          <div class="stat-pill"><div class="n">140-150g</div><div class="l">Mediano</div></div>
+          <div class="stat-pill"><div class="n">170-180g</div><div class="l">Grande</div></div>
+          <div class="stat-pill"><div class="n">190-200g</div><div class="l">Cucurucho</div></div>
+        </div>
+
+        <div class="sec-label">Pase de Helado</div>
+        <div class="content-card">
+          <div class="mini-label">¿Qué es el pase de helado?</div>
+          <div class="speech-box">Es cuando se hace el traspaso entre vitrina y armarios, y se completan ambas mitades para mantener la presentación acorde a la exhibición.</div>
+          <div class="d" style="margin-top:10px">Cuando se hace el traspaso del helado de una vaqueta a otra se llama <span class="highlight">PASE DE HELADO</span>. En el armario los helados se identifican como <span class="highlight">COMPLETOS</span> e <span class="highlight">INCOMPLETOS</span>.</div>
+          <div class="note-box">Tipos de vaqueta: <span class="highlight">ACRÍLICO</span> (plástico duro) y <span class="highlight">PLÁSTICO</span> (va dentro de la de acrílico como contenedor interior).</div>
+          <div class="note-box">En caso de vaqueta rota de plástico: cortar ambos extremos y pasar a una de acrílico.</div>
+        </div>
+
+        <div class="sec-label">Baño de Chocolate</div>
+        <div class="content-card"><div class="d">Marca: <span class="highlight">MAPRICOA</span>. Temperatura ideal: <span class="highlight">30–40°C</span>. Si no se adhiere, posiblemente hay que cambiar el chocolate.</div></div>
+
+        <div class="sec-label">Batidos</div>
+        <div class="content-card">
+          <div class="t">Smoothie</div>
+          <div class="mini-label">Cómo decirle al cliente</div>
+          <div class="speech-box">Es un batido con 2 bochas frutales a elección + 200ml de soda fría</div>
+          <div class="mini-label">Preparación</div>
+          <div class="step-list">
+            <div class="step-row"><div class="step-num">1</div><div class="step-text">2 bochas de helados frutales a elección del cliente — 160g</div></div>
+            <div class="step-row"><div class="step-num">2</div><div class="step-text">Agregar 200ml de soda fría</div></div>
+            <div class="step-row"><div class="step-num">3</div><div class="step-text">Licuar hasta lograr un Smoothie suave</div></div>
+            <div class="step-row"><div class="step-num">4</div><div class="step-text">Servir, colocar tapa y sorbete</div></div>
+          </div>
+        </div>
+        <div class="content-card">
+          <div class="t">Milk Shake</div>
+          <div class="mini-label">Cómo decirle al cliente</div>
+          <div class="speech-box">2 bochas a elección · leche · salsa · crema — 200ml de leche</div>
+          <div class="mini-label">Preparación</div>
+          <div class="step-list">
+            <div class="step-row"><div class="step-num">1</div><div class="step-text">2 bochas de helado a elección del cliente — 160g</div></div>
+            <div class="step-row"><div class="step-num">2</div><div class="step-text">Agregar 200ml de leche fría</div></div>
+            <div class="step-row"><div class="step-num">3</div><div class="step-text">Decorar el interior del vaso con salsa antes de servir</div></div>
+            <div class="step-row"><div class="step-num">4</div><div class="step-text">Licuar y volcar suavemente en el vaso</div></div>
+            <div class="step-row"><div class="step-num">5</div><div class="step-text">Terminar con círculos de crema, cacao en polvo o salsa</div></div>
+            <div class="step-row"><div class="step-num">6</div><div class="step-text">Colocar tapa y sorbete</div></div>
+          </div>
+        </div>
+        <div class="content-card">
+          <div class="t">Gelato Shake</div>
+          <div class="mini-label">Cómo decirle al cliente</div>
+          <div class="speech-box">Batido con helado, leche, café y crema · Sabores: Cookies & Cream · Dulce de Leche · Tiramisú</div>
+          <div class="mini-label">Preparación (igual para los 3 sabores)</div>
+          <div class="step-list">
+            <div class="step-row"><div class="step-num">1</div><div class="step-text">2 bochas de helado del sabor elegido — 160g</div></div>
+            <div class="step-row"><div class="step-num">2</div><div class="step-text">Agregar 100ml de leche fría</div></div>
+            <div class="step-row"><div class="step-num">3</div><div class="step-text">Colocar un café espresso con cápsula Ristretto</div></div>
+            <div class="step-row"><div class="step-num">4</div><div class="step-text">Licuar y servir en vaso de Nespresso con collarín</div></div>
+            <div class="step-row"><div class="step-num">5</div><div class="step-text">Agregar crema, decoración según el sabor (cookies / salsa DDL / cacao en polvo) y entregar con sorbete</div></div>
+          </div>
+          <div class="tag-row" style="margin-top:10px"><span class="info-tag">Cookies & Cream</span><span class="info-tag">Dulce de Leche</span><span class="info-tag">Tiramisú</span></div>
+          <div class="note-box">Usar siempre leche bien fría y cápsula de café Ristretto.</div>
+        </div>
+
+        <div class="sec-label">Variegatos & Decoraciones</div>
+        <div class="content-card">
+          <div class="t">Stracciatella</div>
+          <div class="mini-label">Modo de uso</div>
+          <div class="step-text" style="margin-bottom:8px">Se calienta en una jarrita en microondas 15 a 20 segundos. Arrojar en forma de hilos sobre los siguientes helados:</div>
+          <div class="tag-row"><span class="info-tag">Dulce de Leche Granizado</span><span class="info-tag">Banana Split</span><span class="info-tag">Menta Granizada</span><span class="info-tag">Peanut Caramel</span></div>
+        </div>
+        <div class="content-card">
+          <div class="t">Dulce de Leche Repostero</div>
+          <div class="mini-label">Modo de uso</div>
+          <div class="step-text" style="margin-bottom:8px">Colocar en manga y conservar en heladera. Se aplica en forma de gota grande sobre los picos.</div>
+          <div class="tag-row"><span class="info-tag">Dulce de Leche</span><span class="info-tag">Peanut Caramel</span><span class="info-tag">Tramontana</span><span class="info-tag">Banana Split</span></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="content-card" style="margin-bottom:0"><div class="t">Mascarpone</div><div class="d">Variegato de frutos rojos</div></div>
+          <div class="content-card" style="margin-bottom:0"><div class="t">Maracuyá</div><div class="d">Variegato de maracuyá con semillas</div></div>
+          <div class="content-card" style="margin-bottom:0"><div class="t">Tramontana</div><div class="d">Salsa de caramelo + microgalletitas por encima</div></div>
+          <div class="content-card" style="margin-bottom:0"><div class="t">Cheesecake al Pistacchio</div><div class="d">200g crumble de pistacho en toda la superficie</div></div>
+          <div class="content-card" style="margin-bottom:0"><div class="t">Tiramisú</div><div class="d">Cacao en polvo por encima</div></div>
+          <div class="content-card" style="margin-bottom:0"><div class="t">Tiramisú al Pistacho</div><div class="d">Cacao solo en laterales, granella en el centro, 2 vainillas adelante</div></div>
+          <div class="content-card" style="margin-bottom:0;grid-column:1/-1"><div class="t">Sabores frutales</div><div class="d">Llevan fruta cortada del mismo sabor como decoración</div></div>
+        </div>
+
+        <div class="mini-eval-cta">
+          <div><div class="t">¿Listo para repasar?</div><div class="d">3 preguntas rápidas sobre este módulo · 2 min</div></div>
+          <button class="btn-gold-sm" onclick="ir('minieval', null)">Empezar mini-evaluación</button>
+        </div>
+      </div>
+
+      <div data-panel="mod-icepops" style="display:none">
+        <div class="mod-header"><div class="mod-num-big">3</div><div class="mod-title">Icepops</div></div>
+
+        <div class="sec-label">3 claves para describir</div>
+        <div class="step-list">
+          <div class="step-row"><div class="step-num">1</div><div class="step-text">En la mayoría de los casos, <strong>el nombre es su sabor</strong>.</div></div>
+          <div class="step-row"><div class="step-num">2</div><div class="step-text">Se describe <strong>de adentro hacia afuera</strong>: primero el helado, luego la cubierta.</div></div>
+          <div class="step-row"><div class="step-num">3</div><div class="step-text">Las cubiertas son siempre: <span class="highlight">CHOCOLATE BLANCO</span>, <span class="highlight">CON LECHE</span> o <span class="highlight">NEGRO</span>. Todo lo que tiene tinte de color = blanco.</div></div>
+        </div>
+
+        <div class="sec-label">Tipos de cubierta</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <div class="stat-pill"><div class="n">Blanco</div><div class="l">tinte de color = blanco</div></div>
+          <div class="stat-pill"><div class="n">Con leche</div><div class="l">chocolate con leche</div></div>
+          <div class="stat-pill"><div class="n">Negro</div><div class="l">chocolate negro</div></div>
+        </div>
+
+        <div class="sec-label">Los que tienen nombre distinto</div>
+        <div class="content-card"><div class="t">King Bianco</div><div class="d">Helado de avellanas con veteado de avellanas, cubierto en chocolate blanco.</div></div>
+        <div class="content-card"><div class="t">Peanut Caramel</div><div class="d">Crema de maní con veteado de chocolate stracciatella, dulce de leche y trozos de maní salado.</div></div>
+        <div class="content-card"><div class="t">Sorbete Patagonia</div><div class="d">Mix de frutos rojos: arándanos, frutillas, frambuesas y moras de la Patagonia. Bañado con chocolate blanco.</div></div>
+        <div class="content-card"><div class="t">Vito Crema del Cielo</div><div class="d">Crema chantilly con tinte celeste, cubierto en chocolate blanco con granas de colores.</div></div>
+        <div class="content-card"><div class="t">Oli Platino</div><div class="d">Chocolate semiamargo con leche — combinación suave pero intensa.</div></div>
+        <div class="content-card"><div class="t">Doble Chocolate King / Oli King / Minion</div><div class="d">Helado de chocolate blanco veteado con avellanas, cubierto en chocolate blanco y chocolate con leche. Los tres comparten el mismo relleno.</div><div class="note-box">El nombre "King" hace referencia al <span class="highlight">CHOCOLATE BLANCO Y AVELLA LATTE</span> con el que está hecho — así se identifica de dónde viene ese detalle del nombre.</div></div>
+        <div class="content-card"><div class="t">Jameson Icepop</div><div class="d">Helado de chocolate Lucciano's relleno de ganache de chocolate blanco con sabor a whisky Jameson. Bañado con cobertura de chocolate belga al 72%.</div></div>
+
+        <div class="sec-label">Mini Icepops</div>
+        <div class="content-card">
+          <div class="tag-row"><span class="info-tag gold">4 unidades por caja</span><span class="info-tag gold">6 variedades</span></div>
+          <div class="d" style="margin-top:8px">Avellana y Chocolate · Dulce de Leche · Chocolate · Cookies & Cream · DDL & Cookies · Pistacho</div>
+        </div>
+
+        <div class="sec-label">Geladots</div>
+        <div class="content-card">
+          <div class="mini-label">Cómo decirle al cliente</div>
+          <div class="speech-box">Bombones rellenos de helado, cubiertos en chocolate.</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;margin-bottom:10px">
+            <div class="stat-pill"><div class="n">18u</div><div class="l">Mediano</div></div>
+            <div class="stat-pill"><div class="n">32u</div><div class="l">Grande</div></div>
+          </div>
+          <div class="tag-row"><span class="info-tag">Frutilla</span><span class="info-tag">King Bianco</span><span class="info-tag">Frambuesa</span><span class="info-tag">Chocolate Dark 72%</span><span class="info-tag">Pistacho</span><span class="info-tag">Sambayón</span><span class="info-tag">DDL</span><span class="info-tag">Gianduia</span></div>
+          <div class="note-box">El cliente puede combinar sabores.</div>
+        </div>
+
+        <div class="sec-label">Cannolis</div>
+        <div class="content-card">
+          <div class="mini-label">Cómo decirle al cliente</div>
+          <div class="speech-box">Obleas rellenas de helado, cubiertas en chocolate.</div>
+          <div class="tag-row" style="margin-top:10px"><span class="info-tag">Pistacho</span><span class="info-tag">DDL Helado</span><span class="info-tag">DDL Repostero</span><span class="info-tag">Gianduia</span><span class="info-tag">Alfajor</span><span class="info-tag">Yogurt de Frutilla</span></div>
+        </div>
+
+        <div class="sec-label">Helado libre de gluten</div>
+        <div class="content-card">
+          <div class="mini-label">Cómo decirle al cliente</div>
+          <div class="speech-box">"¿Tenés algo libre de gluten? Sí, por supuesto. Vienen en pote individual de 1 solo sabor, 190 gr, y contamos con 8 variedades, de las cuales 2 son veganas."</div>
+          <div class="tag-row" style="margin-top:10px"><span class="info-tag">Chocolate Lucciano's</span><span class="info-tag">Cookies & Cream</span><span class="info-tag">Dulce con Dulce</span><span class="info-tag">Chocolate Blanco y Avellanas</span><span class="info-tag">Mascarpone con Frutos Rojos</span><span class="info-tag">Pistacho</span></div>
+          <div class="tag-row" style="margin-top:6px"><span class="info-tag gold">Sorbete Patagonia (vegano)</span><span class="info-tag gold">Sorbete Dark (vegano)</span></div>
+        </div>
+
+        <div class="sec-label">Cuando preguntan "¿tenés algo sin azúcar?"</div>
+        <div class="content-card">
+          <div class="mini-label">Cómo decirle al cliente</div>
+          <div class="speech-box">"Le comento que todos nuestros productos contienen azúcar. Sin embargo, puedo ofrecerte un icepop sin azúcar añadida de chocolate con leche, y también contamos con 2 tabletas sin azúcar añadida."</div>
+          <div class="tag-row" style="margin-top:10px"><span class="info-tag">Chocolate con Leche s/azúcar</span><span class="info-tag">Chocolate Blanco s/azúcar</span></div>
+        </div>
+
+        <div class="sec-label">Menú Kosher</div>
+        <div class="content-card">
+          <div class="d" style="margin-bottom:10px">Certificado por rabino.</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div class="stat-pill"><div class="n">Parve</div><div class="l">Vegano · sin lácteos</div></div>
+            <div class="stat-pill"><div class="n">Dairy</div><div class="l">Con lácteos</div></div>
+          </div>
+        </div>
+
+        <div class="mini-eval-cta">
+          <div><div class="t">¿Listo para repasar?</div><div class="d">3 preguntas rápidas sobre este módulo · 2 min</div></div>
+          <button class="btn-gold-sm" onclick="ir('minieval', null)">Empezar mini-evaluación</button>
+        </div>
+      </div>
+
+      <div data-panel="mod-pasteleria" style="display:none">
+        <div class="mod-header"><div class="mod-num-big">4</div><div class="mod-title">Pastelería</div></div>
+
+        <div class="sec-label">Tortas · vencimiento 4 días</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="content-card" style="margin-bottom:0"><div class="t">Red Velvet</div><div class="d">Capas húmedas, cheese frosting, migas rojas</div></div>
+          <div class="content-card" style="margin-bottom:0"><div class="t">Carrot Cake</div><div class="d">Zanahoria, cheese frosting, nuez crocante</div></div>
+          <div class="content-card" style="margin-bottom:0"><div class="t">Mousse de Chocolate</div><div class="d">Mousse aireado, base húmeda, ganache brillante</div></div>
+          <div class="content-card" style="margin-bottom:0"><div class="t">Brownie con DDL</div><div class="d">Dulce de leche, merengue italiano flambeado</div></div>
+          <div class="content-card" style="margin-bottom:0"><div class="t">Rogel</div><div class="d">Capas crocantes, dulce de leche, merengue</div></div>
+          <div class="content-card" style="margin-bottom:0"><div class="t">Crumble de Manzana</div><div class="d">Sablée, manzanas con canela, crumble crocante</div></div>
+          <div class="content-card" style="margin-bottom:0"><div class="t">Chocotorta</div><div class="d">DDL y queso crema, galletitas con almíbar de café</div></div>
+          <div class="content-card" style="margin-bottom:0"><div class="t">Oreo Cake</div><div class="d">Galletitas, DDL y queso crema, ganache blanca</div></div>
+          <div class="content-card" style="margin-bottom:0"><div class="t">Lemon Pie</div><div class="d">Sablée, crema de limón, merengue flambeado</div><div class="note-box">Decorar: 2-3 hojas de menta</div></div>
+          <div class="content-card" style="margin-bottom:0"><div class="t">Cheesecake</div><div class="d">Sablée, crema de queso, salsa frutos rojos</div><div class="note-box">Decorar: 2-3 hojas de menta</div></div>
+          <div class="content-card" style="margin-bottom:0;grid-column:1/-1"><div class="t">Torta de Coco</div><div class="d">Sablée, DDL, crumble de coco</div><div class="note-box">Decorar: coco rallado por encima</div></div>
+        </div>
+
+        <div class="sec-label">Pastelería fresca</div>
+        <div class="content-card"><div class="t">Budín de Limón</div><div class="d">Semillas de amapola + glaseado de jugo de limón</div></div>
+        <div class="content-card"><div class="t">Budín Marmolado</div><div class="d">Vainilla y chocolate + glaseado de chocolate</div></div>
+        <div class="content-card"><div class="t">Tostadas de Pan Casero</div><div class="d">Dip de queso crema, mermelada o DDL · 3u (2 con promo)</div></div>
+        <div class="content-card"><div class="t">Tostado de Jamón y Queso</div><div class="d">Pan casero con jamón y queso, tostado</div></div>
+
+        <div class="sec-label">Vencimientos · Panificados</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <div class="stat-pill"><div class="n">Diario</div><div class="l">Medialunas y Croissant</div></div>
+          <div class="stat-pill"><div class="n">2 días</div><div class="l">Rolls y Pains</div></div>
+          <div class="stat-pill"><div class="n">4 días</div><div class="l">Tortas</div></div>
+        </div>
+
+        <div class="sec-label">Procedimiento de Cocción</div>
+        <div class="content-card">
+          <div class="step-list">
+            <div class="step-row"><div class="step-num">1</div><div class="step-text"><strong>Recepción</strong> — Conservar en freezer a -18°C. No romper cadena de frío.</div></div>
+            <div class="step-row"><div class="step-num">2</div><div class="step-text"><strong>Descongelado</strong> — Heladera (4-6°C): 8-10 hs · Ambiente (18-22°C): 1 hora · No usar calor directo.</div></div>
+            <div class="step-row"><div class="step-num">3</div><div class="step-text"><strong>Decisión</strong> — Si hornear: continuar. Si guardar: refrigerar a 4°C, hornear dentro del día.</div></div>
+            <div class="step-row"><div class="step-num">4</div><div class="step-text"><strong>Preparación</strong> — Dulces: pincelar con huevo batido (2 huevos + 50cc leche). Saladas/grasa: sin tratamiento.</div></div>
+            <div class="step-row"><div class="step-num">5</div><div class="step-text"><strong>Horneado</strong> — Precalentar a <span class="highlight">200°C</span> → bajar a <span class="highlight">175°C</span> · 15 min, girar, 10-15 min más hasta dorado.</div></div>
+            <div class="step-row"><div class="step-num">6</div><div class="step-text"><strong>Post horneado</strong> — Dulces: 2 pinceladas de almíbar al salir. Saladas: enfriar sin adiciones. Enfriar 10-15 min en placa.</div></div>
+          </div>
+        </div>
+
+        <div class="mini-eval-cta">
+          <div><div class="t">¿Listo para repasar?</div><div class="d">3 preguntas rápidas sobre este módulo · 2 min</div></div>
+          <button class="btn-gold-sm" onclick="ir('minieval', null)">Empezar mini-evaluación</button>
+        </div>
+      </div>
+
+      <div data-panel="mod-choco" style="display:none">
+        <div class="mod-header"><div class="mod-num-big">5</div><div class="mod-title">Chocolatería</div></div>
+
+        <div class="sec-label">Alfajores · 80g · 6 variedades</div>
+        <div class="content-card">
+          <div class="tag-row">
+            <span class="info-tag">Semiamargo</span><span class="info-tag">Blanco</span><span class="info-tag">Dark</span>
+            <span class="info-tag">Nuez</span><span class="info-tag">Pistacho</span><span class="info-tag">Frutos Rojos</span>
+          </div>
+          <div class="d" style="margin-top:10px">Presentaciones: Unidad · x6 · x10 · Lata x5 · Mini x12</div>
+          <div class="note-box">Caja x6: 2 semi, 2 blancos, 1 dark, 1 nuez · Caja x10: 3 semi, 3 blancos, 2 dark, 2 nuez · Lata x5: 1 semi, 1 blanco, 1 dark, 1 nuez, 1 Pink</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+            <div class="stat-pill"><div class="n">70 días</div><div class="l">Clásicos</div></div>
+            <div class="stat-pill"><div class="n">60 días</div><div class="l">Pistacho / Frutos Rojos</div></div>
+          </div>
+        </div>
+
+        <div class="sec-label">Conitos · 4 variedades</div>
+        <div class="content-card">
+          <div class="tag-row"><span class="info-tag">Semiamargo</span><span class="info-tag">Blanco</span><span class="info-tag">Pistacho</span><span class="info-tag">Frutos Rojos</span></div>
+          <div class="d" style="margin-top:10px">Unidad · Caja x6</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+            <div class="stat-pill"><div class="n">60 días</div><div class="l">Clásicos</div></div>
+            <div class="stat-pill"><div class="n">45 días</div><div class="l">Pistacho / Frutos Rojos</div></div>
+          </div>
+        </div>
+
+        <div class="sec-label">Viennesi</div>
+        <div class="content-card">
+          <div class="mini-label">Cómo decirle al cliente</div>
+          <div class="speech-box">Obleas rellenas de crema, cubiertas en chocolate.</div>
+          <div class="tag-row" style="margin-top:10px"><span class="info-tag">Fondente</span><span class="info-tag">Clásica (Vainilla)</span><span class="info-tag">Pistacho</span></div>
+          <div class="d" style="margin-top:10px">Unidad · Caja x4 (mismo sabor) · Surtido x9 (3 de cada)</div>
+        </div>
+
+        <div class="sec-label">Tabletas · 16 variedades</div>
+        <div class="content-card">
+          <div class="t">Con leche</div><div class="d" style="margin-bottom:10px">Chocolate con Leche · con DDL · con Almendras · con Avellanas · sin Azúcar · Dubai</div>
+          <div class="t">Chocolate negro</div><div class="d" style="margin-bottom:10px">Dark 70% · 54% con Avellanas · Dubai Semiamargo</div>
+          <div class="t">Blanco</div><div class="d" style="margin-bottom:10px">Chocolate Blanco · sin Azúcar · con Caramelo y Avellanas · con Avella Latte Crock · Frutos del Bosque</div>
+          <div class="t">Pistacho</div><div class="d">Con granella · con Avella Pistacho</div>
+        </div>
+        <div class="content-card"><div class="t">Pack Negro · x6</div><div class="d">Chocolate con Leche con DDL · Chocolate con Leche · Pistacho con granella · Pistacho con Avella Pistacho · Chocolate Dark · Chocolate Frutos del Bosque</div></div>
+        <div class="content-card"><div class="t">Pack Blanco · x6</div><div class="d">Chocolate con Leche con DDL · Chocolate Blanco · Pistacho con granella · Pistacho con Avella Pistacho · Chocolate Blanco con Caramelo y Avellanas · Chocolate Blanco con Avella Latte Crock</div></div>
+        <div class="note-box">Cuando el cliente muestra interés: ofrecer Pack Negro o Pack Blanco (precio fijo), o armar 6 tabletas a elección — la caja es de cortesía (cobrar por SKU individual).</div>
+
+        <div class="sec-label">Avellas · 6 variedades</div>
+        <div class="content-card">
+          <div class="tag-row">
+            <span class="info-tag">Pistacho</span><span class="info-tag">Pistacho Crock</span><span class="info-tag">Gianduia</span>
+            <span class="info-tag">Gianduia Crock</span><span class="info-tag">Dubai</span><span class="info-tag">Coco Rock</span>
+          </div>
+          <div class="d" style="margin-top:10px">Frasco 450g · libre de gluten</div>
+          <div class="step-list" style="margin-top:10px">
+            <div class="step-row"><div class="step-text"><strong style="color:var(--black)">Collection Clásico</strong> — Pistacho + Pistacho Crock + Gianduia</div></div>
+            <div class="step-row"><div class="step-text"><strong style="color:var(--black)">Collection Pistacho</strong> — Pistacho + Pistacho Crock + Dubai</div></div>
+            <div class="step-row"><div class="step-text"><strong style="color:var(--black)">Collection Dubai</strong> — 3 Avella Dubai</div></div>
+          </div>
+        </div>
+
+        <div class="sec-label">Latas Carrusel</div>
+        <div class="content-card"><div class="t">Lata Verde · Pistacho</div><div class="d">4 mini Alf. Pistacho · 3 Conitos Pistacho · 3 Viennesi Pistacho · 2 Squares Choco Pistacho · 2 Squares Choco Pistacho con Avella Pistacho</div></div>
+        <div class="content-card"><div class="t">Lata Bordó · Clásica</div><div class="d">2 mini Alf. Semiamargo · 2 mini Alf. Blanco · 2 mini Alf. Nuez · 2 Conitos Blanco · 1 Conito Semiamargo · 2 Squares Choco Leche · 2 Squares Choco Blanco</div></div>
+        <div class="content-card"><div class="t">Lata Negra · Dark</div><div class="d">4 mini Alfajores Dark · 2 mini Alfajores Semiamargo · 3 Conitos Semiamargo · 4 Squares (2 leche y avellanas + 2 semiamargo)</div></div>
+        <div class="note-box"><span class="highlight">LA UNIDAD EXHIBIDA NO DEBE VENDERSE</span>. Al momento de la venta entregar una unidad del stock disponible, o armarla en el momento. Aplica para todo el sector de merchandising.</div>
+
+        <div class="sec-label">Lata Corazón</div>
+        <div class="content-card"><div class="d">12 bombones de chocolate con leche rellenos de DDL</div></div>
+
+        <div class="mini-eval-cta">
+          <div><div class="t">¿Listo para repasar?</div><div class="d">3 preguntas rápidas sobre este módulo · 2 min</div></div>
+          <button class="btn-gold-sm" onclick="ir('minieval', null)">Empezar mini-evaluación</button>
+        </div>
+      </div>
+
+      <div data-panel="mod-sistema" style="display:none">
+        <div class="mod-header"><div class="mod-num-big">6</div><div class="mod-title">Sistema y Caja</div></div>
+        <div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Contenido próximamente</div></div>
+      </div>
+
+      <div data-panel="mod-atencion" style="display:none">
+        <div class="mod-header"><div class="mod-num-big">7</div><div class="mod-title">Atención al Cliente</div></div>
+        <div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Contenido próximamente</div></div>
+      </div>
+
+      <!-- MINI EVALUACIÓN -->
+      <div data-panel="minieval" style="display:none">
+        <div class="mod-header"><div class="mod-num-big">2</div><div class="mod-title">Mini-evaluación — Cafetería</div></div>
+        <div class="eval-q">
+          <div class="q">1. ¿Qué cápsula se usa para el Vainilla Macchiato?</div>
+          <div class="eval-opts">
+            <div class="eval-opt correct">Vainilla / Finezzo ✓</div>
+            <div class="eval-opt">Ristretto / Forte</div>
+            <div class="eval-opt">Descafeinada</div>
+          </div>
+        </div>
+        <div class="eval-q">
+          <div class="q">2. ¿Cuántos push de salsa lleva el Caramel Choco Style?</div>
+          <div class="eval-opts">
+            <div class="eval-opt">3 push de cada salsa</div>
+            <div class="eval-opt correct">1 push de cada salsa ✓</div>
+            <div class="eval-opt">Solo syrup, sin salsa</div>
+          </div>
+        </div>
+        <div class="card" style="text-align:center;margin-top:18px">
+          <div style="font-family:Montserrat,sans-serif;font-weight:900;font-size:22px;color:var(--green)">2 / 2 correctas</div>
+          <div style="font-size:11px;color:var(--gray);margin-top:4px">¡Sumaste puntos al ranking!</div>
+        </div>
+      </div>
+
+      <!-- RANKING -->
+      <div data-panel="ranking" style="display:none">
+        <div class="mod-header"><div style="font-size:22px">🏆</div><div class="mod-title" style="color:var(--gold)">Ranking — Top 10</div></div>
+        <div class="rank-row top1"><div class="rank-pos">1</div><div><div class="rank-name">María Pérez</div><div class="rank-local">Lucciano's Olivos</div></div><div class="rank-medal">🥇</div><div class="rank-pts">980 pts</div></div>
+        <div class="rank-row top2"><div class="rank-pos">2</div><div><div class="rank-name">Tomás Ojeda</div><div class="rank-local">Lucciano's Quilmes</div></div><div class="rank-medal">🥈</div><div class="rank-pts">910 pts</div></div>
+        <div class="rank-row top3"><div class="rank-pos">3</div><div><div class="rank-name">Lourdes Garcia</div><div class="rank-local">Lucciano's Caballito</div></div><div class="rank-medal">🥉</div><div class="rank-pts">875 pts</div></div>
+        <div class="rank-row"><div class="rank-pos">4</div><div><div class="rank-name">Juan Torres</div><div class="rank-local">Lucciano's Recoleta</div></div><div></div><div class="rank-pts">820 pts</div></div>
+        <div class="rank-row"><div class="rank-pos">5</div><div><div class="rank-name">Sofía Castro</div><div class="rank-local">Lucciano's Belgrano</div></div><div></div><div class="rank-pts">790 pts</div></div>
+        <div class="card" style="margin-top:14px;font-size:11px;color:var(--gray)">Los 3 primeros reciben reconocimiento mensual — definir premio/mecánica con Gabi.</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleSidebarMobile() {
+  document.getElementById('sidebarMain').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('show');
+}
+const titulos = {
+  bienvenida:'Bienvenida', historia:'Nuestra Historia', minieval:'Mini-evaluación', ranking:'Ranking',
+  'mod-cafe':'Cafetería', 'mod-helad':'Heladería', 'mod-icepops':'Icepops', 'mod-pasteleria':'Pastelería',
+  'mod-choco':'Chocolatería', 'mod-sistema':'Sistema y Caja', 'mod-atencion':'Atención al Cliente'
+};
+function ir(view, el) {
+  document.querySelectorAll('[data-panel]').forEach(p => p.style.display = 'none');
+  const panel = document.querySelector('[data-panel="'+view+'"]');
+  if (panel) panel.style.display = 'block';
+  document.getElementById('title').textContent = titulos[view] || view;
+  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(s => { if (s.getAttribute('data-view') === view) s.classList.add('active'); });
+  // En mobile, cerrar el sidebar al elegir una sección
+  if (window.innerWidth <= 760) {
+    document.getElementById('sidebarMain').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('show');
+  }
+}
+</script>
+</body>
+</html>
