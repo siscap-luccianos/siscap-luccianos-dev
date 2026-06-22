@@ -59,9 +59,13 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
 .mini-stat .lab{font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
 
 /* ── HISTORIA ── */
-.historia-hero{background:var(--black);padding:30px 26px;border-radius:var(--r);margin:-28px -28px 24px}
-.historia-hero h2{font-family:'Georgia',serif;font-style:italic;font-weight:700;font-size:26px;color:var(--gold-light)}
+.historia-hero{background:var(--white);border:1px solid var(--line);padding:34px 28px;border-radius:var(--r);margin:-28px -28px 24px}
+.historia-hero h2{font-family:'Georgia',serif;font-style:italic;font-weight:900;font-size:34px;color:var(--gold-dark)}
 .historia-body p{color:var(--gray-dark);font-size:13.5px;line-height:1.8;margin-bottom:14px;max-width:640px}
+.foto-fundadores{width:100%;max-width:420px;display:block;margin:0 auto;max-height:340px;object-fit:cover;object-position:top center}
+@media(min-width:761px){
+  .foto-fundadores{max-width:640px;max-height:420px;object-position:center 20%}
+}
 
 /* ── TIMELINE ── */
 .timeline{display:flex;flex-direction:column}
@@ -369,7 +373,7 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
 
       <div class="admin-sidebar-item active" data-asec="usuarios" onclick="adminNav('usuarios',this)"><span class="icon">👥</span> Usuarios</div>
       <div class="admin-sidebar-item" data-asec="locales" onclick="adminNav('locales',this)"><span class="icon">🏪</span> Accesos de Locales</div>
-      <div class="admin-sidebar-item" data-asec="invitados" onclick="adminNav('invitados',this)"><span class="icon">📋</span> Invitados / Encargados</div>
+      <div class="admin-sidebar-item" data-asec="invitados" onclick="adminNav('invitados',this)"><span class="icon">📋</span> Colaboradores / Encargados</div>
       <div class="admin-sidebar-item" data-asec="evals" onclick="adminNav('evals',this)"><span class="icon">✅</span> Mini-evaluaciones <span class="admin-new-badge" data-admin-novedad="evals" style="display:none">NUEVO</span></div>
       <div class="admin-sidebar-item" data-asec="ranking" onclick="adminNav('ranking',this)"><span class="icon">🏆</span> Ranking</div>
       <div class="admin-sidebar-item" data-asec="uso" onclick="adminNav('uso',this)"><span class="icon">📊</span> Estadísticas de Uso</div>
@@ -412,7 +416,7 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
 
         <!-- INVITADOS / ENCARGADOS -->
         <div data-asec-panel="invitados" style="display:none">
-          <div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Próximamente — listado de invitados/encargados con bloqueo individual.</div></div>
+          <div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Próximamente — listado de colaboradores/encargados con bloqueo individual.</div></div>
         </div>
 
         <!-- MINI-EVALUACIONES -->
@@ -458,7 +462,7 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
 
     <div class="sidebar-item active" data-view="bienvenida" onclick="ir('bienvenida',this)"><span class="icon">🏠</span> Bienvenida</div>
     <div class="sidebar-item" data-view="historia" onclick="ir('historia',this)"><span class="icon">📖</span> Nuestra Historia</div>
-    <div class="sidebar-item" data-view="ranking" onclick="ir('ranking',this)"><span class="icon">🏆</span> Ranking <span style="font-size:9px;color:#666;margin-left:auto">(a confirmar)</span></div>
+    <div class="sidebar-item" data-view="ranking" id="item-ranking" style="display:none" onclick="ir('ranking',this)"><span class="icon">🏆</span> Ranking <span style="font-size:9px;color:#666;margin-left:auto">(a confirmar)</span></div>
 
     <div class="sidebar-label">Módulos</div>
     <div class="sidebar-item" data-view="mod-cafe" onclick="ir('mod-cafe',this)"><span class="chip">1</span> Cafetería <span class="dot" data-novedad-mod="mod-cafe" style="display:none"></span></div>
@@ -496,25 +500,20 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
           <div style="font-size:15px;color:var(--gray-dark);line-height:1.7;margin-bottom:14px">Bienvenida a <strong style="color:var(--black)">SisCap</strong>, la guía interna de Lucciano's. Elegí un módulo en el menú para repasar <strong style="color:var(--black)">recetas, productos y procedimientos</strong> de tu sector.</div>
           <div class="card-row" style="font-size:14px">⏱ Llevás <strong style="font-size:17px" id="tiempo-sesion-texto">0 min</strong> en esta sesión</div>
         </div>
-        <div class="grid3">
-          <div class="mini-stat"><div class="val">3</div><div class="lab">Módulos vistos</div></div>
-          <div class="mini-stat"><div class="val">85%</div><div class="lab">Promedio mini-evals</div></div>
-          <div class="mini-stat"><div class="val">#4</div><div class="lab">Tu puesto en ranking</div></div>
-        </div>
       </div>
 
       <!-- HISTORIA -->
       <div data-panel="historia" style="display:none">
         <div class="historia-hero">
           <h2>Nuestra Historia</h2>
-          <div style="font-size:11px;color:#a07030;margin-top:4px;max-width:560px;line-height:1.6">
+          <div style="font-size:13px;color:var(--gray-dark);margin-top:8px;max-width:560px;line-height:1.7">
             Lucciano's es una empresa familiar que surge a partir del deseo de atender al segmento de consumidores más exigentes de helado artesanal de nuestro país. Nacimos en 2011 con la aspiración de alcanzar un producto Premium.
           </div>
         </div>
         <div class="historia-body">
 
           <div class="content-card" style="padding:0;overflow:hidden">
-            <img src="fundadores.jpg" alt="Fundadores de Lucciano's" style="width:100%;max-width:420px;display:block;margin:0 auto;max-height:340px;object-fit:cover;object-position:top center"/>
+            <img src="fundadores.jpg" alt="Fundadores de Lucciano's" class="foto-fundadores"/>
             <div style="padding:12px 16px">
               <div class="t">Franco, Daniel y Christian Otero</div>
               <div class="d">Fundadores de Lucciano's</div>
@@ -1227,7 +1226,7 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
       <div data-panel="mod-encargados" style="display:none">
         <div class="mod-header"><div class="mod-num-big" style="background:#fbf1dc;border-color:var(--gold);color:var(--gold-dark)">🔒</div><div class="mod-title">Encargados y Responsables de Local</div></div>
         <div class="content-card" style="background:#fbf1dc;border-color:var(--gold)">
-          <div class="d">Esta sección contiene información exclusiva para <strong style="color:var(--black)">encargados</strong> y <strong style="color:var(--black)">responsables de turno</strong>. No es visible para colaboradores ni invitados.</div>
+          <div class="d">Esta sección contiene información exclusiva para <strong style="color:var(--black)">encargados</strong> y <strong style="color:var(--black)">responsables de turno</strong>. No es visible para colaboradores en general.</div>
         </div>
         <div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Contenido próximamente — a definir con Gabi (checklists de apertura/cierre, manejo de caja, supervisión de equipo, reportes).</div></div>
       </div>
@@ -1242,13 +1241,9 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
 
       <!-- RANKING -->
       <div data-panel="ranking" style="display:none">
-        <div class="mod-header"><div style="font-size:22px">🏆</div><div class="mod-title" style="color:var(--gold)">Ranking — Top 10</div></div>
-        <div class="rank-row top1"><div class="rank-pos">1</div><div><div class="rank-name">María Pérez</div><div class="rank-local">Lucciano's Olivos</div></div><div class="rank-medal">🥇</div><div class="rank-pts">980 pts</div></div>
-        <div class="rank-row top2"><div class="rank-pos">2</div><div><div class="rank-name">Tomás Ojeda</div><div class="rank-local">Lucciano's Quilmes</div></div><div class="rank-medal">🥈</div><div class="rank-pts">910 pts</div></div>
-        <div class="rank-row top3"><div class="rank-pos">3</div><div><div class="rank-name">Lourdes Garcia</div><div class="rank-local">Lucciano's Caballito</div></div><div class="rank-medal">🥉</div><div class="rank-pts">875 pts</div></div>
-        <div class="rank-row"><div class="rank-pos">4</div><div><div class="rank-name">Juan Torres</div><div class="rank-local">Lucciano's Recoleta</div></div><div></div><div class="rank-pts">820 pts</div></div>
-        <div class="rank-row"><div class="rank-pos">5</div><div><div class="rank-name">Sofía Castro</div><div class="rank-local">Lucciano's Belgrano</div></div><div></div><div class="rank-pts">790 pts</div></div>
-        <div class="card" style="margin-top:14px;font-size:11px;color:var(--gray)">Los 3 primeros reciben reconocimiento mensual — definir premio/mecánica con Gabi.</div>
+        <div class="mod-header"><div style="font-size:22px">🏆</div><div class="mod-title" style="color:var(--gold)">Ranking</div></div>
+        <div class="content-card"><div class="d" style="text-align:center;padding:24px;color:var(--gray)">Todavía no hay datos de ranking — sección visible solo para Supervisor y Admin mientras se define la mecánica de puntos.</div></div>
+        <div class="card" style="margin-top:14px;font-size:11px;color:var(--gray)">Pendiente de autorización y definición de premio/mecánica.</div>
       </div>
 
     </div>
@@ -1561,6 +1556,9 @@ function hacerLogin() {
     if (itemEncargados) itemEncargados.style.display = verEncargados ? 'flex' : 'none';
     if (labelRestringido) labelRestringido.style.display = verEncargados ? 'block' : 'none';
 
+    const itemRanking = document.getElementById('item-ranking');
+    if (itemRanking) itemRanking.style.display = ['admin','supervisor'].includes(currentRole) ? 'flex' : 'none';
+
     const roleNames = { admin:'Admin', supervisor:'Supervisor', encargado:'Encargado', local:'Local', empleado:'Colaborador' };
     const topbar = document.querySelector('#screen-app .topbar');
     if (currentRole !== 'admin' && topbar && !document.getElementById('role-badge-chip')) {
@@ -1623,7 +1621,7 @@ function adminNav(sec, el) {
   document.querySelectorAll('[data-asec-panel]').forEach(p => p.style.display = 'none');
   const panel = document.querySelector('[data-asec-panel="'+sec+'"]');
   if (panel) panel.style.display = 'block';
-  const titulosAdmin = { usuarios:'Usuarios', locales:'Accesos de Locales', invitados:'Invitados / Encargados', evals:'Mini-evaluaciones', ranking:'Ranking', uso:'Estadísticas de Uso' };
+  const titulosAdmin = { usuarios:'Usuarios', locales:'Accesos de Locales', invitados:'Colaboradores / Encargados', evals:'Mini-evaluaciones', ranking:'Ranking', uso:'Estadísticas de Uso' };
   document.getElementById('admin-title').textContent = titulosAdmin[sec] || sec;
   if (sec === 'evals') cargarEvalsAdmin();
   if (window.innerWidth <= 760) {
@@ -1750,6 +1748,9 @@ function verComoColaborador() {
   const verEncargados = ROLES_CON_ACCESO_ENCARGADOS.includes(currentRole);
   if (itemEncargados) itemEncargados.style.display = verEncargados ? 'flex' : 'none';
   if (labelRestringido) labelRestringido.style.display = verEncargados ? 'block' : 'none';
+
+  const itemRanking = document.getElementById('item-ranking');
+  if (itemRanking) itemRanking.style.display = ['admin','supervisor'].includes(currentRole) ? 'flex' : 'none';
   const nombresRolSimulado = { supervisor:'Supervisor', encargado:'Encargado', local:'Local', empleado:'Colaborador' };
   document.getElementById('hello-name-text').textContent = currentUserNombre || 'Admin';
 
