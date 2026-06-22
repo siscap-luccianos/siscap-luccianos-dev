@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SisCap · Guía de Servicio — Maqueta</title>
+<title>SisCap · Guía de Servicio</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root{
@@ -164,18 +164,22 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
 }
 .login-btn:hover{background:var(--gold-dark)}
 .login-error{color:var(--red);font-size:12px;text-align:center;margin-top:12px;min-height:16px}
-.login-demo{margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
-.login-demo-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);margin-bottom:10px;text-align:center}
-.login-demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.login-demo-btn{
-  background:var(--offwhite);border:1px solid var(--line);border-radius:8px;padding:8px;
-  font-size:11px;color:var(--gray-dark);cursor:pointer;text-align:center;font-family:'Inter',sans-serif
-}
-.login-demo-btn:hover{border-color:var(--gold);color:var(--gold-dark)}
 .role-badge{
   display:inline-flex;align-items:center;gap:6px;background:var(--offwhite);border:1px solid var(--line);
   border-radius:20px;padding:5px 12px;font-size:11px;color:var(--gray-dark);font-weight:600
 }
+
+/* ── AUTOCOMPLETADO DE LOCAL ── */
+.autocomplete-wrap{position:relative}
+.autocomplete-list{
+  position:absolute;top:100%;left:0;right:0;background:var(--white);border:1px solid var(--line);
+  border-radius:8px;margin-top:4px;max-height:220px;overflow-y:auto;z-index:50;
+  box-shadow:0 8px 24px rgba(0,0,0,.08);display:none
+}
+.autocomplete-list.open{display:block}
+.autocomplete-item{padding:10px 14px;font-size:13px;color:var(--gray-dark);cursor:pointer;border-bottom:1px solid var(--line)}
+.autocomplete-item:last-child{border-bottom:none}
+.autocomplete-item:hover{background:var(--offwhite);color:var(--gold-dark)}
 
 /* ── RESPONSIVE / MOBILE ── */
 .mobile-topbar{display:none}
@@ -210,12 +214,11 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
 }
 </style>
 </head>
-</head>
 <body>
 
 <!-- LOGIN -->
 <div id="screen-login">
-  <div class="login-card">
+  <div class="login-card" id="login-card-ingreso">
     <div class="login-logo">Lucciano's</div>
     <div class="login-sub">SisCap · Guía de Servicio</div>
 
@@ -230,15 +233,54 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
     <button class="login-btn" onclick="hacerLogin()">Ingresar</button>
     <div class="login-error" id="login-error"></div>
 
-    <div class="login-demo">
-      <div class="login-demo-label">Accesos demo (maqueta)</div>
-      <div class="login-demo-grid">
-        <button class="login-demo-btn" onclick="loginDemo('admin')">👑 Admin</button>
-        <button class="login-demo-btn" onclick="loginDemo('supervisor')">🧭 Supervisor</button>
-        <button class="login-demo-btn" onclick="loginDemo('encargado')">🔑 Encargado</button>
-        <button class="login-demo-btn" onclick="loginDemo('local')">🏪 Local</button>
-        <button class="login-demo-btn" onclick="loginDemo('empleado')" style="grid-column:1/-1">👤 Empleado / Invitado</button>
+    <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--gray)">
+      ¿No tenés cuenta?
+      <span onclick="mostrarRegistro(true)" style="color:var(--gold-dark);cursor:pointer;font-weight:600;text-decoration:underline">Solicitá acceso</span>
+    </div>
+  </div>
+
+  <!-- REGISTRO -->
+  <div class="login-card" id="login-card-registro" style="display:none">
+    <div class="login-logo">Lucciano's</div>
+    <div class="login-sub">Solicitar acceso a SisCap</div>
+
+    <div id="registro-form">
+      <div class="login-field">
+        <label>Nombre</label>
+        <input type="text" id="reg-nombre" placeholder="Ej: Juan" autocomplete="off" oninput="actualizarUsuarioGenerado()"/>
       </div>
+      <div class="login-field">
+        <label>Apellido</label>
+        <input type="text" id="reg-apellido" placeholder="Ej: Pérez" autocomplete="off" oninput="actualizarUsuarioGenerado()"/>
+      </div>
+      <div class="login-field autocomplete-wrap">
+        <label>Local / Sucursal</label>
+        <input type="text" id="reg-local" placeholder="Escribí para buscar tu local..." autocomplete="off" oninput="filtrarLocalesRegistro()" onfocus="filtrarLocalesRegistro()"/>
+        <div class="autocomplete-list" id="reg-local-list"></div>
+      </div>
+      <div class="login-field">
+        <label>Usuario (generado automáticamente)</label>
+        <input type="text" id="reg-user-preview" placeholder="—" disabled style="background:var(--offwhite);color:var(--gray-dark);cursor:not-allowed"/>
+      </div>
+      <div class="login-field">
+        <label>Contraseña</label>
+        <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres" autocomplete="off"/>
+      </div>
+      <div class="note-box" style="margin-top:0;margin-bottom:14px">Tu solicitud queda <strong style="color:var(--black)">pendiente</strong> hasta que el administrador la apruebe y te asigne el acceso correspondiente.</div>
+      <button class="login-btn" onclick="enviarRegistro()">Enviar solicitud</button>
+      <div class="login-error" id="registro-error"></div>
+    </div>
+
+    <div id="registro-ok" style="display:none;text-align:center;padding:10px 0">
+      <div style="font-size:36px;margin-bottom:10px">✓</div>
+      <div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;color:var(--black);margin-bottom:8px">Solicitud enviada</div>
+      <div style="font-size:12.5px;color:var(--gray-dark);line-height:1.6">El administrador revisará tu solicitud y te avisará cuando tu acceso esté habilitado.</div>
+      <div style="font-size:11.5px;color:var(--gray);margin-top:10px">Local indicado: <strong id="registro-ok-local" style="color:var(--gray-dark)"></strong></div>
+    </div>
+
+    <div style="text-align:center;margin-top:18px;font-size:12px;color:var(--gray)">
+      ¿Ya tenés cuenta?
+      <span onclick="mostrarRegistro(false)" style="color:var(--gold-dark);cursor:pointer;font-weight:600;text-decoration:underline">Iniciá sesión</span>
     </div>
   </div>
 </div>
@@ -272,10 +314,10 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
     <div class="sidebar-item" data-view="mod-sistema" onclick="ir('mod-sistema',this)"><span class="chip">6</span> Sistema y Caja</div>
     <div class="sidebar-item" data-view="mod-atencion" onclick="ir('mod-atencion',this)"><span class="chip">7</span> Atención al Cliente</div>
 
-    <div class="sidebar-label">Acceso restringido</div>
-    <div class="sidebar-item" data-view="mod-encargados" onclick="ir('mod-encargados',this)"><span class="chip">8</span> Encargados y Responsables 🔒</div>
+    <div class="sidebar-label" id="label-restringido" style="display:none">Acceso restringido</div>
+    <div class="sidebar-item" data-view="mod-encargados" id="item-encargados" style="display:none" onclick="ir('mod-encargados',this)"><span class="chip">8</span> Encargados y Responsables 🔒</div>
 
-    <div class="sidebar-footer"><button class="btn-mini">Salir</button></div>
+    <div class="sidebar-footer"><button class="btn-mini" onclick="cerrarSesion()">Salir</button></div>
   </div>
 
   <!-- MAIN -->
@@ -1033,6 +1075,7 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
     </div>
   </div>
 </div>
+</div>
 
 <script>
 function toggleSidebarMobile() {
@@ -1052,7 +1095,6 @@ function ir(view, el) {
   document.getElementById('title').textContent = titulos[view] || view;
   document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.sidebar-item').forEach(s => { if (s.getAttribute('data-view') === view) s.classList.add('active'); });
-  // En mobile, cerrar el sidebar al elegir una sección
   if (window.innerWidth <= 760) {
     document.getElementById('sidebarMain').classList.remove('open');
     document.getElementById('sidebarOverlay').classList.remove('show');
@@ -1060,69 +1102,162 @@ function ir(view, el) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// LOGIN — 5 roles: admin, supervisor, encargado, local, empleado
+// LOGIN / REGISTRO — conectado real al Apps Script DEV
 // ═══════════════════════════════════════════════════════════
-
-// Credenciales demo (solo para la maqueta — en la versión real esto
-// se valida contra el Sheet/Apps Script como en index2.html)
-const USUARIOS_DEMO = {
-  admin:      { pass:'admin123',      nombre:'Gabriel Busquets', rol:'admin' },
-  supervisor: { pass:'supervisor123', nombre:'Supervisor',       rol:'supervisor' },
-  encargado:  { pass:'encargado123',  nombre:'Encargado de Turno', rol:'encargado' },
-  local:      { pass:'local123',      nombre:'Local · PC fija',  rol:'local' },
-  empleado:   { pass:'empleado123',   nombre:'Colaborador',      rol:'empleado' },
-};
-
-// Roles que pueden ver el módulo 8 (Encargados y Responsables)
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxuheM2c3GEvQ_EUKDZ4I4BLbMNr9a90dqiY3lxFWwjHW0-k0sSyH2h75nXn_gl0toCHg/exec';
 const ROLES_CON_ACCESO_ENCARGADOS = ['admin', 'supervisor', 'encargado'];
-
 let currentRole = null;
+let currentUser = null;
 
-function loginDemo(usuario) {
-  document.getElementById('login-user').value = usuario;
-  document.getElementById('login-pass').value = USUARIOS_DEMO[usuario].pass;
-  hacerLogin();
+function llamarBackend(action, params) {
+  return fetch(SHEET_URL, { method: 'POST', body: JSON.stringify({ action, ...params }) }).then(r => r.json());
 }
 
+function mostrarRegistro(mostrar) {
+  document.getElementById('login-card-ingreso').style.display = mostrar ? 'none' : 'block';
+  document.getElementById('login-card-registro').style.display = mostrar ? 'block' : 'none';
+  document.getElementById('registro-form').style.display = 'block';
+  document.getElementById('registro-ok').style.display = 'none';
+  document.getElementById('registro-error').textContent = '';
+}
+
+function capitalizarNombre(s) {
+  return s.trim().split(/\s+/).map(p => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()).join(' ');
+}
+
+function actualizarUsuarioGenerado() {
+  const nombreInput = document.getElementById('reg-nombre');
+  const apellidoInput = document.getElementById('reg-apellido');
+  const preview = document.getElementById('reg-user-preview');
+  const nombre = capitalizarNombre(nombreInput.value || '');
+  const apellido = capitalizarNombre(apellidoInput.value || '');
+  if (nombre) { const c = nombreInput.selectionStart; nombreInput.value = nombre; nombreInput.setSelectionRange(c, c); }
+  if (apellido) { const c = apellidoInput.selectionStart; apellidoInput.value = apellido; apellidoInput.setSelectionRange(c, c); }
+  const limpiar = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z]/g,'');
+  preview.value = (nombre || apellido) ? (limpiar(nombre) + limpiar(apellido) + '··') : '';
+}
+
+const LOCALES = [
+  "Lucciano's Martinez GBA", "Lucciano's Olivos GBA", "Lucciano's Parque Avellaneda Shopping GBA",
+  "Lucciano's Ituzaingo GBA", "Lucciano's Distrito T GBA", "Lucciano's Adrogué GBA",
+  "Lucciano's San Miguel GBA", "Lucciano's Parque Leloir GBA", "Lucciano's Quilmes GBA",
+  "Lucciano's Caseros GBA", "Lucciano's Ramos Mejia GBA", "Lucciano's Shopping Abasto CABA",
+  "Lucciano's La Imprenta Gran Hotel CABA", "Lucciano's Distrito Arcos CABA", "Lucciano's Arcos del Rosedal CABA",
+  "Lucciano's Villa del Parque CABA", "Lucciano's Honduras CABA", "Lucciano's Cid Campeador CABA",
+  "Lucciano's Devoto CABA", "Lucciano's Recoleta CABA", "Lucciano's Dot CABA",
+  "Lucciano's Puerto Madero Dique CABA", "Lucciano's Puerto Madero CABA", "Lucciano's Caballito CABA",
+  "Lucciano's Parque Rivadavia CABA", "Lucciano's Libertador CABA", "Lucciano's Villa Urquiza CABA",
+  "Lucciano's Villa Urquiza II CABA", "Lucciano's Villa Luro CABA", "Lucciano's Coghlan CABA",
+  "Lucciano's Las Cañitas CABA", "Lucciano's Colegiales CABA", "Lucciano's Agüero CABA",
+  "Lucciano's Nuñez CABA", "Lucciano's Belgrano C CABA", "Lucciano's Bajo Belgrano CABA",
+  "Lucciano's Galerias Pacifico CABA", "Lucciano's San Telmo CABA", "Lucciano's Paseo del Angel CABA",
+  "Lucciano's Plaza Houssay CABA", "Lucciano's Palermo Chico CABA", "Lucciano's Patio Bullrich CABA",
+  "Lucciano's Obelisco CABA", "Lucciano's Almagro CABA", "Lucciano's Calle Corrientes CABA",
+  "Lucciano's Santa Fe y Parana CABA", "Lucciano's Nordelta Buenos Aires", "Lucciano's Baxar Mercado Buenos Aires",
+  "Lucciano's La Plata Buenos Aires", "Lucciano's Pilar Buenos Aires", "Lucciano's Pilar II Buenos Aires",
+  "Lucciano's City Bell Buenos Aires", "Lucciano's Las Lomitas Buenos Aires", "Lucciano's Lanus Buenos Aires",
+  "Lucciano's San Fernando Buenos Aires", "Lucciano's Campana Buenos Aires", "Lucciano's San Nicolas Buenos Aires",
+  "Lucciano's Tandil Buenos Aires", "Lucciano's Carilo Buenos Aires", "Lucciano's Pinamar Buenos Aires",
+  "Lucciano's Bahia Blanca Buenos Aires", "Lucciano's Bahia Blanca Villa Mitre Buenos Aires",
+  "Lucciano's Cerro De Las Rosas Córdoba", "Lucciano's Nuevocentro Córdoba", "Lucciano's Ribera Shopping Santa Fe",
+  "Lucciano's Alto Rosario Santa Fe", "Lucciano's Peatonal Sarmiento Mendoza", "Lucciano's Palmares Mendoza",
+  "Lucciano's Chacras de Coria Mendoza", "Lucciano's Shopping Mendoza", "Lucciano's Resistencia Chaco",
+  "Lucciano's Av Argentina Neuquén", "Lucciano's Paseo de la Costa Neuquén", "Lucciano's Cipolletti Rio Negro",
+  "Lucciano's Gral Roca Rio Negro", "Lucciano's Barrio Norte Tucuman", "Lucciano's Yerba Buena Tucuman",
+  "Lucciano's Catamarca Catamarca", "Lucciano's Galerias Salta", "Lucciano's Alto NOA Salta",
+  "Lucciano's Posadas Misiones", "Lucciano's Madryn Chubut", "Lucciano's Ushuaia Tierra del Fuego",
+  "Lucciano's Capital Corrientes", "Lucciano's Pocitos Uruguay", "Lucciano's Punta Carretas Uruguay",
+  "Lucciano's Punta Carrasco Uruguay", "Lucciano's Asuncion Paraguay", "Lucciano's Parque Arauco Chile",
+  "Lucciano's Alem Mar del Plata", "Lucciano's Aldrey Mar del Plata", "Lucciano's Central Mar del Plata",
+  "Lucciano's Constitucion Mar del Plata", "Lucciano's Gallegos Mar del Plata", "Lucciano's Guemes Mar del Plata",
+  "Lucciano's Paso Mar del Plata", "Lucciano's Peatonal Mar del Plata", "Lucciano's Torreon Mar del Plata",
+  "Lucciano's Varese Mar del Plata"
+];
+
+function filtrarLocalesRegistro() {
+  const input = document.getElementById('reg-local');
+  const list = document.getElementById('reg-local-list');
+  const val = (input.value || '').toLowerCase().trim();
+  const items = val.length === 0 ? LOCALES.slice(0, 8) : LOCALES.filter(l => l.toLowerCase().includes(val));
+  if (!items.length) { list.classList.remove('open'); return; }
+  list.innerHTML = items.slice(0, 12).map(l => `<div class="autocomplete-item" onclick="seleccionarLocalRegistro(this)">${l}</div>`).join('');
+  list.classList.add('open');
+}
+function seleccionarLocalRegistro(el) {
+  document.getElementById('reg-local').value = el.textContent;
+  document.getElementById('reg-local-list').classList.remove('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.autocomplete-wrap')) {
+    const list = document.getElementById('reg-local-list');
+    if (list) list.classList.remove('open');
+  }
+});
+
 function hacerLogin() {
-  const user = (document.getElementById('login-user').value || '').trim().toLowerCase();
+  const usuario = (document.getElementById('login-user').value || '').trim();
   const pass = (document.getElementById('login-pass').value || '').trim();
-  const err  = document.getElementById('login-error');
+  const err = document.getElementById('login-error');
   err.textContent = '';
+  if (!usuario || !pass) { err.textContent = 'Completá usuario y contraseña.'; return; }
+  err.textContent = 'Ingresando...';
 
-  const u = USUARIOS_DEMO[user];
-  if (!u || u.pass !== pass) {
-    err.textContent = 'Usuario o contraseña incorrectos.';
-    return;
-  }
+  llamarBackend('loginUsuario', { usuario, password: pass }).then(res => {
+    if (!res.ok) { err.textContent = res.error; return; }
+    currentRole = res.rol;
+    currentUser = res.usuario;
+    document.getElementById('hello-name-text').textContent = res.nombre;
 
-  currentRole = u.rol;
-  document.getElementById('hello-name-text').textContent = u.nombre;
+    const itemEncargados = document.getElementById('item-encargados');
+    const labelRestringido = document.getElementById('label-restringido');
+    const verEncargados = ROLES_CON_ACCESO_ENCARGADOS.includes(currentRole);
+    if (itemEncargados) itemEncargados.style.display = verEncargados ? 'flex' : 'none';
+    if (labelRestringido) labelRestringido.style.display = verEncargados ? 'block' : 'none';
 
-  // Mostrar/ocultar el módulo de Encargados y Responsables según el rol
-  const itemEncargados = document.querySelector('.sidebar-item[data-view="mod-encargados"]');
-  const labelRestringido = document.querySelector('.sidebar-label');
-  const verEncargados = ROLES_CON_ACCESO_ENCARGADOS.includes(currentRole);
-  if (itemEncargados) itemEncargados.style.display = verEncargados ? 'flex' : 'none';
-  document.querySelectorAll('.sidebar-label').forEach(l => {
-    if (l.textContent === 'Acceso restringido') l.style.display = verEncargados ? 'block' : 'none';
-  });
+    const roleNames = { admin:'Admin', supervisor:'Supervisor', encargado:'Encargado', local:'Local', empleado:'Colaborador' };
+    const topbar = document.querySelector('.topbar');
+    if (topbar && !document.getElementById('role-badge-chip')) {
+      const badge = document.createElement('div');
+      badge.id = 'role-badge-chip';
+      badge.className = 'role-badge';
+      badge.style.marginRight = '10px';
+      badge.textContent = (roleNames[currentRole] || currentRole) + ' · ' + res.nombre;
+      topbar.insertBefore(badge, topbar.firstChild.nextSibling);
+    }
 
-  // Mostrar badge de rol en la topbar
-  const roleNames = { admin:'Admin', supervisor:'Supervisor', encargado:'Encargado', local:'Local', empleado:'Empleado' };
-  const topbar = document.querySelector('.topbar');
-  if (topbar && !document.getElementById('role-badge-chip')) {
-    const badge = document.createElement('div');
-    badge.id = 'role-badge-chip';
-    badge.className = 'role-badge';
-    badge.style.marginRight = '10px';
-    badge.textContent = roleNames[currentRole] + ' · ' + u.nombre;
-    topbar.insertBefore(badge, topbar.firstChild.nextSibling);
-  }
+    document.getElementById('screen-login').style.display = 'none';
+    document.getElementById('screen-app').style.display = 'block';
+    ir('bienvenida', null);
+  }).catch(() => { err.textContent = 'Error de conexión. Probá de nuevo.'; });
+}
 
-  document.getElementById('screen-login').style.display = 'none';
-  document.getElementById('screen-app').style.display = 'block';
-  ir('bienvenida', null);
+function enviarRegistro() {
+  const nombre = capitalizarNombre(document.getElementById('reg-nombre').value || '');
+  const apellido = capitalizarNombre(document.getElementById('reg-apellido').value || '');
+  const local = document.getElementById('reg-local').value || '';
+  const pass = (document.getElementById('reg-pass').value || '').trim();
+  const err = document.getElementById('registro-error');
+  err.textContent = '';
+  if (!nombre || !apellido) { err.textContent = 'Completá nombre y apellido.'; return; }
+  if (!local) { err.textContent = 'Seleccioná tu local.'; return; }
+  if (pass.length < 6) { err.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
+
+  err.textContent = 'Enviando...';
+  llamarBackend('crearSolicitudAcceso', { nombre, apellido, local, password: pass }).then(res => {
+    if (!res.ok) { err.textContent = res.error; return; }
+    document.getElementById('registro-ok-local').textContent = local;
+    document.getElementById('registro-form').style.display = 'none';
+    document.getElementById('registro-ok').style.display = 'block';
+  }).catch(() => { err.textContent = 'Error de conexión. Probá de nuevo.'; });
+}
+
+function cerrarSesion() {
+  document.getElementById('screen-app').style.display = 'none';
+  document.getElementById('screen-login').style.display = 'flex';
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+  const badge = document.getElementById('role-badge-chip');
+  if (badge) badge.remove();
 }
 </script>
 </body>
