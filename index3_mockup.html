@@ -181,6 +181,34 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
 .autocomplete-item:last-child{border-bottom:none}
 .autocomplete-item:hover{background:var(--offwhite);color:var(--gold-dark)}
 
+/* ── ADMIN DASHBOARD ── */
+.admin-sidebar-item{
+  display:flex;align-items:center;gap:12px;padding:11px 18px;cursor:pointer;
+  color:#444;font-size:13px;font-weight:600;border-left:3px solid transparent;transition:.15s
+}
+.admin-sidebar-item:hover{background:var(--offwhite);color:var(--black)}
+.admin-sidebar-item.active{background:var(--offwhite);color:var(--gold-dark);border-left-color:var(--gold)}
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px}
+.admin-kpi{background:var(--offwhite);border:1px solid var(--line);border-radius:var(--r);padding:16px;text-align:center}
+.admin-kpi .v{font-family:Montserrat,sans-serif;font-weight:900;font-size:24px;color:var(--gold-dark)}
+.admin-kpi .l{font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+.admin-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.admin-table th{
+  text-align:left;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  color:var(--gray);padding:8px 10px;border-bottom:2px solid var(--line)
+}
+.admin-table td{padding:10px;border-bottom:1px solid var(--line);color:var(--gray-dark)}
+.admin-table tr:hover td{background:var(--offwhite)}
+.admin-status{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px}
+.status-ok{background:var(--green-bg);color:var(--green)}
+.status-pending{background:var(--yellow-bg);color:var(--yellow)}
+.status-off{background:var(--red-bg);color:var(--red)}
+.admin-action-btn{
+  background:none;border:1px solid var(--line);border-radius:6px;padding:4px 10px;font-size:11px;
+  color:var(--gray-dark);cursor:pointer
+}
+.admin-action-btn:hover{border-color:var(--gold);color:var(--gold-dark)}
+
 /* ── RESPONSIVE / MOBILE ── */
 .mobile-topbar{display:none}
 .sidebar-overlay{display:none}
@@ -281,6 +309,84 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
     <div style="text-align:center;margin-top:18px;font-size:12px;color:var(--gray)">
       ¿Ya tenés cuenta?
       <span onclick="mostrarRegistro(false)" style="color:var(--gold-dark);cursor:pointer;font-weight:600;text-decoration:underline">Iniciá sesión</span>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div id="screen-admin" style="display:none">
+  <div class="app-shell">
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <svg width="28" height="28" viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#FFFFFF" stroke="#111111" stroke-width="1.5"/><text x="14.5" y="22" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#111111" text-anchor="middle">S</text><path d="M20 8 L24 13 L30.5 5.5" fill="none" stroke="#B8923A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div><div class="logo">SisCap</div><div class="sub">Panel de Control</div></div>
+      </div>
+
+      <div class="admin-sidebar-item active" data-asec="usuarios" onclick="adminNav('usuarios',this)"><span class="icon">👥</span> Usuarios</div>
+      <div class="admin-sidebar-item" data-asec="locales" onclick="adminNav('locales',this)"><span class="icon">🏪</span> Accesos de Locales</div>
+      <div class="admin-sidebar-item" data-asec="invitados" onclick="adminNav('invitados',this)"><span class="icon">📋</span> Invitados / Encargados</div>
+      <div class="admin-sidebar-item" data-asec="evals" onclick="adminNav('evals',this)"><span class="icon">✅</span> Mini-evaluaciones</div>
+      <div class="admin-sidebar-item" data-asec="ranking" onclick="adminNav('ranking',this)"><span class="icon">🏆</span> Ranking</div>
+      <div class="admin-sidebar-item" data-asec="uso" onclick="adminNav('uso',this)"><span class="icon">📊</span> Estadísticas de Uso</div>
+
+      <div style="margin-top:auto;padding:14px 18px 0;display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gray)">Ver guía como...</div>
+        <select id="ver-como-rol" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:12px;color:var(--gray-dark)">
+          <option value="supervisor" selected>🧭 Supervisor</option>
+          <option value="encargado">🔑 Encargado</option>
+          <option value="local">🏪 Local</option>
+          <option value="empleado">👤 Colaborador</option>
+        </select>
+        <button class="btn-mini" onclick="verComoColaborador()">👁 Entrar con esa vista</button>
+        <button class="btn-mini" onclick="cerrarSesion()">Salir</button>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="topbar">
+        <div class="role-badge">Admin · Gabriel Busquets</div>
+        <div class="topbar-title" id="admin-title">Usuarios</div>
+        <div></div>
+      </div>
+      <div class="content">
+
+        <!-- USUARIOS -->
+        <div data-asec-panel="usuarios">
+          <div class="admin-grid" id="admin-kpis-usuarios"></div>
+          <table class="admin-table" id="tabla-usuarios">
+            <tr><th>Nombre</th><th>Usuario</th><th>Local</th><th>Rol</th><th>Estado</th><th>Alta</th><th></th></tr>
+            <tr><td colspan="7" style="text-align:center;color:var(--gray);padding:24px">Cargando usuarios...</td></tr>
+          </table>
+          <div class="note-box">En la fila de un usuario pendiente podés corregir el local si está mal puesto, elegir el rol, y aprobar o rechazar.</div>
+        </div>
+
+        <!-- LOCALES -->
+        <div data-asec-panel="locales" style="display:none">
+          <div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Próximamente — gestión de claves por local (a definir con Gabi).</div></div>
+        </div>
+
+        <!-- INVITADOS / ENCARGADOS -->
+        <div data-asec-panel="invitados" style="display:none">
+          <div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Próximamente — listado de invitados/encargados con bloqueo individual.</div></div>
+        </div>
+
+        <!-- MINI-EVALUACIONES -->
+        <div data-asec-panel="evals" style="display:none">
+          <div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Próximamente — resultados de mini-evaluaciones por colaborador y módulo.</div></div>
+        </div>
+
+        <!-- RANKING -->
+        <div data-asec-panel="ranking" style="display:none">
+          <div class="note-box" style="margin-top:0;margin-bottom:16px">Acá vas a poder revisar y ajustar manualmente los puntajes del ranking general.</div>
+          <div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Próximamente — conectado a puntos de mini-evaluaciones.</div></div>
+        </div>
+
+        <!-- ESTADÍSTICAS DE USO -->
+        <div data-asec-panel="uso" style="display:none">
+          <div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Próximamente — tiempo en app y módulos revisados por supervisor.</div></div>
+        </div>
+
+      </div>
     </div>
   </div>
 </div>
@@ -1215,8 +1321,8 @@ function hacerLogin() {
     if (labelRestringido) labelRestringido.style.display = verEncargados ? 'block' : 'none';
 
     const roleNames = { admin:'Admin', supervisor:'Supervisor', encargado:'Encargado', local:'Local', empleado:'Colaborador' };
-    const topbar = document.querySelector('.topbar');
-    if (topbar && !document.getElementById('role-badge-chip')) {
+    const topbar = document.querySelector('#screen-app .topbar');
+    if (currentRole !== 'admin' && topbar && !document.getElementById('role-badge-chip')) {
       const badge = document.createElement('div');
       badge.id = 'role-badge-chip';
       badge.className = 'role-badge';
@@ -1226,9 +1332,115 @@ function hacerLogin() {
     }
 
     document.getElementById('screen-login').style.display = 'none';
-    document.getElementById('screen-app').style.display = 'block';
-    ir('bienvenida', null);
+
+    if (currentRole === 'admin') {
+      document.getElementById('screen-admin').style.display = 'block';
+      cargarUsuariosAdmin();
+    } else {
+      document.getElementById('screen-app').style.display = 'block';
+      ir('bienvenida', null);
+    }
   }).catch(() => { err.textContent = 'Error de conexión. Probá de nuevo.'; });
+}
+
+function adminNav(sec, el) {
+  document.querySelectorAll('.admin-sidebar-item').forEach(i => i.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.querySelectorAll('[data-asec-panel]').forEach(p => p.style.display = 'none');
+  const panel = document.querySelector('[data-asec-panel="'+sec+'"]');
+  if (panel) panel.style.display = 'block';
+  const titulosAdmin = { usuarios:'Usuarios', locales:'Accesos de Locales', invitados:'Invitados / Encargados', evals:'Mini-evaluaciones', ranking:'Ranking', uso:'Estadísticas de Uso' };
+  document.getElementById('admin-title').textContent = titulosAdmin[sec] || sec;
+}
+
+function cargarUsuariosAdmin() {
+  llamarBackend('getUsuarios', {}).then(res => {
+    if (!res.ok) return;
+    const usuarios = res.usuarios;
+
+    const activos = usuarios.filter(u => (u.estado||'').toLowerCase() === 'activo').length;
+    const pendientes = usuarios.filter(u => (u.estado||'').toLowerCase() === 'pendiente').length;
+    const admins = usuarios.filter(u => u.rol === 'admin').length;
+    const encargados = usuarios.filter(u => u.rol === 'encargado').length;
+    const supervisores = usuarios.filter(u => u.rol === 'supervisor').length;
+    document.getElementById('admin-kpis-usuarios').innerHTML = `
+      <div class="admin-kpi"><div class="v">${activos}</div><div class="l">Usuarios activos</div></div>
+      <div class="admin-kpi"><div class="v">${pendientes}</div><div class="l">Pendientes</div></div>
+      <div class="admin-kpi"><div class="v">${admins}</div><div class="l">Admins</div></div>
+      <div class="admin-kpi"><div class="v">${encargados}</div><div class="l">Encargados</div></div>
+      <div class="admin-kpi"><div class="v">${supervisores}</div><div class="l">Supervisores</div></div>
+    `;
+
+    const filas = usuarios.map(u => {
+      const estadoLower = (u.estado||'').toLowerCase();
+      if (estadoLower === 'pendiente') {
+        return `<tr style="background:#fbf6eb">
+          <td>${u.nombre}</td><td>@${u.usuario}</td>
+          <td><input value="${u.local||''}" id="local-${u.usuario}" style="font-size:11.5px;padding:4px 6px;border:1px solid var(--gold);border-radius:6px;width:100%"/></td>
+          <td>
+            <select id="rol-${u.usuario}" style="font-size:11.5px;padding:4px 6px;border:1px solid var(--line);border-radius:6px">
+              <option value="empleado">Colaborador</option><option value="local">Local</option>
+              <option value="encargado">Encargado</option><option value="supervisor">Supervisor</option>
+            </select>
+          </td>
+          <td><span class="admin-status status-pending">Pendiente</span></td><td>${u.fechaAlta||''}</td>
+          <td style="display:flex;gap:6px">
+            <button class="admin-action-btn" onclick="aprobarUsuario('${u.usuario}')">✓ Aprobar</button>
+            <button class="admin-action-btn" style="color:var(--red)" onclick="rechazarUsuario('${u.usuario}')">✗ Rechazar</button>
+          </td>
+        </tr>`;
+      }
+      const estadoClase = estadoLower === 'activo' ? 'status-ok' : 'status-off';
+      return `<tr><td>${u.nombre}</td><td>@${u.usuario}</td><td>${u.local||'—'}</td><td>${u.rol}</td>
+        <td><span class="admin-status ${estadoClase}">${u.estado}</span></td><td>${u.fechaAlta||''}</td>
+        <td><button class="admin-action-btn" onclick="bloquearUsuario('${u.usuario}')">Bloquear</button></td></tr>`;
+    }).join('');
+
+    document.getElementById('tabla-usuarios').innerHTML =
+      `<tr><th>Nombre</th><th>Usuario</th><th>Local</th><th>Rol</th><th>Estado</th><th>Alta</th><th></th></tr>` + filas;
+  });
+}
+
+function aprobarUsuario(usuario) {
+  const rol = document.getElementById('rol-' + usuario).value;
+  const local = document.getElementById('local-' + usuario).value;
+  llamarBackend('aprobarUsuario', { usuario, rol, local }).then(res => { if (res.ok) cargarUsuariosAdmin(); });
+}
+function rechazarUsuario(usuario) {
+  llamarBackend('cambiarEstadoUsuario', { usuario, estado: 'Rechazado' }).then(() => cargarUsuariosAdmin());
+}
+function bloquearUsuario(usuario) {
+  llamarBackend('cambiarEstadoUsuario', { usuario, estado: 'Bloqueado' }).then(() => cargarUsuariosAdmin());
+}
+
+function verComoColaborador() {
+  const rolElegido = (document.getElementById('ver-como-rol') || {}).value || 'supervisor';
+  document.getElementById('screen-admin').style.display = 'none';
+  document.getElementById('screen-app').style.display = 'block';
+  currentRole = rolElegido;
+  const itemEncargados = document.getElementById('item-encargados');
+  const labelRestringido = document.getElementById('label-restringido');
+  const verEncargados = ROLES_CON_ACCESO_ENCARGADOS.includes(currentRole);
+  if (itemEncargados) itemEncargados.style.display = verEncargados ? 'flex' : 'none';
+  if (labelRestringido) labelRestringido.style.display = verEncargados ? 'block' : 'none';
+  const nombresVista = { supervisor:'Supervisor (vista admin)', encargado:'Encargado (vista admin)', local:'Local (vista admin)', empleado:'Colaborador (vista admin)' };
+  document.getElementById('hello-name-text').textContent = nombresVista[rolElegido] || 'Vista admin';
+  let btnVolver = document.getElementById('btn-volver-admin');
+  if (!btnVolver) {
+    btnVolver = document.createElement('button');
+    btnVolver.id = 'btn-volver-admin';
+    btnVolver.className = 'btn-mini';
+    btnVolver.style.marginBottom = '8px';
+    btnVolver.textContent = '⚙ Volver al Panel Admin';
+    btnVolver.onclick = volverAlPanelAdmin;
+    document.querySelector('.sidebar-footer').prepend(btnVolver);
+  }
+  btnVolver.style.display = 'block';
+  ir('bienvenida', null);
+}
+function volverAlPanelAdmin() {
+  document.getElementById('screen-app').style.display = 'none';
+  document.getElementById('screen-admin').style.display = 'block';
 }
 
 function enviarRegistro() {
