@@ -240,6 +240,10 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
   .mini-eval-cta{flex-direction:column;align-items:stretch;text-align:center}
   .mini-eval-cta .btn-gold-sm{margin-top:10px}
   .admin-table{display:block;overflow-x:auto;white-space:nowrap}
+  .admin-grid{grid-template-columns:repeat(2,1fr)}
+  .admin-kpi{padding:12px}
+  .admin-kpi .v{font-size:19px}
+  .topbar-title{font-size:13px}
 }
 </style>
 </head>
@@ -1405,9 +1409,15 @@ function cargarUsuariosAdmin() {
         </tr>`;
       }
       const estadoClase = estadoLower === 'activo' ? 'status-ok' : 'status-off';
+      let accionBtn;
+      if (estadoLower === 'bloqueado' || estadoLower === 'rechazado') {
+        accionBtn = `<button class="admin-action-btn" onclick="reactivarUsuario('${u.usuario}')">↺ Reactivar</button>`;
+      } else {
+        accionBtn = `<button class="admin-action-btn" onclick="bloquearUsuario('${u.usuario}')">🔒 Bloquear</button>`;
+      }
       return `<tr><td>${u.nombre}</td><td>@${u.usuario}</td><td>${u.local||'—'}</td><td>${u.rol}</td>
         <td><span class="admin-status ${estadoClase}">${u.estado}</span></td><td>${u.fechaAlta||''}</td>
-        <td><button class="admin-action-btn" onclick="bloquearUsuario('${u.usuario}')">Bloquear</button></td></tr>`;
+        <td>${accionBtn}</td></tr>`;
     }).join('');
 
     document.getElementById('tabla-usuarios').innerHTML =
@@ -1425,6 +1435,9 @@ function rechazarUsuario(usuario) {
 }
 function bloquearUsuario(usuario) {
   llamarBackend('cambiarEstadoUsuario', { usuario, estado: 'Bloqueado' }).then(() => cargarUsuariosAdmin());
+}
+function reactivarUsuario(usuario) {
+  llamarBackend('cambiarEstadoUsuario', { usuario, estado: 'Activo' }).then(() => cargarUsuariosAdmin());
 }
 
 function verComoColaborador() {
