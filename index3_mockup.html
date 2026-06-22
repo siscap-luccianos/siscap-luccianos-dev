@@ -231,6 +231,12 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
   color:var(--gray-dark);cursor:pointer
 }
 .admin-action-btn:hover{border-color:var(--gold);color:var(--gold-dark)}
+.admin-new-badge{
+  display:inline-block;background:var(--gold);color:#fff;font-size:9px;font-weight:800;
+  letter-spacing:.5px;padding:2px 7px;border-radius:4px;margin-left:8px;
+  text-decoration:underline;text-decoration-color:#2E7D4F;text-decoration-thickness:2px;
+  text-underline-offset:2px
+}
 
 /* ── RESPONSIVE / MOBILE ── */
 .mobile-topbar{display:none}
@@ -364,7 +370,7 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
       <div class="admin-sidebar-item active" data-asec="usuarios" onclick="adminNav('usuarios',this)"><span class="icon">👥</span> Usuarios</div>
       <div class="admin-sidebar-item" data-asec="locales" onclick="adminNav('locales',this)"><span class="icon">🏪</span> Accesos de Locales</div>
       <div class="admin-sidebar-item" data-asec="invitados" onclick="adminNav('invitados',this)"><span class="icon">📋</span> Invitados / Encargados</div>
-      <div class="admin-sidebar-item" data-asec="evals" onclick="adminNav('evals',this)"><span class="icon">✅</span> Mini-evaluaciones</div>
+      <div class="admin-sidebar-item" data-asec="evals" onclick="adminNav('evals',this)"><span class="icon">✅</span> Mini-evaluaciones <span class="admin-new-badge" data-admin-novedad="evals" style="display:none">NUEVO</span></div>
       <div class="admin-sidebar-item" data-asec="ranking" onclick="adminNav('ranking',this)"><span class="icon">🏆</span> Ranking</div>
       <div class="admin-sidebar-item" data-asec="uso" onclick="adminNav('uso',this)"><span class="icon">📊</span> Estadísticas de Uso</div>
 
@@ -1285,6 +1291,7 @@ const SHEET_URL = 'https://script.google.com/macros/s/AKfycby3pwHzt5HCp-1xjQ1KCd
 const ROLES_CON_ACCESO_ENCARGADOS = ['admin', 'supervisor', 'encargado'];
 let currentRole = null;
 let currentUser = null;
+let currentUserNombre = null;
 
 function llamarBackend(action, params) {
   return fetch(SHEET_URL, { method: 'POST', body: JSON.stringify({ action, ...params }) }).then(r => r.json());
@@ -1312,6 +1319,25 @@ function aplicarNovedades() {
   });
 }
 document.addEventListener('DOMContentLoaded', aplicarNovedades);
+
+// Mismo sistema que NOVEDADES pero para funciones nuevas del panel Admin.
+// Agregá el "key" del item (data-admin-novedad) + fecha en que se activó.
+const ADMIN_NOVEDADES = [
+  { item: 'evals', fecha: '2026-06-22' }
+];
+function aplicarNovedadesAdmin() {
+  const hoy = new Date();
+  document.querySelectorAll('[data-admin-novedad]').forEach(b => { b.style.display = 'none'; });
+  ADMIN_NOVEDADES.forEach(n => {
+    const fechaInicio = new Date(n.fecha + 'T00:00:00');
+    const dias = (hoy - fechaInicio) / (1000*60*60*24);
+    if (dias >= 0 && dias <= 30) {
+      const b = document.querySelector('[data-admin-novedad="'+n.item+'"]');
+      if (b) b.style.display = 'inline-block';
+    }
+  });
+}
+document.addEventListener('DOMContentLoaded', aplicarNovedadesAdmin);
 
 function togglePass(id, btn) {
   const input = document.getElementById(id);
@@ -1526,6 +1552,7 @@ function hacerLogin() {
     if (!res.ok) { err.textContent = res.error; return; }
     currentRole = res.rol;
     currentUser = res.usuario;
+    currentUserNombre = res.nombre;
     document.getElementById('hello-name-text').textContent = res.nombre;
 
     const itemEncargados = document.getElementById('item-encargados');
@@ -1723,8 +1750,20 @@ function verComoColaborador() {
   const verEncargados = ROLES_CON_ACCESO_ENCARGADOS.includes(currentRole);
   if (itemEncargados) itemEncargados.style.display = verEncargados ? 'flex' : 'none';
   if (labelRestringido) labelRestringido.style.display = verEncargados ? 'block' : 'none';
-  const nombresVista = { supervisor:'Supervisor (vista admin)', encargado:'Encargado (vista admin)', local:'Local (vista admin)', empleado:'Colaborador (vista admin)' };
-  document.getElementById('hello-name-text').textContent = nombresVista[rolElegido] || 'Vista admin';
+  const nombresRolSimulado = { supervisor:'Supervisor', encargado:'Encargado', local:'Local', empleado:'Colaborador' };
+  document.getElementById('hello-name-text').textContent = currentUserNombre || 'Admin';
+
+  let badgeSimulado = document.getElementById('badge-vista-simulada');
+  if (!badgeSimulado) {
+    badgeSimulado = document.createElement('div');
+    badgeSimulado.id = 'badge-vista-simulada';
+    badgeSimulado.className = 'role-badge';
+    badgeSimulado.style.marginRight = '10px';
+    const topbarApp = document.querySelector('#screen-app .topbar');
+    if (topbarApp) topbarApp.insertBefore(badgeSimulado, topbarApp.firstChild.nextSibling);
+  }
+  badgeSimulado.textContent = '👁 Viendo como: ' + (nombresRolSimulado[rolElegido] || rolElegido);
+  badgeSimulado.style.display = 'inline-flex';
   let btnVolver = document.getElementById('btn-volver-admin');
   if (!btnVolver) {
     btnVolver = document.createElement('button');
@@ -1741,6 +1780,8 @@ function verComoColaborador() {
 function volverAlPanelAdmin() {
   document.getElementById('screen-app').style.display = 'none';
   document.getElementById('screen-admin').style.display = 'block';
+  const badgeSimulado = document.getElementById('badge-vista-simulada');
+  if (badgeSimulado) badgeSimulado.style.display = 'none';
 }
 
 function enviarRegistro() {
