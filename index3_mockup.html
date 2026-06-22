@@ -75,15 +75,15 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
 .mod-num-big{width:36px;height:36px;border-radius:50%;background:var(--teal-bg);border:1px solid var(--teal);color:var(--teal);font-family:Montserrat,sans-serif;font-weight:800;display:flex;align-items:center;justify-content:center}
 .mod-title{font-family:Montserrat,sans-serif;font-weight:800;font-size:18px;color:var(--black)}
 .content-card{background:var(--offwhite);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:10px}
-.content-card .t{font-family:Montserrat,sans-serif;font-weight:700;font-size:13px;color:var(--black);margin-bottom:4px}
-.content-card .d{font-size:11.5px;color:var(--gray-dark);line-height:1.6}
+.content-card .t{font-family:Montserrat,sans-serif;font-weight:700;font-size:14.5px;color:var(--black);margin-bottom:5px}
+.content-card .d{font-size:13px;color:var(--gray-dark);line-height:1.65}
 .mini-eval-cta{background:var(--black);border-radius:var(--r);padding:18px;margin-top:20px;display:flex;align-items:center;justify-content:space-between;gap:14px}
 .mini-eval-cta .t{font-family:Montserrat,sans-serif;font-weight:800;font-size:14px;color:var(--gold-light)}
 .mini-eval-cta .d{font-size:11px;color:#bbb;margin-top:3px}
 .btn-gold-sm{background:var(--gold);color:var(--white);border:none;padding:10px 18px;border-radius:8px;font-family:Montserrat,sans-serif;font-weight:700;font-size:12px;cursor:pointer;flex-shrink:0}
 
 /* ── SISTEMA UNIFORME DE CONTENIDO (todos los módulos) ── */
-.sec-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin:24px 0 10px}
+.sec-label{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-dark);margin:24px 0 10px}
 .sec-label:first-child{margin-top:0}
 .info-tag{
   display:inline-flex;align-items:center;background:var(--offwhite);border:1px solid var(--line);
@@ -103,17 +103,17 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
   font-family:Montserrat,sans-serif;font-weight:800;font-size:10px;display:flex;align-items:center;
   justify-content:center;flex-shrink:0;margin-top:1px
 }
-.step-text{font-size:12px;color:var(--gray-dark);line-height:1.6}
+.step-text{font-size:13.5px;color:var(--gray-dark);line-height:1.65}
 .note-box{
   background:var(--offwhite);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;
-  padding:10px 14px;font-size:11.5px;color:var(--gray-dark);line-height:1.6;margin-top:10px
+  padding:10px 14px;font-size:13px;color:var(--gray-dark);line-height:1.65;margin-top:10px
 }
 .divider-line{border-top:1px solid var(--line);margin:22px 0}
 .mini-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:6px;margin-top:12px}
 .mini-label:first-of-type{margin-top:0}
 .speech-box{
-  background:var(--offwhite);border-radius:8px;padding:10px 12px;font-size:12px;
-  color:var(--gray-dark);font-style:italic;line-height:1.6
+  background:var(--offwhite);border-radius:8px;padding:10px 12px;font-size:13.5px;
+  color:var(--gray-dark);font-style:italic;line-height:1.65
 }
 .highlight{
   background:#FBF1DC;color:var(--gold-dark);font-weight:700;padding:1px 6px;
@@ -139,6 +139,43 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
 .rank-local{font-size:10px;color:var(--gray)}
 .rank-pts{font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;color:var(--gold-dark)}
 .rank-medal{font-size:18px}
+
+/* ── LOGIN ── */
+#screen-login{
+  display:flex;align-items:center;justify-content:center;min-height:100vh;
+  background:var(--offwhite);padding:24px
+}
+.login-card{
+  background:var(--white);border:1px solid var(--line);border-radius:var(--r);
+  padding:40px 36px;width:100%;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,.06)
+}
+.login-logo{font-family:'Georgia',serif;font-weight:700;font-style:italic;font-size:32px;color:var(--black);text-align:center;margin-bottom:4px}
+.login-sub{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);text-align:center;margin-bottom:32px}
+.login-field{margin-bottom:16px}
+.login-field label{display:block;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gray-dark);margin-bottom:6px}
+.login-field input{
+  width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:8px;
+  font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .15s
+}
+.login-field input:focus{border-color:var(--gold)}
+.login-btn{
+  width:100%;padding:13px;background:var(--black);color:var(--white);border:none;border-radius:8px;
+  font-family:Montserrat,sans-serif;font-weight:700;font-size:13px;letter-spacing:.5px;cursor:pointer;margin-top:8px
+}
+.login-btn:hover{background:var(--gold-dark)}
+.login-error{color:var(--red);font-size:12px;text-align:center;margin-top:12px;min-height:16px}
+.login-demo{margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
+.login-demo-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);margin-bottom:10px;text-align:center}
+.login-demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.login-demo-btn{
+  background:var(--offwhite);border:1px solid var(--line);border-radius:8px;padding:8px;
+  font-size:11px;color:var(--gray-dark);cursor:pointer;text-align:center;font-family:'Inter',sans-serif
+}
+.login-demo-btn:hover{border-color:var(--gold);color:var(--gold-dark)}
+.role-badge{
+  display:inline-flex;align-items:center;gap:6px;background:var(--offwhite);border:1px solid var(--line);
+  border-radius:20px;padding:5px 12px;font-size:11px;color:var(--gray-dark);font-weight:600
+}
 
 /* ── RESPONSIVE / MOBILE ── */
 .mobile-topbar{display:none}
@@ -176,6 +213,38 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
 </head>
 <body>
 
+<!-- LOGIN -->
+<div id="screen-login">
+  <div class="login-card">
+    <div class="login-logo">Lucciano's</div>
+    <div class="login-sub">SisCap · Guía de Servicio</div>
+
+    <div class="login-field">
+      <label>Usuario</label>
+      <input type="text" id="login-user" placeholder="Tu usuario" autocomplete="off"/>
+    </div>
+    <div class="login-field">
+      <label>Contraseña</label>
+      <input type="password" id="login-pass" placeholder="••••••••" autocomplete="off"/>
+    </div>
+    <button class="login-btn" onclick="hacerLogin()">Ingresar</button>
+    <div class="login-error" id="login-error"></div>
+
+    <div class="login-demo">
+      <div class="login-demo-label">Accesos demo (maqueta)</div>
+      <div class="login-demo-grid">
+        <button class="login-demo-btn" onclick="loginDemo('admin')">👑 Admin</button>
+        <button class="login-demo-btn" onclick="loginDemo('supervisor')">🧭 Supervisor</button>
+        <button class="login-demo-btn" onclick="loginDemo('encargado')">🔑 Encargado</button>
+        <button class="login-demo-btn" onclick="loginDemo('local')">🏪 Local</button>
+        <button class="login-demo-btn" onclick="loginDemo('empleado')" style="grid-column:1/-1">👤 Empleado / Invitado</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="screen-app" style="display:none">
+
 <div class="mobile-topbar">
   <div class="logo">SisCap</div>
   <button class="mobile-burger" onclick="toggleSidebarMobile()">☰</button>
@@ -203,6 +272,9 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
     <div class="sidebar-item" data-view="mod-sistema" onclick="ir('mod-sistema',this)"><span class="chip">6</span> Sistema y Caja</div>
     <div class="sidebar-item" data-view="mod-atencion" onclick="ir('mod-atencion',this)"><span class="chip">7</span> Atención al Cliente</div>
 
+    <div class="sidebar-label">Acceso restringido</div>
+    <div class="sidebar-item" data-view="mod-encargados" onclick="ir('mod-encargados',this)"><span class="chip">8</span> Encargados y Responsables 🔒</div>
+
     <div class="sidebar-footer"><button class="btn-mini">Salir</button></div>
   </div>
 
@@ -217,10 +289,10 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
       <!-- BIENVENIDA -->
       <div data-panel="bienvenida">
         <div class="hello-label">Hola,</div>
-        <div class="hello-name">María Pérez</div>
+        <div class="hello-name" id="hello-name-text">María Pérez</div>
         <div class="card">
-          <div style="font-size:13px;color:#ccc;margin-bottom:10px">Bienvenida a SisCap, la guía interna de Lucciano's. Elegí un módulo en el menú para repasar recetas, productos y procedimientos de tu sector.</div>
-          <div class="card-row">⏱ Llevás <strong>12 min</strong> en esta sesión</div>
+          <div style="font-size:15px;color:var(--gray-dark);line-height:1.7;margin-bottom:14px">Bienvenida a <strong style="color:var(--black)">SisCap</strong>, la guía interna de Lucciano's. Elegí un módulo en el menú para repasar <strong style="color:var(--black)">recetas, productos y procedimientos</strong> de tu sector.</div>
+          <div class="card-row" style="font-size:14px">⏱ Llevás <strong style="font-size:17px">12 min</strong> en esta sesión</div>
         </div>
         <div class="grid3">
           <div class="mini-stat"><div class="val">3</div><div class="lab">Módulos vistos</div></div>
@@ -914,6 +986,14 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
         </div>
       </div>
 
+      <div data-panel="mod-encargados" style="display:none">
+        <div class="mod-header"><div class="mod-num-big" style="background:#fbf1dc;border-color:var(--gold);color:var(--gold-dark)">🔒</div><div class="mod-title">Encargados y Responsables de Local</div></div>
+        <div class="content-card" style="background:#fbf1dc;border-color:var(--gold)">
+          <div class="d">Esta sección contiene información exclusiva para <strong style="color:var(--black)">encargados</strong> y <strong style="color:var(--black)">responsables de turno</strong>. No es visible para colaboradores ni invitados.</div>
+        </div>
+        <div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Contenido próximamente — a definir con Gabi (checklists de apertura/cierre, manejo de caja, supervisión de equipo, reportes).</div></div>
+      </div>
+
       <!-- MINI EVALUACIÓN -->
       <div data-panel="minieval" style="display:none">
         <div class="mod-header"><div class="mod-num-big">2</div><div class="mod-title">Mini-evaluación — Cafetería</div></div>
@@ -962,7 +1042,8 @@ function toggleSidebarMobile() {
 const titulos = {
   bienvenida:'Bienvenida', historia:'Nuestra Historia', minieval:'Mini-evaluación', ranking:'Ranking',
   'mod-cafe':'Cafetería', 'mod-helad':'Heladería', 'mod-icepops':'Icepops', 'mod-pasteleria':'Pastelería',
-  'mod-choco':'Chocolatería', 'mod-sistema':'Sistema y Caja', 'mod-atencion':'Atención al Cliente'
+  'mod-choco':'Chocolatería', 'mod-sistema':'Sistema y Caja', 'mod-atencion':'Atención al Cliente',
+  'mod-encargados':'Encargados y Responsables'
 };
 function ir(view, el) {
   document.querySelectorAll('[data-panel]').forEach(p => p.style.display = 'none');
@@ -976,6 +1057,72 @@ function ir(view, el) {
     document.getElementById('sidebarMain').classList.remove('open');
     document.getElementById('sidebarOverlay').classList.remove('show');
   }
+}
+
+// ═══════════════════════════════════════════════════════════
+// LOGIN — 5 roles: admin, supervisor, encargado, local, empleado
+// ═══════════════════════════════════════════════════════════
+
+// Credenciales demo (solo para la maqueta — en la versión real esto
+// se valida contra el Sheet/Apps Script como en index2.html)
+const USUARIOS_DEMO = {
+  admin:      { pass:'admin123',      nombre:'Gabriel Busquets', rol:'admin' },
+  supervisor: { pass:'supervisor123', nombre:'Supervisor',       rol:'supervisor' },
+  encargado:  { pass:'encargado123',  nombre:'Encargado de Turno', rol:'encargado' },
+  local:      { pass:'local123',      nombre:'Local · PC fija',  rol:'local' },
+  empleado:   { pass:'empleado123',   nombre:'Colaborador',      rol:'empleado' },
+};
+
+// Roles que pueden ver el módulo 8 (Encargados y Responsables)
+const ROLES_CON_ACCESO_ENCARGADOS = ['admin', 'supervisor', 'encargado'];
+
+let currentRole = null;
+
+function loginDemo(usuario) {
+  document.getElementById('login-user').value = usuario;
+  document.getElementById('login-pass').value = USUARIOS_DEMO[usuario].pass;
+  hacerLogin();
+}
+
+function hacerLogin() {
+  const user = (document.getElementById('login-user').value || '').trim().toLowerCase();
+  const pass = (document.getElementById('login-pass').value || '').trim();
+  const err  = document.getElementById('login-error');
+  err.textContent = '';
+
+  const u = USUARIOS_DEMO[user];
+  if (!u || u.pass !== pass) {
+    err.textContent = 'Usuario o contraseña incorrectos.';
+    return;
+  }
+
+  currentRole = u.rol;
+  document.getElementById('hello-name-text').textContent = u.nombre;
+
+  // Mostrar/ocultar el módulo de Encargados y Responsables según el rol
+  const itemEncargados = document.querySelector('.sidebar-item[data-view="mod-encargados"]');
+  const labelRestringido = document.querySelector('.sidebar-label');
+  const verEncargados = ROLES_CON_ACCESO_ENCARGADOS.includes(currentRole);
+  if (itemEncargados) itemEncargados.style.display = verEncargados ? 'flex' : 'none';
+  document.querySelectorAll('.sidebar-label').forEach(l => {
+    if (l.textContent === 'Acceso restringido') l.style.display = verEncargados ? 'block' : 'none';
+  });
+
+  // Mostrar badge de rol en la topbar
+  const roleNames = { admin:'Admin', supervisor:'Supervisor', encargado:'Encargado', local:'Local', empleado:'Empleado' };
+  const topbar = document.querySelector('.topbar');
+  if (topbar && !document.getElementById('role-badge-chip')) {
+    const badge = document.createElement('div');
+    badge.id = 'role-badge-chip';
+    badge.className = 'role-badge';
+    badge.style.marginRight = '10px';
+    badge.textContent = roleNames[currentRole] + ' · ' + u.nombre;
+    topbar.insertBefore(badge, topbar.firstChild.nextSibling);
+  }
+
+  document.getElementById('screen-login').style.display = 'none';
+  document.getElementById('screen-app').style.display = 'block';
+  ir('bienvenida', null);
 }
 </script>
 </body>
