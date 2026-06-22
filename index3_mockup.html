@@ -357,7 +357,7 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
   <div class="app-shell">
     <div class="sidebar" id="sidebarAdmin">
       <div class="sidebar-brand">
-        <svg width="30" height="30" viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#FFFFFF" stroke="#B8923A" stroke-width="2.4"/><text x="16" y="15" font-family="Montserrat,sans-serif" font-size="11" font-weight="800" fill="#111111" text-anchor="middle">S</text><text x="16" y="25" font-family="Montserrat,sans-serif" font-size="11" font-weight="800" fill="#111111" text-anchor="middle">C</text></svg>
+        <svg width="30" height="30" viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#FFFFFF" stroke="#B8923A" stroke-width="2.4"/><text x="11" y="20" font-family="Montserrat,sans-serif" font-size="11" font-weight="800" fill="#111111" text-anchor="middle">S</text><text x="21" y="20" font-family="Montserrat,sans-serif" font-size="11" font-weight="800" fill="#111111" text-anchor="middle">C</text></svg>
         <div><div class="logo">SisCap</div><div class="sub">Panel de Control</div></div>
       </div>
 
@@ -446,7 +446,7 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
   <!-- SIDEBAR -->
   <div class="sidebar" id="sidebarMain">
     <div class="sidebar-brand">
-      <svg width="30" height="30" viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#FFFFFF" stroke="#B8923A" stroke-width="2.4"/><text x="16" y="15" font-family="Montserrat,sans-serif" font-size="11" font-weight="800" fill="#111111" text-anchor="middle">S</text><text x="16" y="25" font-family="Montserrat,sans-serif" font-size="11" font-weight="800" fill="#111111" text-anchor="middle">C</text></svg>
+      <svg width="30" height="30" viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#FFFFFF" stroke="#B8923A" stroke-width="2.4"/><text x="11" y="20" font-family="Montserrat,sans-serif" font-size="11" font-weight="800" fill="#111111" text-anchor="middle">S</text><text x="21" y="20" font-family="Montserrat,sans-serif" font-size="11" font-weight="800" fill="#111111" text-anchor="middle">C</text></svg>
       <div><div class="logo">SisCap</div><div class="sub">Guía de Servicio</div></div>
     </div>
 
@@ -455,13 +455,13 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
     <div class="sidebar-item" data-view="ranking" onclick="ir('ranking',this)"><span class="icon">🏆</span> Ranking <span style="font-size:9px;color:#666;margin-left:auto">(a confirmar)</span></div>
 
     <div class="sidebar-label">Módulos</div>
-    <div class="sidebar-item" data-view="mod-cafe" onclick="ir('mod-cafe',this)"><span class="chip">1</span> Cafetería <span class="dot"></span></div>
-    <div class="sidebar-item" data-view="mod-helad" onclick="ir('mod-helad',this)"><span class="chip">2</span> Heladería</div>
-    <div class="sidebar-item" data-view="mod-icepops" onclick="ir('mod-icepops',this)"><span class="chip">3</span> Icepops</div>
-    <div class="sidebar-item" data-view="mod-pasteleria" onclick="ir('mod-pasteleria',this)"><span class="chip">4</span> Pastelería</div>
-    <div class="sidebar-item" data-view="mod-choco" onclick="ir('mod-choco',this)"><span class="chip">5</span> Chocolatería <span class="dot"></span></div>
-    <div class="sidebar-item" data-view="mod-sistema" onclick="ir('mod-sistema',this)"><span class="chip">6</span> Sistema y Caja</div>
-    <div class="sidebar-item" data-view="mod-atencion" onclick="ir('mod-atencion',this)"><span class="chip">7</span> Atención al Cliente</div>
+    <div class="sidebar-item" data-view="mod-cafe" onclick="ir('mod-cafe',this)"><span class="chip">1</span> Cafetería <span class="dot" data-novedad-mod="mod-cafe" style="display:none"></span></div>
+    <div class="sidebar-item" data-view="mod-helad" onclick="ir('mod-helad',this)"><span class="chip">2</span> Heladería <span class="dot" data-novedad-mod="mod-helad" style="display:none"></span></div>
+    <div class="sidebar-item" data-view="mod-icepops" onclick="ir('mod-icepops',this)"><span class="chip">3</span> Icepops <span class="dot" data-novedad-mod="mod-icepops" style="display:none"></span></div>
+    <div class="sidebar-item" data-view="mod-pasteleria" onclick="ir('mod-pasteleria',this)"><span class="chip">4</span> Pastelería <span class="dot" data-novedad-mod="mod-pasteleria" style="display:none"></span></div>
+    <div class="sidebar-item" data-view="mod-choco" onclick="ir('mod-choco',this)"><span class="chip">5</span> Chocolatería <span class="dot" data-novedad-mod="mod-choco" style="display:none"></span></div>
+    <div class="sidebar-item" data-view="mod-sistema" onclick="ir('mod-sistema',this)"><span class="chip">6</span> Sistema y Caja <span class="dot" data-novedad-mod="mod-sistema" style="display:none"></span></div>
+    <div class="sidebar-item" data-view="mod-atencion" onclick="ir('mod-atencion',this)"><span class="chip">7</span> Atención al Cliente <span class="dot" data-novedad-mod="mod-atencion" style="display:none"></span></div>
 
     <div class="sidebar-label" id="label-restringido" style="display:none">Acceso restringido</div>
     <div class="sidebar-item" data-view="mod-encargados" id="item-encargados" style="display:none" onclick="ir('mod-encargados',this)"><span class="chip">8</span> Encargados y Responsables 🔒</div>
@@ -473,7 +473,7 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
   <div class="main">
     <div class="topbar">
       <div class="topbar-title" id="title">Bienvenida</div>
-      <div class="timer-chip">⏱ 12 min en sesión</div>
+      <div class="timer-chip" id="timer-chip">⏱ 0 min en sesión</div>
     </div>
     <div class="content" id="content">
 
@@ -488,7 +488,7 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
         <div class="hello-name" id="hello-name-text">María Pérez</div>
         <div class="card">
           <div style="font-size:15px;color:var(--gray-dark);line-height:1.7;margin-bottom:14px">Bienvenida a <strong style="color:var(--black)">SisCap</strong>, la guía interna de Lucciano's. Elegí un módulo en el menú para repasar <strong style="color:var(--black)">recetas, productos y procedimientos</strong> de tu sector.</div>
-          <div class="card-row" style="font-size:14px">⏱ Llevás <strong style="font-size:17px">12 min</strong> en esta sesión</div>
+          <div class="card-row" style="font-size:14px">⏱ Llevás <strong style="font-size:17px" id="tiempo-sesion-texto">0 min</strong> en esta sesión</div>
         </div>
         <div class="grid3">
           <div class="mini-stat"><div class="val">3</div><div class="lab">Módulos vistos</div></div>
@@ -1254,6 +1254,30 @@ function llamarBackend(action, params) {
   return fetch(SHEET_URL, { method: 'POST', body: JSON.stringify({ action, ...params }) }).then(r => r.json());
 }
 
+// ═══════════════════════════════════════════════════════════
+// NOVEDADES — punto amarillo "Nuevo" que se apaga solo a los 30 días
+// Para agregar un producto nuevo: agregá una línea acá con el módulo
+// y la fecha de lanzamiento (formato 'YYYY-MM-DD'). Se apaga sola a los 30 días.
+// ═══════════════════════════════════════════════════════════
+const NOVEDADES = [
+  { modulo: 'mod-cafe',   fecha: '2026-06-01' },
+  { modulo: 'mod-choco',  fecha: '2026-06-10' }
+];
+
+function aplicarNovedades() {
+  const hoy = new Date();
+  document.querySelectorAll('[data-novedad-mod]').forEach(dot => { dot.style.display = 'none'; });
+  NOVEDADES.forEach(n => {
+    const fechaLanz = new Date(n.fecha + 'T00:00:00');
+    const dias = (hoy - fechaLanz) / (1000*60*60*24);
+    if (dias >= 0 && dias <= 30) {
+      const dot = document.querySelector('[data-novedad-mod="'+n.modulo+'"]');
+      if (dot) dot.style.display = 'inline-block';
+    }
+  });
+}
+document.addEventListener('DOMContentLoaded', aplicarNovedades);
+
 function togglePass(id, btn) {
   const input = document.getElementById(id);
   if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; }
@@ -1494,8 +1518,41 @@ function hacerLogin() {
     } else {
       document.getElementById('screen-app').style.display = 'block';
       ir('bienvenida', null);
+      iniciarCronometroSesion();
     }
   }).catch(() => { err.textContent = 'Error de conexión. Probá de nuevo.'; });
+}
+
+// ═══════════════════════════════════════════════════════════
+// CRONÓMETRO DE SESIÓN — tiempo real en pantalla
+// ═══════════════════════════════════════════════════════════
+let sesionInicio = null;
+let intervaloSesion = null;
+
+function iniciarCronometroSesion() {
+  sesionInicio = Date.now();
+  actualizarCronometro();
+  if (intervaloSesion) clearInterval(intervaloSesion);
+  intervaloSesion = setInterval(actualizarCronometro, 15000);
+}
+
+function actualizarCronometro() {
+  if (!sesionInicio) return;
+  const minutos = Math.floor((Date.now() - sesionInicio) / 60000);
+  const chip = document.getElementById('timer-chip');
+  const texto = document.getElementById('tiempo-sesion-texto');
+  if (chip) chip.textContent = '⏱ ' + minutos + ' min en sesión';
+  if (texto) texto.textContent = minutos + ' min';
+}
+
+function detenerCronometroYRegistrar() {
+  if (!sesionInicio) return;
+  const minutos = Math.round((Date.now() - sesionInicio) / 60000);
+  if (currentUser && minutos > 0) {
+    llamarBackend('registrarTiempoUso', { usuario: currentUser, minutos }).catch(() => {});
+  }
+  clearInterval(intervaloSesion);
+  sesionInicio = null;
 }
 
 function adminNav(sec, el) {
@@ -1672,6 +1729,7 @@ function enviarRegistro() {
 }
 
 function cerrarSesion() {
+  detenerCronometroYRegistrar();
   document.getElementById('screen-app').style.display = 'none';
   document.getElementById('screen-login').style.display = 'flex';
   document.getElementById('login-user').value = '';
@@ -1679,6 +1737,8 @@ function cerrarSesion() {
   const badge = document.getElementById('role-badge-chip');
   if (badge) badge.remove();
 }
+
+window.addEventListener('beforeunload', () => { detenerCronometroYRegistrar(); });
 </script>
 </body>
 </html>
