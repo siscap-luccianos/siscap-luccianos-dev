@@ -242,6 +242,16 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
   text-decoration:underline;text-decoration-color:#2E7D4F;text-decoration-thickness:2px;
   text-underline-offset:2px
 }
+.admin-search{
+  width:100%;padding:10px 14px;border:1px solid var(--line);border-radius:8px;
+  font-size:13px;font-family:'Inter',sans-serif;margin-bottom:16px;outline:none
+}
+.admin-search:focus{border-color:var(--gold)}
+.admin-accordion-toggle{
+  cursor:pointer;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;
+  color:var(--gray-dark);padding:10px 0;border-top:1px solid var(--line)
+}
+.admin-accordion-toggle:hover{color:var(--gold-dark)}
 
 /* ── RESPONSIVE / MOBILE ── */
 .mobile-topbar{display:none}
@@ -406,21 +416,47 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
         <!-- USUARIOS -->
         <div data-asec-panel="usuarios">
           <div class="admin-grid" id="admin-kpis-usuarios"></div>
-          <table class="admin-table" id="tabla-usuarios">
-            <tr><th>Nombre</th><th>Usuario</th><th>Local</th><th>Rol</th><th>Estado</th><th>Alta</th><th></th></tr>
-            <tr><td colspan="7" style="text-align:center;color:var(--gray);padding:24px">Cargando usuarios...</td></tr>
-          </table>
+
+          <input type="text" id="buscador-usuarios" class="admin-search"
+                 placeholder="🔍 Buscar por nombre, usuario o local..."
+                 oninput="filtrarUsuariosAdmin()"/>
+
+          <div id="bloque-pendientes-usuarios"></div>
+
+          <div style="margin-top:10px">
+            <div class="admin-accordion-toggle" onclick="toggleActivosUsuarios()">
+              <span id="flecha-activos-usuarios">▾</span> Ver usuarios activos (<span id="contador-activos-usuarios">0</span>)
+            </div>
+            <div id="bloque-activos-usuarios" style="display:none"></div>
+          </div>
+
           <div class="note-box">En la fila de un usuario pendiente podés corregir el local si está mal puesto, elegir el rol, y aprobar o rechazar.</div>
         </div>
 
         <!-- LOCALES -->
         <div data-asec-panel="locales" style="display:none">
-          <div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Próximamente — gestión de claves por local (a definir con Gabi).</div></div>
+          <div class="admin-grid" id="admin-kpis-locales"></div>
+          <input type="text" id="buscador-locales" class="admin-search"
+                 placeholder="🔍 Buscar local por nombre o usuario..."
+                 oninput="filtrarLocalesAdmin()"/>
+          <table class="admin-table" id="tabla-locales">
+            <tr><th>Local</th><th>Usuario</th><th>Estado</th><th>Alta</th></tr>
+            <tr><td colspan="4" style="text-align:center;color:var(--gray);padding:24px">Cargando...</td></tr>
+          </table>
+          <div class="note-box">Esta vista es de solo consulta — para aprobar, rechazar o bloquear accesos, hacelo desde la sección "Usuarios".</div>
         </div>
 
         <!-- INVITADOS / ENCARGADOS -->
         <div data-asec-panel="invitados" style="display:none">
-          <div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Próximamente — listado de colaboradores/encargados con bloqueo individual.</div></div>
+          <div class="admin-grid" id="admin-kpis-invitados"></div>
+          <input type="text" id="buscador-invitados" class="admin-search"
+                 placeholder="🔍 Buscar por nombre, usuario o local..."
+                 oninput="filtrarInvitadosAdmin()"/>
+          <table class="admin-table" id="tabla-invitados">
+            <tr><th>Nombre</th><th>Usuario</th><th>Local</th><th>Rol</th><th>Estado</th><th>Alta</th></tr>
+            <tr><td colspan="6" style="text-align:center;color:var(--gray);padding:24px">Cargando...</td></tr>
+          </table>
+          <div class="note-box">Esta vista es de solo consulta — para aprobar, rechazar, bloquear o cambiar el rol, hacelo desde la sección "Usuarios".</div>
         </div>
 
         <!-- MINI-EVALUACIONES -->
@@ -595,6 +631,10 @@ body{font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);hei
           <img src="latte_79.png" style="width:100%;border-radius:10px;display:block;margin-top:10px"/>
         </div>
         <div class="sec-label">Cafés Especiales</div>
+        <div class="content-card">
+          <div class="t">Referencia visual — Cafés Especiales</div>
+          <img src="especiales.png" style="width:100%;border-radius:10px;display:block;margin-top:10px"/>
+        </div>
         <div class="note-box" style="margin-top:0;margin-bottom:14px">Si se solicita <span class="highlight">FRÍO</span>: usar leche fría y hielo.</div>
         <div class="content-card"><div class="t">Caramel Choco Style · Cód 168 · Grande</div><div class="d">1 push salsa chocolate + 1 push syrup caramelo → 60% leche → 30% café → espuma</div><div class="tag-row"><span class="info-tag gold">Cápsula Caramelo / Finezzo</span></div></div>
         <div class="content-card"><div class="t">Temptation · Cód 282 · Grande</div><div class="d">1 push salsa chocolate + 1 push salsa DDL → 60% leche → 30% café → espuma</div><div class="tag-row"><span class="info-tag gold">Cápsula Ristretto / Forte</span></div></div>
@@ -1452,7 +1492,7 @@ function ir(view, el) {
     document.getElementById('sidebarMain').classList.remove('open');
     document.getElementById('sidebarOverlay').classList.remove('show');
   }
-actualizarTextosEval();
+  actualizarTextosEval();
 }
 function actualizarTextosEval() {
   const esLocal = currentRole === 'local';
@@ -1834,6 +1874,8 @@ function adminNav(sec, el) {
   const titulosAdmin = { usuarios:'Usuarios', locales:'Accesos de Locales', invitados:'Colaboradores / Encargados', evals:'Mini-evaluaciones', ranking:'Ranking', uso:'Estadísticas de Uso' };
   document.getElementById('admin-title').textContent = titulosAdmin[sec] || sec;
   if (sec === 'evals') cargarEvalsAdmin();
+  if (sec === 'locales') cargarAccesosLocales();
+  if (sec === 'invitados') cargarColaboradoresEncargados();
   if (window.innerWidth <= 760) {
     document.getElementById('sidebarAdmin').classList.remove('open');
     document.getElementById('sidebarOverlayAdmin').classList.remove('show');
@@ -1879,16 +1921,23 @@ function cargarEvalsAdmin() {
   });
 }
 
+// ═══════════════════════════════════════════════════════════
+// USUARIOS — separado en Pendientes (siempre visibles) y Activos (plegados)
+// con buscador que filtra ambos bloques en tiempo real
+// ═══════════════════════════════════════════════════════════
+let usuariosCache = [];
+let activosUsuariosAbierto = false;
+
 function cargarUsuariosAdmin() {
   llamarBackend('getUsuarios', {}).then(res => {
     if (!res.ok) return;
-    const usuarios = res.usuarios;
+    usuariosCache = res.usuarios;
 
-    const activos = usuarios.filter(u => (u.estado||'').toLowerCase() === 'activo').length;
-    const pendientes = usuarios.filter(u => (u.estado||'').toLowerCase() === 'pendiente').length;
-    const admins = usuarios.filter(u => u.rol === 'admin').length;
-    const encargados = usuarios.filter(u => u.rol === 'encargado').length;
-    const supervisores = usuarios.filter(u => u.rol === 'supervisor').length;
+    const activos = usuariosCache.filter(u => (u.estado||'').toLowerCase() === 'activo').length;
+    const pendientes = usuariosCache.filter(u => (u.estado||'').toLowerCase() === 'pendiente').length;
+    const admins = usuariosCache.filter(u => u.rol === 'admin').length;
+    const encargados = usuariosCache.filter(u => u.rol === 'encargado').length;
+    const supervisores = usuariosCache.filter(u => u.rol === 'supervisor').length;
     document.getElementById('admin-kpis-usuarios').innerHTML = `
       <div class="admin-kpi"><div class="v">${activos}</div><div class="l">Usuarios activos</div></div>
       <div class="admin-kpi"><div class="v">${pendientes}</div><div class="l">Pendientes</div></div>
@@ -1897,47 +1946,95 @@ function cargarUsuariosAdmin() {
       <div class="admin-kpi"><div class="v">${supervisores}</div><div class="l">Supervisores</div></div>
     `;
 
-    const filas = usuarios.map(u => {
-      const estadoLower = (u.estado||'').toLowerCase();
-      if (estadoLower === 'pendiente') {
-        return `<tr style="background:#fbf6eb">
-          <td>${u.nombre}</td><td>@${u.usuario}</td>
-          <td><input value="${u.local||''}" id="local-${u.usuario}" style="font-size:11.5px;padding:4px 6px;border:1px solid var(--gold);border-radius:6px;width:100%"/></td>
-          <td>
-            <select id="rol-${u.usuario}" style="font-size:11.5px;padding:4px 6px;border:1px solid var(--line);border-radius:6px">
-              <option value="empleado">Colaborador</option><option value="local">Local</option>
-              <option value="encargado">Encargado</option><option value="supervisor">Supervisor</option>
-            </select>
-          </td>
-          <td><span class="admin-status status-pending">Pendiente</span></td><td>${u.fechaAlta||''}</td>
-          <td style="display:flex;gap:6px">
-            <button class="admin-action-btn" onclick="aprobarUsuario('${u.usuario}')">✓ Aprobar</button>
-            <button class="admin-action-btn" style="color:var(--red)" onclick="rechazarUsuario('${u.usuario}')">✗ Rechazar</button>
-          </td>
-        </tr>`;
-      }
-      const estadoClase = estadoLower === 'activo' ? 'status-ok' : 'status-off';
-      let accionBtn;
-      if (estadoLower === 'bloqueado' || estadoLower === 'rechazado') {
-        accionBtn = `<button class="admin-action-btn" onclick="reactivarUsuario('${u.usuario}')">↺ Reactivar</button>`;
-      } else {
-        accionBtn = `<button class="admin-action-btn" onclick="bloquearUsuario('${u.usuario}')">🔒 Bloquear</button>`;
-      }
-      return `<tr><td>${u.nombre}</td><td>@${u.usuario}</td><td>${u.local||'—'}</td>
-        <td id="rolcell-${u.usuario}">${u.rol}</td>
-        <td><span class="admin-status ${estadoClase}">${u.estado}</span></td><td>${u.fechaAlta||''}</td>
-        <td style="display:flex;gap:6px;flex-wrap:wrap">
-          <button class="admin-action-btn" onclick="mostrarSelectorRol('${u.usuario}', '${u.rol}')">✏️ Rol</button>
-          ${accionBtn}
-        </td></tr>`;
-    }).join('');
-
-    document.getElementById('tabla-usuarios').innerHTML =
-      `<tr><th>Nombre</th><th>Usuario</th><th>Local</th><th>Rol</th><th>Estado</th><th>Alta</th><th></th></tr>` + filas;
+    renderUsuariosAdmin();
   });
 }
 
-  function mostrarSelectorRol(usuario, rolActual) {
+function coincideBusqueda(u, termino) {
+  if (!termino) return true;
+  const t = termino.toLowerCase();
+  return (u.nombre||'').toLowerCase().includes(t)
+      || (u.usuario||'').toLowerCase().includes(t)
+      || (u.local||'').toLowerCase().includes(t);
+}
+
+function filaPendiente(u) {
+  return `<tr style="background:#fbf6eb">
+    <td>${u.nombre} <span class="admin-new-badge">NUEVO</span></td><td>@${u.usuario}</td>
+    <td><input value="${u.local||''}" id="local-${u.usuario}" style="font-size:11.5px;padding:4px 6px;border:1px solid var(--gold);border-radius:6px;width:100%"/></td>
+    <td>
+      <select id="rol-${u.usuario}" style="font-size:11.5px;padding:4px 6px;border:1px solid var(--line);border-radius:6px">
+        <option value="empleado">Colaborador</option><option value="local">Local</option>
+        <option value="encargado">Encargado</option><option value="supervisor">Supervisor</option>
+      </select>
+    </td>
+    <td><span class="admin-status status-pending">Pendiente</span></td><td>${u.fechaAlta||''}</td>
+    <td style="display:flex;gap:6px">
+      <button class="admin-action-btn" onclick="aprobarUsuario('${u.usuario}')">✓ Aprobar</button>
+      <button class="admin-action-btn" style="color:var(--red)" onclick="rechazarUsuario('${u.usuario}')">✗ Rechazar</button>
+    </td>
+  </tr>`;
+}
+
+function filaActiva(u) {
+  const estadoLower = (u.estado||'').toLowerCase();
+  const estadoClase = estadoLower === 'activo' ? 'status-ok' : 'status-off';
+  let accionBtn;
+  if (estadoLower === 'bloqueado' || estadoLower === 'rechazado') {
+    accionBtn = `<button class="admin-action-btn" onclick="reactivarUsuario('${u.usuario}')">↺ Reactivar</button>`;
+  } else {
+    accionBtn = `<button class="admin-action-btn" onclick="bloquearUsuario('${u.usuario}')">🔒 Bloquear</button>`;
+  }
+  return `<tr><td>${u.nombre}</td><td>@${u.usuario}</td><td>${u.local||'—'}</td>
+    <td id="rolcell-${u.usuario}">${u.rol}</td>
+    <td><span class="admin-status ${estadoClase}">${u.estado}</span></td><td>${u.fechaAlta||''}</td>
+    <td style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="admin-action-btn" onclick="mostrarSelectorRol('${u.usuario}', '${u.rol}')">✏️ Rol</button>
+      ${accionBtn}
+    </td></tr>`;
+}
+
+function renderUsuariosAdmin() {
+  const termino = (document.getElementById('buscador-usuarios') || {}).value || '';
+  const filtrados = usuariosCache.filter(u => coincideBusqueda(u, termino));
+
+  const pendientes = filtrados.filter(u => (u.estado||'').toLowerCase() === 'pendiente');
+  const activos = filtrados.filter(u => (u.estado||'').toLowerCase() !== 'pendiente');
+
+  document.getElementById('bloque-pendientes-usuarios').innerHTML = pendientes.length
+    ? `<table class="admin-table">
+        <tr><th>Nombre</th><th>Usuario</th><th>Local</th><th>Rol</th><th>Estado</th><th>Alta</th><th></th></tr>
+        ${pendientes.map(filaPendiente).join('')}
+      </table>`
+    : (termino ? '' : '<div class="note-box" style="margin-top:0">No hay solicitudes pendientes por el momento. 🎉</div>');
+
+  document.getElementById('contador-activos-usuarios').textContent = activos.length;
+
+  if (activosUsuariosAbierto || termino) {
+    document.getElementById('bloque-activos-usuarios').style.display = 'block';
+    document.getElementById('flecha-activos-usuarios').textContent = '▾';
+    document.getElementById('bloque-activos-usuarios').innerHTML = activos.length
+      ? `<table class="admin-table">
+          <tr><th>Nombre</th><th>Usuario</th><th>Local</th><th>Rol</th><th>Estado</th><th>Alta</th><th></th></tr>
+          ${activos.map(filaActiva).join('')}
+        </table>`
+      : '<div class="note-box" style="margin-top:0">Sin resultados.</div>';
+  } else {
+    document.getElementById('bloque-activos-usuarios').style.display = 'none';
+    document.getElementById('flecha-activos-usuarios').textContent = '▸';
+  }
+}
+
+function filtrarUsuariosAdmin() {
+  renderUsuariosAdmin();
+}
+
+function toggleActivosUsuarios() {
+  activosUsuariosAbierto = !activosUsuariosAbierto;
+  renderUsuariosAdmin();
+}
+
+function mostrarSelectorRol(usuario, rolActual) {
   const celda = document.getElementById('rolcell-' + usuario);
   celda.innerHTML = `
     <select id="select-rol-${usuario}" style="font-size:11.5px;padding:4px 6px;border:1px solid var(--gold);border-radius:6px">
@@ -1970,6 +2067,89 @@ function bloquearUsuario(usuario) {
 }
 function reactivarUsuario(usuario) {
   llamarBackend('cambiarEstadoUsuario', { usuario, estado: 'Activo' }).then(() => cargarUsuariosAdmin());
+}
+
+// ═══════════════════════════════════════════════════════════
+// ACCESOS DE LOCALES — vista de solo consulta, filtrada por rol "local"
+// ═══════════════════════════════════════════════════════════
+let localesCache = [];
+
+function cargarAccesosLocales() {
+  document.getElementById('tabla-locales').innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--gray);padding:24px">Cargando...</td></tr>';
+  llamarBackend('getUsuarios', {}).then(res => {
+    if (!res.ok) return;
+    localesCache = res.usuarios.filter(u => u.rol === 'local');
+
+    const activos = localesCache.filter(u => (u.estado||'').toLowerCase() === 'activo').length;
+    const pendientes = localesCache.filter(u => (u.estado||'').toLowerCase() === 'pendiente').length;
+    document.getElementById('admin-kpis-locales').innerHTML = `
+      <div class="admin-kpi"><div class="v">${localesCache.length}</div><div class="l">Locales con acceso</div></div>
+      <div class="admin-kpi"><div class="v">${activos}</div><div class="l">Activos</div></div>
+      <div class="admin-kpi"><div class="v">${pendientes}</div><div class="l">Pendientes</div></div>
+    `;
+    renderAccesosLocales();
+  });
+}
+
+function renderAccesosLocales() {
+  const termino = (document.getElementById('buscador-locales') || {}).value || '';
+  const filtrados = localesCache.filter(u => coincideBusqueda(u, termino));
+  const filas = filtrados.map(u => {
+    const estadoLower = (u.estado||'').toLowerCase();
+    const estadoClase = estadoLower === 'activo' ? 'status-ok' : (estadoLower === 'pendiente' ? 'status-pending' : 'status-off');
+    return `<tr><td>${u.local||'—'}</td><td>@${u.usuario}</td>
+      <td><span class="admin-status ${estadoClase}">${u.estado}</span></td><td>${u.fechaAlta||''}</td></tr>`;
+  }).join('');
+  document.getElementById('tabla-locales').innerHTML =
+    `<tr><th>Local</th><th>Usuario</th><th>Estado</th><th>Alta</th></tr>` +
+    (filas || '<tr><td colspan="4" style="text-align:center;color:var(--gray);padding:24px">No se encontraron locales.</td></tr>');
+}
+
+function filtrarLocalesAdmin() {
+  renderAccesosLocales();
+}
+
+// ═══════════════════════════════════════════════════════════
+// COLABORADORES / ENCARGADOS — vista de solo consulta, excluye rol "local" y "admin"
+// ═══════════════════════════════════════════════════════════
+let invitadosCache = [];
+
+function cargarColaboradoresEncargados() {
+  document.getElementById('tabla-invitados').innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--gray);padding:24px">Cargando...</td></tr>';
+  llamarBackend('getUsuarios', {}).then(res => {
+    if (!res.ok) return;
+    invitadosCache = res.usuarios.filter(u => ['empleado','encargado','supervisor'].includes(u.rol));
+
+    const colaboradores = invitadosCache.filter(u => u.rol === 'empleado').length;
+    const encargados = invitadosCache.filter(u => u.rol === 'encargado').length;
+    const supervisores = invitadosCache.filter(u => u.rol === 'supervisor').length;
+    document.getElementById('admin-kpis-invitados').innerHTML = `
+      <div class="admin-kpi"><div class="v">${invitadosCache.length}</div><div class="l">Total personas</div></div>
+      <div class="admin-kpi"><div class="v">${colaboradores}</div><div class="l">Colaboradores</div></div>
+      <div class="admin-kpi"><div class="v">${encargados}</div><div class="l">Encargados</div></div>
+      <div class="admin-kpi"><div class="v">${supervisores}</div><div class="l">Supervisores</div></div>
+    `;
+    renderColaboradoresEncargados();
+  });
+}
+
+function renderColaboradoresEncargados() {
+  const termino = (document.getElementById('buscador-invitados') || {}).value || '';
+  const filtrados = invitadosCache.filter(u => coincideBusqueda(u, termino));
+  const rolNombres = { empleado:'Colaborador', encargado:'Encargado', supervisor:'Supervisor' };
+  const filas = filtrados.map(u => {
+    const estadoLower = (u.estado||'').toLowerCase();
+    const estadoClase = estadoLower === 'activo' ? 'status-ok' : (estadoLower === 'pendiente' ? 'status-pending' : 'status-off');
+    return `<tr><td>${u.nombre}</td><td>@${u.usuario}</td><td>${u.local||'—'}</td><td>${rolNombres[u.rol]||u.rol}</td>
+      <td><span class="admin-status ${estadoClase}">${u.estado}</span></td><td>${u.fechaAlta||''}</td></tr>`;
+  }).join('');
+  document.getElementById('tabla-invitados').innerHTML =
+    `<tr><th>Nombre</th><th>Usuario</th><th>Local</th><th>Rol</th><th>Estado</th><th>Alta</th></tr>` +
+    (filas || '<tr><td colspan="6" style="text-align:center;color:var(--gray);padding:24px">No se encontraron personas.</td></tr>');
+}
+
+function filtrarInvitadosAdmin() {
+  renderColaboradoresEncargados();
 }
 
 function verComoColaborador() {
