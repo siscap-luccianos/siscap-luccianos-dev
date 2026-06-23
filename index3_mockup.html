@@ -1617,12 +1617,15 @@ function finalizarMiniEval() {
   }).join('');
 
   const colorResultado = correctas === total ? 'var(--green)' : (correctas === 0 ? 'var(--red)' : 'var(--gold-dark)');
+  const botonFinal = miniEvalActual.esPractica
+    ? `<button class="btn-gold-sm" style="margin-top:10px" onclick="iniciarMiniEval('${modulo}')">🔁 Seguir practicando</button>`
+    : `<button class="btn-gold-sm" style="margin-top:10px" onclick="descargarPDFMiniEval('${modulo}', ${correctas}, ${total})">📄 Descargar PDF del resultado</button>`;
   document.getElementById('minieval-body').innerHTML = html + `
     <div class="card" style="text-align:center;margin-top:18px" id="minieval-resultado-card">
       <div style="font-family:Montserrat,sans-serif;font-weight:900;font-size:22px;color:${colorResultado}">${correctas} / ${total} correctas</div>
-      <div style="font-size:11px;color:var(--gray);margin-top:4px">Resultado guardado en tu historial.</div>
+      <div style="font-size:11px;color:var(--gray);margin-top:4px">${miniEvalActual.esPractica ? 'Modo práctica · sin guardar resultado' : 'Resultado guardado en tu historial.'}</div>
     </div>
-    <button class="btn-gold-sm" style="margin-top:10px" onclick="descargarPDFMiniEval('${modulo}', ${correctas}, ${total})">📄 Descargar PDF del resultado</button>
+    ${botonFinal}
   `;
 }
 
