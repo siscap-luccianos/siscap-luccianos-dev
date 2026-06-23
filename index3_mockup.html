@@ -1561,6 +1561,7 @@ function iniciarMiniEval(modulo) {
   document.getElementById('minieval-body').innerHTML = '<div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Cargando preguntas...</div></div>';
 
   llamarBackend(esPractica ? 'getPractica' : 'getPreguntas', esPractica ? { usuario: currentUser, modulo } : { modulo }).then(res =>  {
+    if (res.enDescanso) { document.getElementById('minieval-body').innerHTML = '<div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">⏳ Ya completaste este módulo. Podés volver a practicarlo en ' + res.minutosFaltantes + ' minuto' + (res.minutosFaltantes === 1 ? '' : 's') + '. Mientras tanto, ¡probá otro módulo!</div></div>'; return; }
     if (!res.ok || !res.preguntas || !res.preguntas.length) {
       document.getElementById('minieval-body').innerHTML = '<div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Todavía no hay preguntas cargadas para este módulo.</div></div>';
       return;
