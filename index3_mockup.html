@@ -1543,17 +1543,18 @@ const NUM_MODULO = { 'mod-cafe':1,'mod-helad':2,'mod-icepops':3,'mod-pasteleria'
 let miniEvalActual = { modulo:null, preguntas:[], respuestas:[] };
 
 function iniciarMiniEval(modulo) {
+  const esPractica = currentRole === 'local'; 
   ir('minieval', null);
   document.getElementById('minieval-title').textContent = 'Mini-evaluación — ' + (NOMBRES_MODULO[modulo] || modulo);
   document.getElementById('minieval-num').textContent = NUM_MODULO[modulo] || '·';
   document.getElementById('minieval-body').innerHTML = '<div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Cargando preguntas...</div></div>';
 
-  llamarBackend('getPreguntas', { modulo }).then(res => {
+  llamarBackend(esPractica ? 'getPractica' : 'getPreguntas', esPractica ? { usuario: currentUser, modulo } : { modulo }).then(res =>  {
     if (!res.ok || !res.preguntas || !res.preguntas.length) {
       document.getElementById('minieval-body').innerHTML = '<div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--gray)">Todavía no hay preguntas cargadas para este módulo.</div></div>';
       return;
     }
-    miniEvalActual = { modulo, preguntas: res.preguntas, respuestas: new Array(res.preguntas.length).fill(null) };
+    miniEvalActual = { modulo, preguntas: res.preguntas, respuestas: new Array(res.preguntas.length).fill(null), esPractica };
     renderMiniEval();
   }).catch(() => {
     document.getElementById('minieval-body').innerHTML = '<div class="content-card"><div class="d" style="text-align:center;padding:20px;color:var(--red)">Error de conexión al cargar preguntas.</div></div>';
@@ -1588,7 +1589,7 @@ function finalizarMiniEval() {
   const total = miniEvalActual.preguntas.length;
   const modulo = miniEvalActual.modulo;
 
-  if (currentUser) {
+  if (currentUser && !miniEvalActual.esPractica)  {
     llamarBackend('guardarResultadoEval', { usuario: currentUser, modulo, correctas, total }).catch(() => {});
   }
 
