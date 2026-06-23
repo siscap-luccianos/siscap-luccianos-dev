@@ -1923,13 +1923,37 @@ function cargarUsuariosAdmin() {
       } else {
         accionBtn = `<button class="admin-action-btn" onclick="bloquearUsuario('${u.usuario}')">🔒 Bloquear</button>`;
       }
-      return `<tr><td>${u.nombre}</td><td>@${u.usuario}</td><td>${u.local||'—'}</td><td>${u.rol}</td>
+      return `<tr><td>${u.nombre}</td><td>@${u.usuario}</td><td>${u.local||'—'}</td>
+        <td id="rolcell-${u.usuario}">${u.rol}</td>
         <td><span class="admin-status ${estadoClase}">${u.estado}</span></td><td>${u.fechaAlta||''}</td>
-        <td>${accionBtn}</td></tr>`;
+        <td style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="admin-action-btn" onclick="mostrarSelectorRol('${u.usuario}', '${u.rol}')">✏️ Rol</button>
+          ${accionBtn}
+        </td></tr>`;
     }).join('');
 
     document.getElementById('tabla-usuarios').innerHTML =
       `<tr><th>Nombre</th><th>Usuario</th><th>Local</th><th>Rol</th><th>Estado</th><th>Alta</th><th></th></tr>` + filas;
+  });
+}
+
+  function mostrarSelectorRol(usuario, rolActual) {
+  const celda = document.getElementById('rolcell-' + usuario);
+  celda.innerHTML = `
+    <select id="select-rol-${usuario}" style="font-size:11.5px;padding:4px 6px;border:1px solid var(--gold);border-radius:6px">
+      <option value="empleado" ${rolActual==='empleado'?'selected':''}>Colaborador</option>
+      <option value="local" ${rolActual==='local'?'selected':''}>Local</option>
+      <option value="encargado" ${rolActual==='encargado'?'selected':''}>Encargado</option>
+      <option value="supervisor" ${rolActual==='supervisor'?'selected':''}>Supervisor</option>
+    </select>
+    <button class="admin-action-btn" style="margin-left:4px" onclick="confirmarCambioRol('${usuario}')">✓</button>
+  `;
+}
+
+function confirmarCambioRol(usuario) {
+  const nuevoRol = document.getElementById('select-rol-' + usuario).value;
+  llamarBackend('cambiarRolUsuario', { usuario, rol: nuevoRol }).then(res => {
+    if (res.ok) cargarUsuariosAdmin();
   });
 }
 
