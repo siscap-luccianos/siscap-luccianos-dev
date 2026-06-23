@@ -1452,8 +1452,19 @@ function ir(view, el) {
     document.getElementById('sidebarMain').classList.remove('open');
     document.getElementById('sidebarOverlay').classList.remove('show');
   }
+actualizarTextosEval();
 }
-
+function actualizarTextosEval() {
+  const esLocal = currentRole === 'local';
+  document.querySelectorAll('.mini-eval-cta').forEach(card => {
+    const titulo = card.querySelector('.t');
+    const desc = card.querySelector('.d');
+    const btn = card.querySelector('.btn-gold-sm');
+    if (titulo) titulo.textContent = esLocal ? '¿Querés practicar?' : '¿Listo para repasar?';
+    if (desc) desc.textContent = esLocal ? '5 preguntas para practicar · sin puntaje' : '3 preguntas rápidas sobre este módulo · 2 min';
+    if (btn) btn.textContent = esLocal ? 'Practicar' : 'Empezar mini-evaluación';
+  });
+}
 // ═══════════════════════════════════════════════════════════
 // LOGIN / REGISTRO — conectado real al Apps Script DEV
 // ═══════════════════════════════════════════════════════════
