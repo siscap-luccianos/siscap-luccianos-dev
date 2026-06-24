@@ -797,11 +797,19 @@ body::-webkit-scrollbar{display:none}
 <div id="screen-hospitalidad" class="screen">
   <div class="app-header">
     <div><div class="logo">SisCap</div><div class="badge-label">Checklist de Hospitalidad</div></div>
-    <button class="btn btn-outline btn-sm" onclick="showTab('home');setActiveNav('nav-home')">← Volver</button>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn btn-outline btn-sm" onclick="showTab('dashboardHosp')" style="color:var(--teal);border-color:var(--teal)">📊 Dashboard</button>
+      <button class="btn btn-outline btn-sm" onclick="showTab('home');setActiveNav('nav-home')">← Volver</button>
+    </div>
   </div>
   <div style="flex:1;overflow-y:auto;padding:18px;padding-bottom:90px">
     <div class="field"><label>Colaborador evaluado</label><input type="text" id="hp-colaborador" placeholder="Nombre y apellido"/></div>
-    <div class="field"><label>Sucursal</label><input type="text" id="hp-sucursal" placeholder="Local"/></div>
+    <div class="field"><label>Sucursal</label>
+      <div class="autocomplete-wrap">
+        <input type="text" id="hp-sucursal" placeholder="Escribí para buscar..." autocomplete="off" autocorrect="off" oninput="filtrarLocalesHosp()"/>
+        <div class="autocomplete-list" id="hp-local-list"></div>
+      </div>
+    </div>
     <div class="field"><label>Fecha</label><input type="date" id="hp-fecha"/></div>
     <div id="hp-secciones"></div>
     <div id="hp-resultado" style="display:none;margin:18px 0;padding:16px;border-radius:var(--r);text-align:center">
@@ -809,21 +817,52 @@ body::-webkit-scrollbar{display:none}
       <div id="hp-total-pct" style="font-family:Montserrat,sans-serif;font-weight:900;font-size:34px"></div>
       <div id="hp-nivel" style="font-family:Montserrat,sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;margin-top:4px"></div>
     </div>
-    <div class="field"><label>Fortalezas observadas</label><textarea id="hp-fortalezas" rows="2" placeholder="..."></textarea></div>
-    <div class="field"><label>Áreas a reforzar</label><textarea id="hp-areas" rows="2" placeholder="..."></textarea></div>
+    <div class="field"><label>Fortalezas observadas (se completa solo)</label><textarea id="hp-fortalezas" rows="3" placeholder="Se completa al calcular el resultado..."></textarea></div>
+    <div class="field"><label>Áreas a reforzar (se completa solo)</label><textarea id="hp-areas" rows="3" placeholder="Se completa al calcular el resultado..."></textarea></div>
     <div class="field"><label>Observaciones generales</label><textarea id="hp-obs" rows="3" placeholder="..."></textarea></div>
     <button class="btn btn-gold" onclick="calcularHospitalidad()" style="margin-bottom:8px">Calcular resultado</button>
     <button class="btn btn-green-solid" id="hp-pdf-btn" onclick="generarPDFHospitalidad()" style="display:none;margin-bottom:8px">⬇ Descargar PDF</button>
     <button class="btn btn-outline" id="hp-guardar-btn" onclick="guardarHospitalidad()" style="display:none">Guardar evaluación</button>
+
+    <div style="margin-top:28px;border-top:1px solid #2a2a2a;padding-top:16px">
+      <div class="section-title">Checklists anteriores</div>
+      <div id="hp-historial" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- DASHBOARD HOSPITALIDAD -->
+<div id="screen-dashboardHosp" class="screen">
+  <div class="app-header">
+    <div><div class="logo">SisCap</div><div class="badge-label">Dashboard Hospitalidad</div></div>
+    <button class="btn btn-outline btn-sm" onclick="showTab('hospitalidad')">← Volver</button>
+  </div>
+  <div class="dash-body" id="dashh-body">
+    <div class="dash-selector">
+      <div class="dash-selector-label">Local / Sucursal</div>
+      <div class="autocomplete-wrap">
+        <input type="text" id="dashh-local-input" placeholder="Escribí para buscar..."
+          autocomplete="off" autocorrect="off"
+          oninput="filtrarLocalesDashHosp()"
+          style="width:100%;padding:12px 14px;background:var(--dark2);border:1px solid #333;border-radius:var(--rs);color:var(--white);font-size:15px;font-family:'Inter',sans-serif;outline:none;-webkit-appearance:none"
+        />
+        <div class="autocomplete-list" id="dashh-local-list"></div>
+      </div>
+    </div>
+    <div id="dashh-resultado">
+      <div class="dash-empty">
+        <div class="dash-empty-icon">🤝</div>
+        <div style="font-family:Montserrat;font-weight:700;font-size:14px;color:var(--white);margin-bottom:6px">Seleccioná un local</div>
+        <div style="font-size:12px">Se agrupan todos los checklists de Hospitalidad<br>guardados para esa sucursal</div>
+      </div>
+    </div>
   </div>
 </div>
 
 
 <div class="toast" id="toast"></div>
 
-
-
-<div class="toast" id="toast"></div>
 
 <!-- AVISO USO DE CELULAR EN JORNADA — solo invitados -->
 <div id="aviso-celular-banner" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;padding:20px">
@@ -1654,7 +1693,7 @@ function showTab(tab) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const el = document.getElementById('screen-' + tab);
   if (el) el.classList.add('active');
-  if (tab === 'hospitalidad') renderHospitalidad();
+  if (tab === 'hospitalidad') { renderHospitalidad(); renderHistorialHospitalidad(); }
   window.scrollTo(0,0);
 }
 function irAFormulario(local='', evaluado='') {
@@ -1864,17 +1903,19 @@ function renderHome() {
     return;
   }
   // Filtrar según permisos y selector de evaluador (solo admin)
+  // Hospitalidad queda afuera de este listado — es su propio circuito, con su propia referencia (tipo)
   const filtroEval = document.getElementById('filtro-evaluador')?.value || '';
+  const datosResumenEval = datosResumen.filter(r => r.tipo !== 'Hospitalidad');
   let misEvals;
   if (currentUser && !currentUser.isAdmin) {
     // Capacitadores: solo sus evaluaciones
-    misEvals = datosResumen.filter(r => r.evaluador === currentUser.nombre);
+    misEvals = datosResumenEval.filter(r => r.evaluador === currentUser.nombre);
   } else if (filtroEval) {
     // Gabi con filtro seleccionado: ver solo ese evaluador
-    misEvals = datosResumen.filter(r => r.evaluador === filtroEval);
+    misEvals = datosResumenEval.filter(r => r.evaluador === filtroEval);
   } else {
     // Gabi sin filtro: ver todo
-    misEvals = datosResumen;
+    misEvals = datosResumenEval;
   }
 
 
@@ -1889,10 +1930,10 @@ function renderHome() {
   // stats
   // Solo contar evaluaciones reales (no borradores) en las stats
   const ultimasReales = ultimas.filter(r => !r.esSoloBorrador);
-  document.getElementById('stat-total').textContent     = datosResumen.length;
+  document.getElementById('stat-total').textContent     = datosResumenEval.length;
   // "Mis evaluaciones" — las del usuario logueado
   const misEvalsPropias = currentUser
-    ? datosResumen.filter(r => r.evaluador === currentUser.nombre)
+    ? datosResumenEval.filter(r => r.evaluador === currentUser.nombre)
     : [];
   document.getElementById('stat-prom').textContent = misEvalsPropias.length || '0';
   document.getElementById('stat-aprobadas').textContent = ultimasReales.filter(r=>r.porcentaje>=UMBRAL_OK).length;
@@ -1961,13 +2002,14 @@ function renderSucursales(lista) {
     const { estado, cls, badgeCls } = getEstado(r.porcentaje);
 
 
-    // Todos los colabs de este local
+    // Todos los colabs de este local (Hospitalidad excluida — circuito aparte)
     const filtroEv = document.getElementById('filtro-evaluador')?.value || '';
+    const datosResumenEval2 = datosResumen.filter(x => x.tipo !== 'Hospitalidad');
     const todosColabs = (currentUser && !currentUser.isAdmin)
-      ? datosResumen.filter(x=>x.local===r.local && x.evaluador===currentUser.nombre)
+      ? datosResumenEval2.filter(x=>x.local===r.local && x.evaluador===currentUser.nombre)
       : filtroEv
-        ? datosResumen.filter(x=>x.local===r.local && x.evaluador===filtroEv)
-        : datosResumen.filter(x=>x.local===r.local);
+        ? datosResumenEval2.filter(x=>x.local===r.local && x.evaluador===filtroEv)
+        : datosResumenEval2.filter(x=>x.local===r.local);
 
 
     todosColabs.sort((a,b)=>b.fecha.localeCompare(a.fecha));
@@ -2241,6 +2283,30 @@ function seleccionarLocal(el) {
 }
 document.addEventListener('click', e => {
   if (!e.target.closest('.autocomplete-wrap')) document.getElementById('local-list').classList.remove('open');
+});
+
+function filtrarLocalesHosp() {
+  const val = document.getElementById('hp-sucursal').value.toLowerCase().trim();
+  const list = document.getElementById('hp-local-list');
+  if (val.length < 2) { list.classList.remove('open'); return; }
+  const items = LOCALES.filter(l=>l.toLowerCase().includes(val));
+  if (!items.length) { list.classList.remove('open'); return; }
+  list.innerHTML = items.slice(0,15).map(l =>
+    `<div class="autocomplete-item" onclick="seleccionarLocalHosp(this)">${esc(l)}</div>`
+  ).join('');
+  list.classList.add('open');
+}
+function seleccionarLocalHosp(el) {
+  document.getElementById('hp-sucursal').value = el.textContent;
+  document.getElementById('hp-local-list').classList.remove('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.autocomplete-wrap')) {
+    const list = document.getElementById('hp-local-list');
+    if (list) list.classList.remove('open');
+    const list2 = document.getElementById('dashh-local-list');
+    if (list2) list2.classList.remove('open');
+  }
 });
 
 
@@ -3963,8 +4029,8 @@ function seleccionarLocalDash(el) {
 }
 
 function generarDashboard(local) {
-  // Tomar todas las evaluaciones de este local
-  const evals = datosResumen.filter(r => r.local === local);
+  // Tomar todas las evaluaciones de este local (Hospitalidad queda afuera — es otro circuito)
+  const evals = datosResumen.filter(r => r.local === local && r.tipo !== 'Hospitalidad');
   if (!evals.length) {
     document.getElementById('dash-resultado').innerHTML = `
       <div class="dash-empty">
@@ -4456,25 +4522,44 @@ function renderHospitalidad() {
         <div style="background:var(--dark2);border:1px solid #2a2a2a;border-radius:var(--rs);padding:11px 13px;margin-bottom:8px">
           <div style="font-size:12.5px;color:var(--white);line-height:1.4;margin-bottom:8px">${it}</div>
           <div style="display:flex;gap:6px">
-            <label style="flex:1;text-align:center;padding:6px;border-radius:6px;background:var(--green-bg);border:1px solid var(--green);color:var(--green);font-size:11px;font-weight:700;cursor:pointer"><input type="radio" name="hp-${si}-${ii}" value="cumple" style="display:none" onclick="this.parentElement.style.opacity=1">✓ Cumple</label>
-            <label style="flex:1;text-align:center;padding:6px;border-radius:6px;background:var(--red-bg);border:1px solid var(--red);color:var(--red);font-size:11px;font-weight:700;cursor:pointer"><input type="radio" name="hp-${si}-${ii}" value="nocumple" style="display:none">✗ No cumple</label>
-            <label style="flex:1;text-align:center;padding:6px;border-radius:6px;background:var(--dark3);border:1px solid #444;color:var(--gray);font-size:11px;font-weight:700;cursor:pointer"><input type="radio" name="hp-${si}-${ii}" value="na" style="display:none">— N/A</label>
+            <label class="hp-opt" data-name="hp-${si}-${ii}" data-val="cumple" style="flex:1;text-align:center;padding:6px;border-radius:6px;background:var(--dark3);border:1px solid #444;color:var(--gray);font-size:11px;font-weight:700;cursor:pointer;opacity:.55;transition:all .15s"><input type="radio" name="hp-${si}-${ii}" value="cumple" style="display:none">✓ Cumple</label>
+            <label class="hp-opt" data-name="hp-${si}-${ii}" data-val="nocumple" style="flex:1;text-align:center;padding:6px;border-radius:6px;background:var(--dark3);border:1px solid #444;color:var(--gray);font-size:11px;font-weight:700;cursor:pointer;opacity:.55;transition:all .15s"><input type="radio" name="hp-${si}-${ii}" value="nocumple" style="display:none">✗ No cumple</label>
+            <label class="hp-opt" data-name="hp-${si}-${ii}" data-val="na" style="flex:1;text-align:center;padding:6px;border-radius:6px;background:var(--dark3);border:1px solid #444;color:var(--gray);font-size:11px;font-weight:700;cursor:pointer;opacity:.55;transition:all .15s"><input type="radio" name="hp-${si}-${ii}" value="na" style="display:none">— N/A</label>
           </div>
         </div>
       `).join('')}
     </div>
   `).join('');
+
+  cont.addEventListener('click', e => {
+    const lbl = e.target.closest('.hp-opt');
+    if (!lbl) return;
+    const name = lbl.dataset.name, val = lbl.dataset.val;
+    const input = lbl.querySelector('input');
+    input.checked = true;
+    document.querySelectorAll(`.hp-opt[data-name="${name}"]`).forEach(l => {
+      l.style.opacity = '.55';
+      l.style.background = 'var(--dark3)';
+      l.style.borderColor = '#444';
+      l.style.color = 'var(--gray)';
+    });
+    lbl.style.opacity = '1';
+    if (val === 'cumple')      { lbl.style.background = 'var(--green-bg)'; lbl.style.borderColor = 'var(--green)'; lbl.style.color = 'var(--green)'; }
+    else if (val === 'nocumple'){ lbl.style.background = 'var(--red-bg)';   lbl.style.borderColor = 'var(--red)';   lbl.style.color = 'var(--red)'; }
+    else                        { lbl.style.background = 'var(--dark3)';    lbl.style.borderColor = '#888';         lbl.style.color = 'var(--white)'; }
+  });
 }
 
 function calcularHospitalidad() {
   let cumpleTot = 0, nocumpleTot = 0, naTot = 0;
+  const fort = [], ref = [];
   const secciones = HOSP_DATA.map((s, si) => {
     let cumple = 0, nocumple = 0, na = 0;
     s.items.forEach((it, ii) => {
       const sel = document.querySelector(`input[name="hp-${si}-${ii}"]:checked`);
       if (!sel) return;
-      if (sel.value === 'cumple') cumple++;
-      else if (sel.value === 'nocumple') nocumple++;
+      if (sel.value === 'cumple') { cumple++; fort.push(`[${s.sec}] ${it}`); }
+      else if (sel.value === 'nocumple') { nocumple++; ref.push(`[${s.sec}] ${it}`); }
       else na++;
     });
     cumpleTot += cumple; nocumpleTot += nocumple; naTot += na;
@@ -4498,6 +4583,10 @@ function calcularHospitalidad() {
   document.getElementById('hp-guardar-btn').style.display = 'block';
   const btnPdf = document.getElementById('hp-pdf-btn');
   if (btnPdf) btnPdf.style.display = 'block';
+  // Fortalezas y áreas a reforzar se completan solas según lo marcado —
+  // quedan editables por si el supervisor quiere ajustar el texto.
+  document.getElementById('hp-fortalezas').value = fort.join('\n') || 'Sin fortalezas destacadas en esta evaluación.';
+  document.getElementById('hp-areas').value      = ref.join('\n')  || 'Sin áreas a reforzar — todos los criterios cumplidos.';
   window._hospResultado = { cumple:cumpleTot, nocumple:nocumpleTot, na:naTot, pct, nivel, estado, secciones };
 }
 
@@ -4514,9 +4603,11 @@ async function guardarHospitalidad() {
   const areasReforzar = document.getElementById('hp-areas').value.trim();
   const observaciones = document.getElementById('hp-obs').value.trim();
   const evaluador = currentUser ? currentUser.nombre : '';
-  // Se envía igual que una evaluación normal (action 'submit') para que
-  // cuente en el Dashboard, en "Últimas evaluaciones" y en las stats —
-  // diferenciada por tipo:'Hospitalidad'.
+  // Se guarda en la misma sheet que las evaluaciones normales (action 'submit'),
+  // con su propia referencia (tipo:'Hospitalidad') para identificarla siempre.
+  // A propósito NO se mezcla con el listado/Dashboard de evaluaciones normales
+  // (se filtra por tipo en renderHome/renderSucursales/generarDashboard) —
+  // su PDF y su historial viven solo acá, en la pantalla de Hospitalidad.
   const payload = {
     action:'submit', fecha, evaluado:colaborador, local:sucursal, evaluador,
     tipo:'Hospitalidad', rol:'Colaborador', antiguedad:'',
@@ -4526,10 +4617,338 @@ async function guardarHospitalidad() {
     detalleCompleto:{ modulos: r.secciones.map((s,i)=>({ nombre:s.nombre, num:i+1, porcentaje:s.pct, score:s.cumple, max:s.cumple+s.nocumple })) }
   };
   await apiPostBg(payload);
-  datosResumen.push({ local:sucursal, evaluado:colaborador, fecha, evaluador, porcentaje:normalizePct(r.pct) });
+  datosResumen.push({ local:sucursal, evaluado:colaborador, fecha, evaluador, tipo:'Hospitalidad', porcentaje:normalizePct(r.pct) });
+  evalCache[sucursal+'|'+colaborador+'|'+fecha] = {
+    evaluado:colaborador, local:sucursal, fecha, evaluador, tipo:'Hospitalidad',
+    total:r.pct, modulos:r.secciones.map((s,i)=>({ nombre:s.nombre, num:i+1, porcentaje:s.pct, score:s.cumple, max:s.cumple+s.nocumple })),
+    tieneDetalle:true
+  };
   showToast('✓ Checklist guardado como evaluación');
   showTab('home');
   setActiveNav('nav-home');
+  renderHistorialHospitalidad();
+}
+
+function renderHistorialHospitalidad() {
+  const cont = document.getElementById('hp-historial');
+  if (!cont) return;
+  const propios = datosResumen.filter(r => r.tipo === 'Hospitalidad')
+    .sort((a,b) => (b.fecha||'').localeCompare(a.fecha||''))
+    .slice(0, 15);
+  if (!propios.length) {
+    cont.innerHTML = `<div style="font-size:12px;color:var(--gray)">Todavía no guardaste ningún checklist.</div>`;
+    return;
+  }
+  cont.innerHTML = propios.map(r => {
+    const { cls } = getEstado(r.porcentaje);
+    return `<div style="background:var(--dark2);border:1px solid #2a2a2a;border-radius:var(--rs);padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px">
+      <div>
+        <div style="font-size:13px;font-weight:600;color:var(--white)">${esc(r.evaluado)}</div>
+        <div style="font-size:11px;color:var(--gray)">${esc(r.local)} · ${formatFecha(r.fecha)}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="${cls}" style="font-family:Montserrat,sans-serif;font-weight:800;font-size:14px">${r.porcentaje}%</span>
+        <button class="btn btn-outline btn-sm" onclick="generarPDFHospitalidadDesdeCache('${esc(r.local)}','${esc(r.evaluado)}','${r.fecha}')">⬇ PDF</button>
+        <button class="btn btn-outline btn-sm" style="color:var(--red);border-color:var(--red)" onclick="eliminarHospitalidad('${esc(r.local)}','${esc(r.evaluado)}','${r.fecha}')">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function eliminarHospitalidad(local, evaluado, fecha) {
+  if (!confirm(`¿Eliminar el checklist de Hospitalidad de ${evaluado} (${formatFecha(fecha)})?`)) return;
+  datosResumen = datosResumen.filter(r => !(r.local===local && r.evaluado===evaluado && r.fecha===fecha && r.tipo==='Hospitalidad'));
+  delete evalCache[`${local}|${evaluado}|${fecha}`];
+  renderHistorialHospitalidad();
+  showToast('✓ Checklist eliminado');
+  apiPostBg({ action:'delete', local, evaluado, fecha });
+}
+
+function generarPDFHospitalidadDesdeCache(local, evaluado, fecha) {
+  const key = local + '|' + evaluado + '|' + fecha;
+  const cached = evalCache[key];
+  if (!cached || cached.tipo !== 'Hospitalidad' || !cached.modulos || !cached.modulos.length) {
+    showToast('⚠ No se encontró el detalle de este checklist'); return;
+  }
+  if (!window.jspdf) { showToast('⚠ jsPDF no cargó. Verificá tu conexión.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:'mm', format:'a4', orientation:'portrait' });
+  let y = 20;
+  doc.setFontSize(16); doc.setTextColor(...PDF_GOLD); doc.text("LUCCIANO'S — CHECKLIST DE HOSPITALIDAD", 105, y, {align:'center'});
+  y += 10;
+  doc.setFontSize(10); doc.setTextColor(...PDF_GRAY);
+  doc.text(`Colaborador: ${evaluado}`, 14, y); y+=6;
+  doc.text(`Sucursal: ${local}    Fecha: ${formatFecha(fecha)}`, 14, y); y+=6;
+  doc.text(`Supervisor: ${cached.evaluador||'—'}`, 14, y); y+=10;
+  const pct = cached.total;
+  doc.setFontSize(28); doc.setTextColor(..._pdfColorEstado(pct));
+  doc.text(`${pct}%`, 105, y, {align:'center'}); y+=8;
+  doc.setFontSize(11); doc.text(_pdfLabelEstado(pct), 105, y, {align:'center'}); y+=12;
+  doc.setTextColor(...PDF_DARK);
+  cached.modulos.forEach(s => {
+    if (y > 265) { doc.addPage(); y = 20; }
+    doc.setFontSize(10); doc.setTextColor(...PDF_DARK);
+    doc.text(s.nombre, 14, y);
+    const pctTxt = s.porcentaje===null ? 'N/A' : s.porcentaje+'%';
+    doc.setTextColor(...(s.porcentaje===null?PDF_GRAY:_pdfColorEstado(s.porcentaje)));
+    doc.text(pctTxt, 196, y, {align:'right'});
+    y += 6;
+  });
+  doc.save(`Hospitalidad_${local}_${evaluado}_${fecha}.pdf`.replace(/\s+/g,'_'));
+}
+
+
+// ═══════════════════════════════════════════════════════════
+// DASHBOARD HOSPITALIDAD
+// ═══════════════════════════════════════════════════════════
+function filtrarLocalesDashHosp() {
+  const val = document.getElementById('dashh-local-input').value.toLowerCase().trim();
+  const list = document.getElementById('dashh-local-list');
+  if (val.length < 2) { list.classList.remove('open'); return; }
+  const items = LOCALES.filter(l => l.toLowerCase().includes(val));
+  if (!items.length) { list.classList.remove('open'); return; }
+  list.innerHTML = items.slice(0, 15).map(l =>
+    `<div class="autocomplete-item" onclick="seleccionarLocalDashHosp(this)">${esc(l)}</div>`
+  ).join('');
+  list.classList.add('open');
+}
+function seleccionarLocalDashHosp(el) {
+  document.getElementById('dashh-local-input').value = el.textContent;
+  document.getElementById('dashh-local-list').classList.remove('open');
+  generarDashboardHosp(el.textContent);
+}
+
+function _colorHosp(pct) {
+  if (pct >= 85) return 'var(--green)';
+  if (pct >= 65) return 'var(--yellow)';
+  return 'var(--red)';
+}
+function _badgeHosp(pct) {
+  if (pct >= 85) return '<span class="mod-bar-badge badge-solido">Excelencia</span>';
+  if (pct >= 65) return '<span class="mod-bar-badge badge-reforzar">En desarrollo</span>';
+  return '<span class="mod-bar-badge badge-critico">Crítico</span>';
+}
+
+function generarDashboardHosp(local) {
+  // Agrupa TODOS los checklists de Hospitalidad de esta sucursal —
+  // si hay más de un colaborador evaluado, entran todos en el mismo dashboard.
+  const evals = datosResumen.filter(r => r.local === local && r.tipo === 'Hospitalidad');
+  if (!evals.length) {
+    document.getElementById('dashh-resultado').innerHTML = `
+      <div class="dash-empty">
+        <div class="dash-empty-icon">🔍</div>
+        <div style="font-family:Montserrat;font-weight:700;font-size:14px;color:var(--white);margin-bottom:6px">Sin checklists</div>
+        <div style="font-size:12px">No hay checklists de Hospitalidad registrados<br>para <strong>${esc(local)}</strong></div>
+      </div>`;
+    return;
+  }
+
+  // Último checklist por colaborador
+  const porColab = {};
+  evals.forEach(r => {
+    if (!porColab[r.evaluado] || r.fecha > porColab[r.evaluado].fecha) porColab[r.evaluado] = r;
+  });
+  const colabs = Object.values(porColab);
+
+  const pcts = colabs.map(c => c.porcentaje);
+  const promedio = Math.round(pcts.reduce((a,b)=>a+b,0) / pcts.length);
+  const enRiesgo = colabs.filter(c => c.porcentaje < 65).length;
+
+  // Promedio por sección (desde evalCache, mismas 8 secciones del checklist)
+  const secScores = {};
+  HOSP_DATA.forEach(s => secScores[s.sec] = []);
+  colabs.forEach(c => {
+    const cached = evalCache[`${c.local}|${c.evaluado}|${c.fecha}`];
+    if (cached && cached.modulos) {
+      cached.modulos.forEach(m => {
+        if (m.porcentaje !== null && m.porcentaje !== undefined && secScores[m.nombre]) {
+          secScores[m.nombre].push(m.porcentaje);
+        }
+      });
+    }
+  });
+  const secPromedios = HOSP_DATA.map(s => {
+    const vals = secScores[s.sec];
+    if (!vals.length) return null;
+    return { nombre: s.sec, pct: Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) };
+  }).filter(Boolean);
+  const secOrdenadas = [...secPromedios].sort((a,b)=>a.pct-b.pct);
+  const secCritica = secOrdenadas[0];
+  const secSolida  = secOrdenadas[secOrdenadas.length-1];
+
+  const supervisor = colabs[0].evaluador || '—';
+
+  const html = `
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
+      <div>
+        <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;color:var(--white)">${esc(local)}</div>
+        <div style="font-size:11px;color:var(--gray);margin-top:2px">${colabs.length} colaborador${colabs.length!==1?'es':''} evaluado${colabs.length!==1?'s':''} · ${esc(supervisor)}</div>
+      </div>
+      <button onclick="exportarDashPDFHosp()" style="background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal);padding:8px 14px;border-radius:var(--rs);font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;letter-spacing:1px;cursor:pointer">⬇ PDF</button>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-gold">
+        <div class="kpi-value" style="color:${_colorHosp(promedio)}">${promedio}%</div>
+        <div class="kpi-label">Promedio del local</div>
+        <div class="kpi-sub">${colabs.length} colaborador${colabs.length!==1?'es':''}</div>
+      </div>
+      <div class="kpi-card kpi-red">
+        <div class="kpi-value" style="color:var(--red)">${enRiesgo}</div>
+        <div class="kpi-label">Con riesgo</div>
+        <div class="kpi-sub">&lt; 65%</div>
+      </div>
+      ${secCritica ? `
+      <div class="kpi-card" style="border-color:#3d1010">
+        <div class="kpi-value" style="color:var(--red);font-size:28px">${secCritica.pct}%</div>
+        <div class="kpi-label">Sección crítica</div>
+        <div class="kpi-sub">${esc(secCritica.nombre)}</div>
+      </div>` : ''}
+      ${secSolida ? `
+      <div class="kpi-card" style="border-color:#1a3d2b">
+        <div class="kpi-value" style="color:var(--green);font-size:28px">${secSolida.pct}%</div>
+        <div class="kpi-label">Sección más sólida</div>
+        <div class="kpi-sub">${esc(secSolida.nombre)}</div>
+      </div>` : ''}
+    </div>
+
+    ${secPromedios.length ? `
+    <div>
+      <div class="dash-section-title">Resultado por sección</div>
+      <div style="background:var(--dark);border:1px solid #2a2a2a;border-radius:var(--r);padding:12px 14px">
+        ${secOrdenadas.map(s => `
+          <div class="mod-bar-row">
+            <div class="mod-bar-name">${esc(s.nombre)}</div>
+            <div class="mod-bar-track"><div class="mod-bar-fill" style="width:${s.pct}%;background:${_colorHosp(s.pct)}"></div></div>
+            <div class="mod-bar-pct" style="color:${_colorHosp(s.pct)}">${s.pct}%</div>
+            ${_badgeHosp(s.pct)}
+          </div>`).join('')}
+      </div>
+    </div>` : ''}
+
+    <div>
+      <div class="dash-section-title">Equipo evaluado</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        ${colabs.sort((a,b)=>b.porcentaje-a.porcentaje).map(c => `
+          <div class="colab-dash-row">
+            <div class="colab-dash-name">${esc(c.evaluado)}</div>
+            <div class="colab-dash-bar"><div class="colab-dash-fill" style="width:${c.porcentaje}%;background:${_colorHosp(c.porcentaje)}"></div></div>
+            <div class="colab-dash-pct" style="color:${_colorHosp(c.porcentaje)}">${c.porcentaje}%</div>
+            ${_badgeHosp(c.porcentaje)}
+          </div>`).join('')}
+      </div>
+    </div>
+  `;
+  document.getElementById('dashh-resultado').innerHTML = html;
+  window._dashHospData = { local, colabs, promedio, enRiesgo, secPromedios, secOrdenadas, secCritica, secSolida, supervisor };
+}
+
+function exportarDashPDFHosp() {
+  const d = window._dashHospData;
+  if (!d) { showToast('Generá el dashboard primero'); return; }
+
+  function cC(p) { return p>=85?'#27b870':p>=65?'#f0a020':'#e03030'; }
+  function lP(p) { return p>=85?'EXCELENCIA':p>=65?'EN DESARROLLO':'CRÍTICO'; }
+  function esc2(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  const mes  = new Date().toLocaleDateString('es-AR',{month:'long',year:'numeric'});
+  const mesC = mes.charAt(0).toUpperCase()+mes.slice(1);
+  const nl   = d.local.replace("Lucciano's ","");
+  const colabs = [...d.colabs].sort((a,b)=>b.porcentaje-a.porcentaje);
+
+  const secsHTML = d.secOrdenadas.map(s => {
+    const c = cC(s.pct), w = Math.max(2, s.pct);
+    return `<tr>
+      <td style="padding:6px 10px;font-size:11px;color:#1a1a2e;font-weight:600;width:160px">${esc2(s.nombre)}</td>
+      <td style="padding:6px 8px;width:120px">
+        <div style="background:#e8eaf0;border-radius:4px;height:8px;overflow:hidden">
+          <div style="width:${w}%;height:100%;background:${c};border-radius:4px"></div>
+        </div>
+      </td>
+      <td style="padding:6px 6px;font-weight:800;font-size:12px;color:${c};width:40px;text-align:right">${s.pct}%</td>
+      <td style="padding:6px 6px;width:90px">
+        <span style="background:${c}22;color:${c};border:1px solid ${c};border-radius:20px;padding:2px 8px;font-size:9px;font-weight:700">${lP(s.pct)}</span>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const colabsHTML = colabs.map(c => {
+    const col = cC(c.porcentaje);
+    return `<div style="text-align:center;min-width:80px;flex:1">
+      <div style="font-size:14px;font-weight:800;color:${col}">${c.porcentaje}%</div>
+      <div style="font-size:9px;color:#1a1a2e;font-weight:600;margin:2px 0;line-height:1.3">${esc2(c.evaluado)}</div>
+      <div style="font-size:8px;color:#fff;background:${col};border-radius:10px;padding:1px 6px;font-weight:700">${lP(c.porcentaje)}</div>
+    </div>`;
+  }).join('');
+
+  const kpis = [
+    { val: d.promedio+'%', label:'Promedio del local', sub: colabs.length+' colaboradores', c: cC(d.promedio) },
+    { val: d.secCritica ? d.secCritica.pct+'%' : '—', label:'Sección crítica', sub: d.secCritica ? d.secCritica.nombre : '—', c:'#e03030' },
+    { val: d.secSolida  ? d.secSolida.pct+'%'  : '—', label:'Más sólida', sub: d.secSolida ? d.secSolida.nombre : '—', c:'#27b870' },
+    { val: String(d.enRiesgo), label:'Con riesgo', sub:'< 65%', c: d.enRiesgo>0?'#e03030':'#27b870' },
+  ];
+  const kpisHTML = kpis.map(k => `
+    <div style="flex:1;background:#fff;border:1px solid #e0e4f0;border-top:3px solid ${k.c};border-radius:8px;padding:12px 14px;text-align:center">
+      <div style="font-size:26px;font-weight:900;color:${k.c};line-height:1">${esc2(k.val)}</div>
+      <div style="font-size:10px;font-weight:700;color:#1a1a2e;margin:4px 0 2px;text-transform:uppercase;letter-spacing:.5px">${esc2(k.label)}</div>
+      <div style="font-size:10px;color:#888">${esc2(k.sub)}</div>
+    </div>`).join('');
+
+  const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<title>${esc2(nl)} · Dashboard Hospitalidad</title>
+<style>
+  @page { size: A4 landscape; margin: 10mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f4f6fb; color: #1a1a2e; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  @media print {
+    body { background: #f4f6fb; }
+    .no-print { display: none !important; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  }
+</style>
+</head>
+<body>
+<div style="max-width:277mm;margin:0 auto;padding:0">
+
+  <div style="background:linear-gradient(135deg,#0a2a24,#0f1f18);padding:14px 20px;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+    <div>
+      <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#5DCAA5;margin-bottom:3px">Lucciano's · SisCap</div>
+      <div style="font-size:18px;font-weight:900;color:#fff">${esc2(nl)}</div>
+      <div style="font-size:10px;color:#8aa;margin-top:2px">${colabs.length} colaborador${colabs.length!==1?'es':''} evaluados · ${esc2(d.supervisor)}</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:10px;color:#8aa;text-transform:uppercase;letter-spacing:1px">Checklist de Hospitalidad</div>
+      <div style="font-size:13px;font-weight:700;color:#5DCAA5;margin-top:2px">${esc2(mesC)}</div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:8px;margin-bottom:10px">${kpisHTML}</div>
+
+  <div style="background:#fff;border:1px solid #e0e4f0;border-radius:8px;overflow:hidden;margin-bottom:10px">
+    <div style="background:#0a2a24;padding:8px 14px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#5DCAA5">Resultado del equipo por sección</div>
+    <table style="width:100%;border-collapse:collapse"><tbody>${secsHTML}</tbody></table>
+  </div>
+
+  <div style="background:#fff;border:1px solid #e0e4f0;border-radius:8px;overflow:hidden">
+    <div style="background:#0a2a24;padding:6px 14px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#5DCAA5">Equipo evaluado</div>
+    <div style="padding:10px;display:flex;gap:6px;flex-wrap:wrap;justify-content:space-around">${colabsHTML}</div>
+  </div>
+
+  <div class="no-print" style="text-align:center;margin-top:14px">
+    <button onclick="window.print()" style="background:#0a2a24;color:#5DCAA5;border:2px solid #5DCAA5;padding:10px 32px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:1px">Imprimir / Guardar PDF</button>
+    <div style="font-size:11px;color:#888;margin-top:6px">En el diálogo de impresión seleccioná "Guardar como PDF" · Orientación: Horizontal</div>
+  </div>
+
+</div>
+</body>
+</html>`;
+
+  const win = window.open('', '_blank');
+  if (win) { win.document.write(html); win.document.close(); }
+  else { showToast('Bloqueado por el navegador — permitir ventanas emergentes'); }
 }
 
 function generarPDFHospitalidad() {
