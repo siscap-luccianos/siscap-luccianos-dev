@@ -309,7 +309,8 @@ body::-webkit-scrollbar{display:none}
 
 
 /* ── ITEMS DEL FORMULARIO ───────────────────────────────── */
-.form-body{padding:16px 18px;display:flex;flex-direction:column;gap:20px;padding-bottom:90px;overflow-y:auto}
+.form-scroll-wrap{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;min-height:0}
+.form-body{padding:16px 18px;display:flex;flex-direction:column;gap:20px;padding-bottom:90px}
 .modulo-block{display:flex;flex-direction:column;gap:8px}
 .modulo-header{background:var(--dark2);border-radius:var(--rs);padding:11px 13px;display:flex;align-items:center;gap:9px}
 .modulo-num{width:26px;height:26px;border-radius:50%;background:var(--teal);color:var(--black);font-family:'Montserrat',sans-serif;font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -659,6 +660,8 @@ body::-webkit-scrollbar{display:none}
   </div>
 
 
+  <div class="form-scroll-wrap">
+
   <!-- Cabecera colapsable -->
   <div style="background:var(--dark2);border-bottom:1px solid #2a2a2a">
     <div onclick="toggleFormCabecera()" style="padding:10px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none">
@@ -707,6 +710,8 @@ body::-webkit-scrollbar{display:none}
 
 
   <div class="form-body" id="form-body"></div>
+
+  </div>
   <div class="form-footer" style="display:flex;flex-direction:column;gap:8px">
     <button class="btn btn-gold" id="btn-enviar" onclick="enviarFormulario()">Enviar evaluación</button>
     <button class="btn btn-outline" onclick="guardarBorrador()" style="margin:0;padding:10px;font-size:11px">💾 Guardar y continuar después</button>
