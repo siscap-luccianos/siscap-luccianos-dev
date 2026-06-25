@@ -477,12 +477,7 @@ body::-webkit-scrollbar{display:none}
   <!-- Panel login -->
   <div class="login-card" id="panel-login">
     <h2>Iniciar sesión</h2>
-    <div class="field"><label>Usuario</label><input type="text" id="login-user" placeholder="Tu usuario" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" oninput="_onLoginUserInput()"/></div>
-    <div id="campos-invitado" style="display:none">
-      <div class="field"><label>Nombre</label><input type="text" id="login-nombre" placeholder="Tu nombre" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false"/></div>
-      <div class="field"><label>Apellido</label><input type="text" id="login-apellido" placeholder="Tu apellido" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false"/></div>
-      <div class="field"><label>DNI</label><input type="text" id="login-dni" placeholder="Sin puntos" autocomplete="off" inputmode="numeric" maxlength="8" autocorrect="off" spellcheck="false"/></div>
-    </div>
+    <div class="field"><label>Usuario</label><input type="text" id="login-user" placeholder="Tu usuario" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"/></div>
     <div class="field"><label>Contraseña</label>
       <div style="position:relative">
         <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password" style="width:100%;padding:12px 40px 12px 14px;background:var(--dark2);border:1px solid #333;border-radius:var(--rs);color:var(--white);font-size:15px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;-webkit-appearance:none"/>
@@ -811,6 +806,10 @@ body::-webkit-scrollbar{display:none}
       </div>
     </div>
     <div class="field"><label>Fecha</label><input type="date" id="hp-fecha"/></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <div class="progress-outer" style="flex:1"><div class="progress-bar" id="hp-prog-bar" style="background:var(--teal)"></div></div>
+      <span class="progress-text" id="hp-prog-text">0 / 37</span>
+    </div>
     <div id="hp-secciones"></div>
     <div id="hp-resultado" style="display:none;margin:18px 0;padding:16px;border-radius:var(--r);text-align:center">
       <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:6px">Resultado general</div>
@@ -820,9 +819,9 @@ body::-webkit-scrollbar{display:none}
     <div class="field"><label>Fortalezas observadas (se completa solo)</label><textarea id="hp-fortalezas" rows="3" placeholder="Se completa al calcular el resultado..."></textarea></div>
     <div class="field"><label>Áreas a reforzar (se completa solo)</label><textarea id="hp-areas" rows="3" placeholder="Se completa al calcular el resultado..."></textarea></div>
     <div class="field"><label>Observaciones generales</label><textarea id="hp-obs" rows="3" placeholder="..."></textarea></div>
-    <button class="btn btn-gold" onclick="calcularHospitalidad()" style="margin-bottom:8px">Calcular resultado</button>
+    <button class="btn btn-gold" onclick="calcularYGuardarHospitalidad()" style="margin-bottom:8px">💾 Calcular y guardar</button>
     <button class="btn btn-green-solid" id="hp-pdf-btn" onclick="generarPDFHospitalidad()" style="display:none;margin-bottom:8px">⬇ Descargar PDF</button>
-    <button class="btn btn-outline" id="hp-guardar-btn" onclick="guardarHospitalidad()" style="display:none">Guardar evaluación</button>
+    <button class="btn btn-outline" style="color:var(--gray);border-color:#444;margin-top:8px" onclick="limpiarHospitalidad()">🧹 Limpiar y empezar otro checklist</button>
 
     <div style="margin-top:28px;border-top:1px solid #2a2a2a;padding-top:16px">
       <div class="section-title">Checklists anteriores</div>
@@ -864,19 +863,6 @@ body::-webkit-scrollbar{display:none}
 <div class="toast" id="toast"></div>
 
 
-<!-- AVISO USO DE CELULAR EN JORNADA — solo invitados -->
-<div id="aviso-celular-banner" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;padding:20px">
-  <div style="background:var(--dark);border:1px solid var(--gold-dark);border-radius:var(--r);width:100%;max-width:420px;padding:28px 22px;animation:slideUp .3s ease">
-    <div style="display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:18px">
-      <div style="width:52px;height:52px;border-radius:50%;background:var(--black);border:1px solid var(--gold-dark);display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:14px">⚠️</div>
-      <div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:16px;color:var(--white);margin-bottom:10px">Atención</div>
-      <div style="font-size:13.5px;color:var(--gray);line-height:1.6">
-        El uso del celular durante la jornada laboral es un incumplimiento a las normas y políticas de la empresa.
-      </div>
-    </div>
-    <button onclick="cerrarAvisoUsoCelular()" style="width:100%;padding:13px;background:var(--gold);color:var(--black);font-family:Montserrat,sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;border:none;border-radius:var(--rs);cursor:pointer">ACEPTAR</button>
-  </div>
-</div>
 
 <!-- BANNER INSTALACIÓN PWA -->
 <div id="pwa-banner" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);z-index:9998;align-items:flex-end;justify-content:center">
@@ -966,7 +952,7 @@ body::-webkit-scrollbar{display:none}
 // ═══════════════════════════════════════════════════════════
 // CONFIG
 // ═══════════════════════════════════════════════════════════
-const SHEET_URL   = 'https://script.google.com/macros/s/AKfycbym1ITn3Zeh1nneQ3Lwiva9p0ca9VFuNEQiGP52tQcrkkDl6QAQBDNeWnjt-PSjEVl2SQ/exec';
+const SHEET_URL   = 'https://script.google.com/macros/s/AKfycbxuheM2c3GEvQ_EUKDZ4I4BLbMNr9a90dqiY3lxFWwjHW0-k0sSyH2h75nXn_gl0toCHg/exec';
 const UMBRAL_OK   = 80;
 const UMBRAL_OBS  = 60;
 const DIAS_ALERTA = 30;
@@ -983,7 +969,6 @@ const USUARIOS = {
   barbarariccitelli: { pass:'Luccianos2026', nombre:'Barbara Riccitelli' },
   'fabricio@luccianos.com.ar': { pass:'Renata2525', nombre:'Fabricio' },
   'operaciones.franquicias@luccianos.com.ar': { pass:'Luccianos2025', nombre:'Carlos Torres' },
-  invitado:   { pass:'__local__',  nombre:'Invitado',   isGuest:true },
   supervisor: { pass:'supervisor', nombre:'Supervisor', isGuest:true, isSupervisor:true },
   // encargados: acceso via [clave_local]resp — manejado en _buscarLocalPorClave
 };
@@ -1196,6 +1181,12 @@ function formatFecha(s) {
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+// Para interpolar texto dentro de comillas simples de un atributo onclick="..."
+// (esc() no alcanza: un apóstrofo como el de "Lucciano's" corta la cadena JS y
+// el botón queda con un onclick roto que no hace nada al tocarlo).
+function escJS(s) {
+  return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+}
 let _toastTimer = null;
 function showToast(msg, dur=2800) {
   const t = document.getElementById('toast');
@@ -1355,69 +1346,6 @@ function _buscarLocalPorClave(clave) {
   return null;
 }
 
-function _onLoginUserInput() {
-  const user  = document.getElementById('login-user').value.trim().toLowerCase();
-  const campos = document.getElementById('campos-invitado');
-  if (!campos) return;
-  // Solo el usuario "invitado" muestra el formulario de datos.
-  // El usuario "local" nunca lo pide — acceso directo del encargado.
-  campos.style.display = (user === 'invitado') ? 'block' : 'none';
-  if (user === 'invitado') _precargarDatosInvitado();
-}
-
-// Se llama al cargar la pantalla de login. Si hay datos completos guardados
-// de una sesión de invitado anterior (nombre, apellido, dni y clave), intenta
-// el autologin total sin que el usuario toque nada.
-async function _intentarAutologinInvitado() {
-  try {
-    const guardado = JSON.parse(localStorage.getItem('siscap_invitado') || 'null');
-    if (!guardado || !guardado.nombre || !guardado.apellido || !guardado.dni || !guardado.pass) return false;
-
-    document.getElementById('login-user').value = 'invitado';
-    _onLoginUserInput();
-    document.getElementById('login-pass').value = guardado.pass;
-
-    await doLogin();
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
-function _precargarDatosInvitado() {
-  try {
-    const guardado = JSON.parse(localStorage.getItem('siscap_invitado') || 'null');
-    if (!guardado) return;
-    const wrap = document.getElementById('campos-invitado');
-    const inputNombre = document.getElementById('login-nombre');
-    const inputApellido = document.getElementById('login-apellido');
-    const inputDni = document.getElementById('login-dni');
-    inputNombre.value = guardado.nombre || '';
-    inputApellido.value = guardado.apellido || '';
-    if (inputDni) inputDni.value = guardado.dni || '';
-    const inputPass = document.getElementById('login-pass');
-    if (inputPass && guardado.pass) inputPass.value = guardado.pass;
-
-    // Si ya hay un "soy-otra-persona" inyectado, no duplicar
-    if (document.getElementById('cambiar-persona-invitado')) return;
-
-    const aviso = document.createElement('div');
-    aviso.id = 'cambiar-persona-invitado';
-    aviso.style = 'font-size:11px;color:var(--gray);margin:-4px 0 10px;text-align:right;cursor:pointer;text-decoration:underline';
-    aviso.textContent = `No soy ${guardado.nombre} · cambiar`;
-    aviso.onclick = function() {
-      inputNombre.value = '';
-      inputApellido.value = '';
-      if (inputDni) inputDni.value = '';
-      if (inputPass) inputPass.value = '';
-      try { localStorage.removeItem('siscap_invitado'); } catch (e) {}
-      inputNombre.focus();
-      aviso.remove();
-    };
-    wrap.appendChild(aviso);
-  } catch (e) { /* localStorage no disponible, seguimos sin precarga */ }
-}
-
 async function doLogin() {
   const user = document.getElementById('login-user').value.trim().toLowerCase();
   const pass = document.getElementById('login-pass').value.trim();
@@ -1437,73 +1365,6 @@ async function doLogin() {
     }
     const nombreMostrarFijo = 'Local · ' + matchLocal.local.replace("Lucciano's ", "");
     _loginExitoso('local', nombreMostrarFijo, false, true, matchLocal.local, true);
-    return;
-  }
-
-  // 2. Login de invitado — siempre pide nombre, apellido y DNI (o autologuea
-  // si ya hay datos guardados de una visita anterior en este dispositivo).
-  if (user === 'invitado') {
-    const matchPrevio = _buscarLocalPorClave(pass.trim().toLowerCase());
-    if (!matchPrevio) {
-      err.textContent = 'Contraseña incorrecta. Verificá la clave de tu local.';
-      return;
-    }
-
-    const nombre   = (document.getElementById('login-nombre')   || {}).value?.trim() || '';
-    const apellido = (document.getElementById('login-apellido') || {}).value?.trim() || '';
-    const dni      = (document.getElementById('login-dni')      || {}).value?.trim().replace(/\D/g,'') || '';
-
-    if (!nombre || !apellido) {
-      err.textContent = 'Completá tu nombre y apellido para ingresar.';
-      return;
-    }
-    if (!dni || dni.length < 7 || dni.length > 8) {
-      err.textContent = 'Ingresá un DNI válido (sin puntos).';
-      return;
-    }
-
-    const match = matchPrevio;
-
-    const { local, esEncargado } = match;
-    btn.textContent = 'Verificando...';
-    btn.disabled = true;
-
-    try {
-      const resp = await apiPost({
-        action: 'loginInvitado',
-        local, nombre, apellido, dni,
-        tipo: esEncargado ? 'encargado' : 'invitado'
-      });
-
-      btn.textContent = 'Ingresar';
-      btn.disabled = false;
-
-      if (resp.status === 'bloqueado') {
-        err.textContent = resp.msg || 'Tu acceso fue bloqueado. Consultá con tu capacitador.';
-        return;
-      }
-      if (resp.status !== 'ok') {
-        err.textContent = resp.msg || 'No se pudo verificar el acceso. Probá de nuevo.';
-        return;
-      }
-
-      const nombreMostrar = (esEncargado ? 'Encargado · ' : 'Invitado · ') +
-        nombre + ' ' + apellido + ' (' + local.replace("Lucciano's ", "") + ')';
-
-      try {
-        localStorage.setItem('siscap_invitado', JSON.stringify({ nombre, apellido, dni, pass: pass.trim() }));
-      } catch (e) { /* localStorage no disponible */ }
-
-      if (resp.aviso) {
-        alert(resp.aviso);
-      }
-
-      _loginExitoso('invitado', nombreMostrar, false, true, local, esEncargado);
-    } catch (e) {
-      btn.textContent = 'Ingresar';
-      btn.disabled = false;
-      err.textContent = 'Error de conexión. Probá de nuevo.';
-    }
     return;
   }
 
@@ -1575,9 +1436,6 @@ function _loginExitoso(user, nombre, isAdmin, isGuest, localInvitado, esEncargad
     showTab('home');
     setActiveNav('nav-home');
     showToast('La Guía de Servicio ahora está en otra app — consultá con tu encargado');
-    // Aviso de uso de celular en jornada — solo para invitados reales
-    // (empleados con celu propio), no para el usuario "local" (PC fija del local).
-    if (user === 'invitado') mostrarAvisoUsoCelular();
     return;
   }
   currentUser = { username: user, nombre, isAdmin, isGuest: isGuest||false, pass: '' };
@@ -1615,17 +1473,6 @@ function _loginExitoso(user, nombre, isAdmin, isGuest, localInvitado, esEncargad
   // Mostrar banner instalación si no lo cerró antes
   setTimeout(() => mostrarBannerPWA(), 1200);
 }
-// ── AVISO USO DE CELULAR EN JORNADA (solo invitados) ──
-function mostrarAvisoUsoCelular() {
-  const banner = document.getElementById('aviso-celular-banner');
-  if (banner) banner.style.display = 'flex';
-}
-
-function cerrarAvisoUsoCelular() {
-  const banner = document.getElementById('aviso-celular-banner');
-  if (banner) banner.style.display = 'none';
-}
-
 // ── BANNER INSTALACIÓN PWA ──
 function mostrarBannerPWA() {
   // No mostrar si ya está instalada como PWA
@@ -1846,6 +1693,9 @@ async function cargarDatos() {
               antiguedad: r.antiguedad || '',
               total:      r.porcentaje,
               modulos:    (r.detalle && r.detalle.modulos) ? r.detalle.modulos : [],
+              fortalezas: r.fortalezas || '',
+              reforzar:   r.reforzar || '',
+              observaciones: r.observaciones || '',
               id:         r.id || '',
               tieneDetalle: !!(r.detalle && r.detalle.modulos && r.detalle.modulos.length)
             };
@@ -2669,7 +2519,7 @@ function verEval(local, evaluado, fecha) {
           <div style="font-family:Montserrat;font-weight:700;font-size:11px;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px">📁 Evaluación registrada en SisCap 1</div>
           <div style="font-size:12px;color:var(--gray);line-height:1.6">El detalle ítem por ítem no está disponible en esta versión. Solo se conserva el resumen por módulo.</div>
         </div>
-        <button class="btn btn-green-solid" style="margin-top:12px" onclick="reimprimirPDF('${esc(local)}','${esc(evaluado)}','${fecha}',${reg.porcentaje||0})">📄 Descargar PDF</button>`;
+        <button class="btn btn-green-solid" style="margin-top:12px" onclick="reimprimirPDF('${escJS(local)}','${escJS(evaluado)}','${fecha}',${reg.porcentaje||0})">📄 Descargar PDF</button>`;
     }
     showTab('ver'); return;
   }
@@ -2710,7 +2560,7 @@ function verEval(local, evaluado, fecha) {
   // Agregar botones al pie
   html += `
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
-      <button class="btn btn-green-solid" onclick="reimprimirPDF('${esc(cached.local)}','${esc(cached.evaluado)}','${cached.fecha}',${cached.total||0})">📄 Descargar PDF</button>
+      <button class="btn btn-green-solid" onclick="reimprimirPDF('${escJS(cached.local)}','${escJS(cached.evaluado)}','${cached.fecha}',${cached.total||0})">📄 Descargar PDF</button>
       <button class="btn btn-outline" onclick="editarEvalActual()" style="color:var(--gold);border-color:var(--gold-dark)">✏ Editar evaluación</button>
     </div>`;
   body.innerHTML = html;
@@ -3579,11 +3429,6 @@ function cerrarSesion() {
   // Limpiar campos login
   document.getElementById('login-user').value = '';
   document.getElementById('login-pass').value = '';
-  if (document.getElementById('login-nombre'))   document.getElementById('login-nombre').value = '';
-  if (document.getElementById('login-apellido')) document.getElementById('login-apellido').value = '';
-  if (document.getElementById('login-dni'))      document.getElementById('login-dni').value = '';
-  if (document.getElementById('campos-invitado')) document.getElementById('campos-invitado').style.display = 'none';
-  if (document.getElementById('cambiar-persona-invitado')) document.getElementById('cambiar-persona-invitado').remove();
   document.getElementById('login-error').textContent = '';
   // Volver al login
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -3970,11 +3815,6 @@ async function toggleUsuario(usuario, estadoActual) {
     showToast('✓ Usuario '+nuevoEstado); cargarUsuarios();
   } catch(e) { showToast('⚠ Error'); }
 }
-
-// Autologin de invitado: si hay datos completos guardados de una visita
-// anterior (nombre, apellido, dni, clave), entra directo sin que la
-// persona tenga que tocar nada.
-_intentarAutologinInvitado();
 
 </script>
 <script>
@@ -4497,7 +4337,7 @@ const HOSP_DATA = [
     'Aplica conocimiento experto del producto para elevar la experiencia',
   ]},
   { sec:'Trabajo en Equipo', items:[
-    "Cubre a sus compañeros sin que se lo pidan ('todos somos Lucciano\\'s')",
+    "Cubre a sus compañeros sin que se lo pidan ('todos somos Lucciano's')",
     'Se coordina con el equipo de forma fluida, sin fricciones visibles',
     'Mantiene energía positiva que no afecta el ambiente del turno',
     'Da o recibe feedback constructivo entre pares con respeto',
@@ -4511,25 +4351,51 @@ const HOSP_DATA = [
   ]},
 ];
 
+const HOSP_TOTAL_ITEMS = HOSP_DATA.reduce((s,sec)=>s+sec.items.length, 0);
+
+function _hospSeccionEstado(si) {
+  // Cuenta cuántos ítems de la sección ya tienen una opción marcada
+  const sec = HOSP_DATA[si];
+  let respondidos = 0;
+  sec.items.forEach((it, ii) => {
+    if (document.querySelector(`input[name="hp-${si}-${ii}"]:checked`)) respondidos++;
+  });
+  return { respondidos, total: sec.items.length, completa: respondidos === sec.items.length };
+}
+
 function renderHospitalidad() {
   const cont = document.getElementById('hp-secciones');
   if (!cont || cont.dataset.rendered) return;
   cont.dataset.rendered = '1';
   cont.innerHTML = HOSP_DATA.map((s, si) => `
-    <div style="margin-bottom:18px">
-      <div class="section-title">${s.sec}</div>
-      ${s.items.map((it, ii) => `
-        <div style="background:var(--dark2);border:1px solid #2a2a2a;border-radius:var(--rs);padding:11px 13px;margin-bottom:8px">
-          <div style="font-size:12.5px;color:var(--white);line-height:1.4;margin-bottom:8px">${it}</div>
-          <div style="display:flex;gap:6px">
-            <label class="hp-opt" data-name="hp-${si}-${ii}" data-val="cumple" style="flex:1;text-align:center;padding:6px;border-radius:6px;background:var(--dark3);border:1px solid #444;color:var(--gray);font-size:11px;font-weight:700;cursor:pointer;opacity:.55;transition:all .15s"><input type="radio" name="hp-${si}-${ii}" value="cumple" style="display:none">✓ Cumple</label>
-            <label class="hp-opt" data-name="hp-${si}-${ii}" data-val="nocumple" style="flex:1;text-align:center;padding:6px;border-radius:6px;background:var(--dark3);border:1px solid #444;color:var(--gray);font-size:11px;font-weight:700;cursor:pointer;opacity:.55;transition:all .15s"><input type="radio" name="hp-${si}-${ii}" value="nocumple" style="display:none">✗ No cumple</label>
-            <label class="hp-opt" data-name="hp-${si}-${ii}" data-val="na" style="flex:1;text-align:center;padding:6px;border-radius:6px;background:var(--dark3);border:1px solid #444;color:var(--gray);font-size:11px;font-weight:700;cursor:pointer;opacity:.55;transition:all .15s"><input type="radio" name="hp-${si}-${ii}" value="na" style="display:none">— N/A</label>
-          </div>
+    <div class="hp-sec-block" data-si="${si}" style="margin-bottom:10px;border:1px solid #2a2a2a;border-radius:var(--r);overflow:hidden">
+      <div class="hp-sec-head" onclick="toggleHospSeccion(${si})" style="padding:12px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;background:var(--dark2)">
+        <div style="display:flex;align-items:center;gap:8px;min-width:0">
+          <span class="hp-sec-check" id="hp-sec-check-${si}" style="font-size:13px">○</span>
+          <span style="font-family:Montserrat,sans-serif;font-weight:700;font-size:12px;color:var(--white);letter-spacing:.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.sec}</span>
         </div>
-      `).join('')}
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+          <span id="hp-sec-count-${si}" style="font-size:11px;color:var(--gray);font-weight:700">0/${s.items.length}</span>
+          <span class="hp-sec-chev" id="hp-sec-chev-${si}" style="color:var(--gray);font-size:11px;transition:transform .2s">▼</span>
+        </div>
+      </div>
+      <div class="hp-sec-body" id="hp-sec-body-${si}" style="display:none;padding:12px 14px;background:var(--black)">
+        ${s.items.map((it, ii) => `
+          <div style="background:var(--dark2);border:1px solid #2a2a2a;border-radius:var(--rs);padding:11px 13px;margin-bottom:8px">
+            <div style="font-size:12.5px;color:var(--white);line-height:1.4;margin-bottom:8px">${it}</div>
+            <div style="display:flex;gap:6px">
+              <label class="hp-opt" data-name="hp-${si}-${ii}" data-val="cumple" style="flex:1;text-align:center;padding:6px;border-radius:6px;background:var(--dark3);border:1px solid #444;color:var(--gray);font-size:11px;font-weight:700;cursor:pointer;opacity:.55;transition:all .15s"><input type="radio" name="hp-${si}-${ii}" value="cumple" style="display:none">✓ Cumple</label>
+              <label class="hp-opt" data-name="hp-${si}-${ii}" data-val="nocumple" style="flex:1;text-align:center;padding:6px;border-radius:6px;background:var(--dark3);border:1px solid #444;color:var(--gray);font-size:11px;font-weight:700;cursor:pointer;opacity:.55;transition:all .15s"><input type="radio" name="hp-${si}-${ii}" value="nocumple" style="display:none">✗ No cumple</label>
+              <label class="hp-opt" data-name="hp-${si}-${ii}" data-val="na" style="flex:1;text-align:center;padding:6px;border-radius:6px;background:var(--dark3);border:1px solid #444;color:var(--gray);font-size:11px;font-weight:700;cursor:pointer;opacity:.55;transition:all .15s"><input type="radio" name="hp-${si}-${ii}" value="na" style="display:none">— N/A</label>
+            </div>
+          </div>
+        `).join('')}
+      </div>
     </div>
   `).join('');
+
+  // Abrir la primera sección por defecto
+  toggleHospSeccion(0, true);
 
   cont.addEventListener('click', e => {
     const lbl = e.target.closest('.hp-opt');
@@ -4547,25 +4413,107 @@ function renderHospitalidad() {
     if (val === 'cumple')      { lbl.style.background = 'var(--green-bg)'; lbl.style.borderColor = 'var(--green)'; lbl.style.color = 'var(--green)'; }
     else if (val === 'nocumple'){ lbl.style.background = 'var(--red-bg)';   lbl.style.borderColor = 'var(--red)';   lbl.style.color = 'var(--red)'; }
     else                        { lbl.style.background = 'var(--dark3)';    lbl.style.borderColor = '#888';         lbl.style.color = 'var(--white)'; }
+
+    const si = parseInt(lbl.closest('.hp-sec-block').dataset.si);
+    updateHospSeccionBadge(si);
+    updateHospProgresoGlobal();
   });
+}
+
+function toggleHospSeccion(si, forceOpen) {
+  const body = document.getElementById('hp-sec-body-' + si);
+  const chev = document.getElementById('hp-sec-chev-' + si);
+  if (!body) return;
+  const abrir = forceOpen || body.style.display === 'none';
+  // Cerrar las demás secciones (acordeón)
+  document.querySelectorAll('.hp-sec-body').forEach(b => { if (b !== body) b.style.display = 'none'; });
+  document.querySelectorAll('.hp-sec-chev').forEach(c => { if (c !== chev) c.style.transform = ''; });
+  body.style.display = abrir ? 'block' : 'none';
+  if (chev) chev.style.transform = abrir ? 'rotate(180deg)' : '';
+}
+
+function updateHospSeccionBadge(si) {
+  const { respondidos, total, completa } = _hospSeccionEstado(si);
+  const countEl = document.getElementById('hp-sec-count-' + si);
+  const checkEl = document.getElementById('hp-sec-check-' + si);
+  if (countEl) {
+    countEl.textContent = respondidos + '/' + total;
+    countEl.style.color = completa ? 'var(--green)' : (respondidos > 0 ? 'var(--yellow)' : 'var(--gray)');
+  }
+  if (checkEl) {
+    checkEl.textContent = completa ? '✓' : '○';
+    checkEl.style.color = completa ? 'var(--green)' : 'var(--gray)';
+  }
+  // Si terminó la sección, pasar automáticamente a la siguiente sin completar
+  if (completa) {
+    const siguiente = HOSP_DATA.findIndex((s, i) => i > si && !_hospSeccionEstado(i).completa);
+    if (siguiente !== -1) setTimeout(() => toggleHospSeccion(siguiente, true), 250);
+  }
+}
+
+function updateHospProgresoGlobal() {
+  let respondidos = 0;
+  HOSP_DATA.forEach((s, si) => { respondidos += _hospSeccionEstado(si).respondidos; });
+  const pct = Math.round((respondidos / HOSP_TOTAL_ITEMS) * 100);
+  const bar = document.getElementById('hp-prog-bar');
+  const txt = document.getElementById('hp-prog-text');
+  if (bar) bar.style.width = pct + '%';
+  if (txt) txt.textContent = respondidos + ' / ' + HOSP_TOTAL_ITEMS;
+}
+
+function limpiarHospitalidad() {
+  if (!confirm('¿Limpiar el formulario y empezar un checklist nuevo?')) return;
+  document.getElementById('hp-colaborador').value = '';
+  document.getElementById('hp-sucursal').value = '';
+  document.getElementById('hp-fecha').value = '';
+  document.getElementById('hp-fortalezas').value = '';
+  document.getElementById('hp-areas').value = '';
+  document.getElementById('hp-obs').value = '';
+  // Desmarcar todos los radios y devolverlos al estado visual apagado
+  document.querySelectorAll('#hp-secciones input[type="radio"]').forEach(i => i.checked = false);
+  document.querySelectorAll('#hp-secciones .hp-opt').forEach(l => {
+    l.style.opacity = '.55';
+    l.style.background = 'var(--dark3)';
+    l.style.borderColor = '#444';
+    l.style.color = 'var(--gray)';
+  });
+  HOSP_DATA.forEach((s, si) => updateHospSeccionBadge(si));
+  updateHospProgresoGlobal();
+  document.querySelectorAll('.hp-sec-body').forEach((b,i) => b.style.display = i===0 ? 'block' : 'none');
+  document.querySelectorAll('.hp-sec-chev').forEach((c,i) => c.style.transform = i===0 ? 'rotate(180deg)' : '');
+  document.getElementById('hp-resultado').style.display = 'none';
+  const btnPdf = document.getElementById('hp-pdf-btn');
+  if (btnPdf) btnPdf.style.display = 'none';
+  window._hospResultado = null;
+  window.scrollTo(0,0);
+  showToast('✓ Listo para un nuevo checklist');
 }
 
 function calcularHospitalidad() {
   let cumpleTot = 0, nocumpleTot = 0, naTot = 0;
-  const fort = [], ref = [];
+  const seccionesConRef = []; // { nombre, items:[...] } solo para áreas a reforzar
+  const seccionesSolidas = []; // nombres con 100% cumplimiento (para el resumen de fortalezas)
   const secciones = HOSP_DATA.map((s, si) => {
     let cumple = 0, nocumple = 0, na = 0;
+    const itemsNoCumple = [];
+    const items_detalle = [];
     s.items.forEach((it, ii) => {
       const sel = document.querySelector(`input[name="hp-${si}-${ii}"]:checked`);
-      if (!sel) return;
-      if (sel.value === 'cumple') { cumple++; fort.push(`[${s.sec}] ${it}`); }
-      else if (sel.value === 'nocumple') { nocumple++; ref.push(`[${s.sec}] ${it}`); }
+      if (!sel) { items_detalle.push({ texto: it, estado: null }); return; }
+      if (sel.value === 'cumple') cumple++;
+      else if (sel.value === 'nocumple') { nocumple++; itemsNoCumple.push(it); }
       else na++;
+      items_detalle.push({ texto: it, estado: sel.value });
     });
     cumpleTot += cumple; nocumpleTot += nocumple; naTot += na;
     const ev = cumple + nocumple;
     const pct = ev ? Math.round((cumple/ev)*100) : null;
-    return { nombre:s.sec, cumple, nocumple, na, pct };
+    if (itemsNoCumple.length) seccionesConRef.push({ nombre:s.sec, items:itemsNoCumple });
+    if (ev > 0 && nocumple === 0) seccionesSolidas.push(s.sec);
+    // items_detalle viaja igual que en las evaluaciones normales (columna Detalle, JSON),
+    // así el PDF de respaldo se reconstruye siempre desde la misma fuente confiable,
+    // sin depender de las columnas de texto Fortalezas/Reforzar/Observaciones por separado.
+    return { nombre:s.sec, cumple, nocumple, na, pct, items_detalle };
   });
   const evaluables = cumpleTot + nocumpleTot;
   if (evaluables === 0) { showToast('Marcá al menos un criterio'); return; }
@@ -4576,18 +4524,36 @@ function calcularHospitalidad() {
   else { nivel = '● ROJO — Crítico (intervención inmediata)'; color = 'var(--red)'; estado='Crítico'; }
   const wrap = document.getElementById('hp-resultado');
   wrap.style.display = 'block';
-  document.getElementById('hp-total-pct').textContent = pct + '%';
+  document.getElementById('hp-total-pct').textContent = cumpleTot + '/' + evaluables + ' · ' + pct + '%';
   document.getElementById('hp-total-pct').style.color = color;
   document.getElementById('hp-nivel').textContent = nivel;
   document.getElementById('hp-nivel').style.color = color;
-  document.getElementById('hp-guardar-btn').style.display = 'block';
   const btnPdf = document.getElementById('hp-pdf-btn');
   if (btnPdf) btnPdf.style.display = 'block';
-  // Fortalezas y áreas a reforzar se completan solas según lo marcado —
-  // quedan editables por si el supervisor quiere ajustar el texto.
-  document.getElementById('hp-fortalezas').value = fort.join('\n') || 'Sin fortalezas destacadas en esta evaluación.';
-  document.getElementById('hp-areas').value      = ref.join('\n')  || 'Sin áreas a reforzar — todos los criterios cumplidos.';
-  window._hospResultado = { cumple:cumpleTot, nocumple:nocumpleTot, na:naTot, pct, nivel, estado, secciones };
+
+  // ── Fortalezas: resumen, no listado ítem por ítem ──
+  let fortTexto;
+  if (nocumpleTot === 0) {
+    fortTexto = `Cumple el ${pct}% de los criterios evaluados (${cumpleTot}/${evaluables}) en las ${secciones.filter(s=>s.pct!==null).length} secciones del checklist.`;
+  } else if (seccionesSolidas.length) {
+    fortTexto = `Cumplimiento total en: ${seccionesSolidas.join(', ')}.`;
+  } else {
+    fortTexto = `Cumple ${cumpleTot}/${evaluables} criterios evaluados (${pct}%). Sin secciones con cumplimiento total.`;
+  }
+
+  // ── Áreas a reforzar: agrupadas por sección, una sola vez el título ──
+  let refTexto;
+  if (!seccionesConRef.length) {
+    refTexto = 'Sin áreas a reforzar — todos los criterios cumplidos.';
+  } else {
+    refTexto = seccionesConRef.map(s =>
+      s.nombre + '\n' + s.items.map(it => '• ' + it).join('\n')
+    ).join('\n\n');
+  }
+
+  document.getElementById('hp-fortalezas').value = fortTexto;
+  document.getElementById('hp-areas').value      = refTexto;
+  window._hospResultado = { cumple:cumpleTot, nocumple:nocumpleTot, na:naTot, total:evaluables, pct, nivel, estado, secciones };
 }
 
 async function guardarHospitalidad() {
@@ -4614,19 +4580,24 @@ async function guardarHospitalidad() {
     total:String(r.cumple), totalMax:String(r.cumple+r.nocumple),
     porcentaje:r.pct+'%', resultado:r.estado+' — '+r.pct+'%',
     fortalezas, reforzar:areasReforzar, observaciones,
-    detalleCompleto:{ modulos: r.secciones.map((s,i)=>({ nombre:s.nombre, num:i+1, porcentaje:s.pct, score:s.cumple, max:s.cumple+s.nocumple })) }
+    detalleCompleto:{ modulos: r.secciones.map((s,i)=>({ nombre:s.nombre, num:i+1, porcentaje:s.pct, score:s.cumple, max:s.cumple+s.nocumple, items_detalle:s.items_detalle||[] })) }
   };
   await apiPostBg(payload);
   datosResumen.push({ local:sucursal, evaluado:colaborador, fecha, evaluador, tipo:'Hospitalidad', porcentaje:normalizePct(r.pct) });
   evalCache[sucursal+'|'+colaborador+'|'+fecha] = {
     evaluado:colaborador, local:sucursal, fecha, evaluador, tipo:'Hospitalidad',
-    total:r.pct, modulos:r.secciones.map((s,i)=>({ nombre:s.nombre, num:i+1, porcentaje:s.pct, score:s.cumple, max:s.cumple+s.nocumple })),
+    total:r.pct, modulos:r.secciones.map((s,i)=>({ nombre:s.nombre, num:i+1, porcentaje:s.pct, score:s.cumple, max:s.cumple+s.nocumple, items_detalle:s.items_detalle||[] })),
+    fortalezas, reforzar:areasReforzar, observaciones,
     tieneDetalle:true
   };
   showToast('✓ Checklist guardado como evaluación');
-  showTab('home');
-  setActiveNav('nav-home');
   renderHistorialHospitalidad();
+}
+
+async function calcularYGuardarHospitalidad() {
+  calcularHospitalidad();
+  if (!window._hospResultado) return; // ya mostró el toast de "marcá al menos un criterio"
+  await guardarHospitalidad();
 }
 
 function renderHistorialHospitalidad() {
@@ -4639,20 +4610,38 @@ function renderHistorialHospitalidad() {
     cont.innerHTML = `<div style="font-size:12px;color:var(--gray)">Todavía no guardaste ningún checklist.</div>`;
     return;
   }
-  cont.innerHTML = propios.map(r => {
+  cont.innerHTML = '';
+  const frag = document.createDocumentFragment();
+  propios.forEach(r => {
     const { cls } = getEstado(r.porcentaje);
-    return `<div style="background:var(--dark2);border:1px solid #2a2a2a;border-radius:var(--rs);padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px">
+    const row = document.createElement('div');
+    row.style.cssText = 'background:var(--dark2);border:1px solid #2a2a2a;border-radius:var(--rs);padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px';
+    row.innerHTML = `
       <div>
         <div style="font-size:13px;font-weight:600;color:var(--white)">${esc(r.evaluado)}</div>
         <div style="font-size:11px;color:var(--gray)">${esc(r.local)} · ${formatFecha(r.fecha)}</div>
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         <span class="${cls}" style="font-family:Montserrat,sans-serif;font-weight:800;font-size:14px">${r.porcentaje}%</span>
-        <button class="btn btn-outline btn-sm" onclick="generarPDFHospitalidadDesdeCache('${esc(r.local)}','${esc(r.evaluado)}','${r.fecha}')">⬇ PDF</button>
-        <button class="btn btn-outline btn-sm" style="color:var(--red);border-color:var(--red)" onclick="eliminarHospitalidad('${esc(r.local)}','${esc(r.evaluado)}','${r.fecha}')">🗑</button>
-      </div>
-    </div>`;
-  }).join('');
+      </div>`;
+    const actsDiv = row.querySelector('div[style*="gap:8px"]');
+
+    const btnPdf = document.createElement('button');
+    btnPdf.className = 'btn btn-outline btn-sm';
+    btnPdf.textContent = '⬇ PDF';
+    btnPdf.addEventListener('click', () => generarPDFHospitalidadDesdeCache(r.local, r.evaluado, r.fecha, r.porcentaje, r.evaluador || ''));
+
+    const btnDel = document.createElement('button');
+    btnDel.className = 'btn btn-outline btn-sm';
+    btnDel.style.cssText = 'color:var(--red);border-color:var(--red)';
+    btnDel.textContent = '🗑';
+    btnDel.addEventListener('click', () => eliminarHospitalidad(r.local, r.evaluado, r.fecha));
+
+    actsDiv.appendChild(btnPdf);
+    actsDiv.appendChild(btnDel);
+    frag.appendChild(row);
+  });
+  cont.appendChild(frag);
 }
 
 async function eliminarHospitalidad(local, evaluado, fecha) {
@@ -4664,13 +4653,19 @@ async function eliminarHospitalidad(local, evaluado, fecha) {
   apiPostBg({ action:'delete', local, evaluado, fecha });
 }
 
-function generarPDFHospitalidadDesdeCache(local, evaluado, fecha) {
+function generarPDFHospitalidadDesdeCache(local, evaluado, fecha, porcentajeFallback, evaluadorFallback) {
+  if (!window.jspdf) { showToast('⚠ jsPDF no cargó. Verificá tu conexión.'); return; }
   const key = local + '|' + evaluado + '|' + fecha;
   const cached = evalCache[key];
-  if (!cached || cached.tipo !== 'Hospitalidad' || !cached.modulos || !cached.modulos.length) {
-    showToast('⚠ No se encontró el detalle de este checklist'); return;
+  const tieneDetalle = !!(cached && cached.tipo === 'Hospitalidad' && cached.modulos && cached.modulos.length);
+  const pct = tieneDetalle ? cached.total : (porcentajeFallback != null ? porcentajeFallback : 0);
+  const evaluador = tieneDetalle ? (cached.evaluador || '—') : (evaluadorFallback || '—');
+  let totalCumple = null, totalEv = null;
+  if (tieneDetalle) {
+    totalCumple = cached.modulos.reduce((s,m)=>s+(m.score||0),0);
+    totalEv     = cached.modulos.reduce((s,m)=>s+(m.max||0),0);
   }
-  if (!window.jspdf) { showToast('⚠ jsPDF no cargó. Verificá tu conexión.'); return; }
+
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit:'mm', format:'a4', orientation:'portrait' });
   let y = 20;
@@ -4679,21 +4674,94 @@ function generarPDFHospitalidadDesdeCache(local, evaluado, fecha) {
   doc.setFontSize(10); doc.setTextColor(...PDF_GRAY);
   doc.text(`Colaborador: ${evaluado}`, 14, y); y+=6;
   doc.text(`Sucursal: ${local}    Fecha: ${formatFecha(fecha)}`, 14, y); y+=6;
-  doc.text(`Supervisor: ${cached.evaluador||'—'}`, 14, y); y+=10;
-  const pct = cached.total;
+  doc.text(`Supervisor: ${evaluador}`, 14, y); y+=10;
   doc.setFontSize(28); doc.setTextColor(..._pdfColorEstado(pct));
-  doc.text(`${pct}%`, 105, y, {align:'center'}); y+=8;
+  doc.text(totalEv ? `${totalCumple}/${totalEv} · ${pct}%` : `${pct}%`, 105, y, {align:'center'}); y+=8;
   doc.setFontSize(11); doc.text(_pdfLabelEstado(pct), 105, y, {align:'center'}); y+=12;
   doc.setTextColor(...PDF_DARK);
-  cached.modulos.forEach(s => {
-    if (y > 265) { doc.addPage(); y = 20; }
-    doc.setFontSize(10); doc.setTextColor(...PDF_DARK);
-    doc.text(s.nombre, 14, y);
-    const pctTxt = s.porcentaje===null ? 'N/A' : s.porcentaje+'%';
-    doc.setTextColor(...(s.porcentaje===null?PDF_GRAY:_pdfColorEstado(s.porcentaje)));
-    doc.text(pctTxt, 196, y, {align:'right'});
-    y += 6;
-  });
+  if (tieneDetalle) {
+    cached.modulos.forEach(s => {
+      if (y > 265) { doc.addPage(); y = 20; }
+      doc.setFontSize(10); doc.setTextColor(...PDF_DARK);
+      doc.text(s.nombre, 14, y);
+      const ev = (s.max!==undefined) ? s.max : null;
+      const pctTxt = s.porcentaje===null ? 'N/A' : (ev ? `${s.score}/${ev} · ${s.porcentaje}%` : s.porcentaje+'%');
+      doc.setTextColor(...(s.porcentaje===null?PDF_GRAY:_pdfColorEstado(s.porcentaje)));
+      doc.text(pctTxt, 196, y, {align:'right'});
+      y += 6;
+    });
+  } else {
+    doc.setFontSize(9); doc.setTextColor(...PDF_GRAY);
+    doc.text('Detalle por sección no disponible para este registro — se muestra el resultado general.', 14, y, { maxWidth: 180 });
+    y += 12;
+  }
+
+  // ── Fortalezas / Áreas a reforzar: se reconstruyen desde items_detalle ──
+  // (la misma fuente confiable que usa reimprimirPDF para evaluaciones
+  // normales — el JSON de la columna Detalle, no columnas de texto sueltas).
+  // Solo se cae a los strings cacheados si el registro es viejo y no tiene
+  // items_detalle todavía.
+  let fortTexto = '', refTexto = '';
+  const tieneItemsDetalle = tieneDetalle && cached.modulos.some(m => m.items_detalle && m.items_detalle.length);
+  if (tieneItemsDetalle) {
+    let cumpleTot = 0, noCumpleTot = 0;
+    const seccionesSolidas = [];
+    const seccionesConRef = [];
+    cached.modulos.forEach(m => {
+      let cumple = 0, nocumple = 0;
+      const itemsNoCumple = [];
+      (m.items_detalle || []).forEach(it => {
+        if (it.estado === 'cumple') { cumple++; }
+        else if (it.estado === 'nocumple') { nocumple++; itemsNoCumple.push(it.texto); }
+      });
+      cumpleTot += cumple; noCumpleTot += nocumple;
+      if (itemsNoCumple.length) seccionesConRef.push({ nombre:m.nombre, items:itemsNoCumple });
+      if ((cumple+nocumple) > 0 && nocumple === 0) seccionesSolidas.push(m.nombre);
+    });
+    const evTot = cumpleTot + noCumpleTot;
+    const pctTot = evTot ? Math.round((cumpleTot/evTot)*100) : 0;
+    if (noCumpleTot === 0) {
+      fortTexto = `Cumple el ${pctTot}% de los criterios evaluados (${cumpleTot}/${evTot}).`;
+    } else if (seccionesSolidas.length) {
+      fortTexto = `Cumplimiento total en: ${seccionesSolidas.join(', ')}.`;
+    } else {
+      fortTexto = `Cumple ${cumpleTot}/${evTot} criterios evaluados (${pctTot}%). Sin secciones con cumplimiento total.`;
+    }
+    refTexto = seccionesConRef.length
+      ? seccionesConRef.map(s => s.nombre + '\n' + s.items.map(it => '• ' + it).join('\n')).join('\n\n')
+      : 'Sin áreas a reforzar — todos los criterios cumplidos.';
+  } else {
+    // Registro viejo sin items_detalle — usar lo que haya quedado cacheado
+    fortTexto = cached?.fortalezas || '';
+    refTexto  = cached?.reforzar || '';
+  }
+
+  y += 4;
+  const LH = 5;
+  function bloqueTexto(titulo, texto) {
+    if (!texto) return;
+    if (y > 270) { doc.addPage(); y = 20; }
+    doc.setFont(undefined,'bold'); doc.setTextColor(...PDF_DARK); doc.setFontSize(10);
+    doc.text(titulo, 14, y); y += LH;
+    const lineas = texto.split('\n');
+    lineas.forEach(linea => {
+      if (!linea.trim()) { y += 2; return; }
+      const esBullet = linea.trim().startsWith('•');
+      if (!esBullet) { doc.setFont(undefined,'bold'); doc.setTextColor(...PDF_GOLD); doc.setFontSize(9); }
+      else           { doc.setFont(undefined,'normal'); doc.setTextColor(...PDF_DARK); doc.setFontSize(9.5); }
+      const wrapped = doc.splitTextToSize(linea, 178);
+      wrapped.forEach(w => {
+        if (y > 280) { doc.addPage(); y = 20; }
+        doc.text(w, esBullet ? 18 : 14, y);
+        y += LH;
+      });
+    });
+    y += 4;
+  }
+  bloqueTexto('Fortalezas:', fortTexto);
+  bloqueTexto('Áreas a reforzar:', refTexto);
+  bloqueTexto('Observaciones:', cached?.observaciones || '');
+
   doc.save(`Hospitalidad_${local}_${evaluado}_${fecha}.pdf`.replace(/\s+/g,'_'));
 }
 
@@ -4969,26 +5037,46 @@ function generarPDFHospitalidad() {
   doc.text(`Supervisor: ${evaluador}`, 14, y); y+=10;
   const colorEst = _pdfColorEstado(r.pct);
   doc.setFontSize(28); doc.setTextColor(...colorEst);
-  doc.text(`${r.pct}%`, 105, y, {align:'center'}); y+=8;
+  doc.text(`${r.cumple}/${r.total} · ${r.pct}%`, 105, y, {align:'center'}); y+=8;
   doc.setFontSize(11); doc.text(r.nivel.replace('● ',''), 105, y, {align:'center'}); y+=12;
   doc.setTextColor(...PDF_DARK);
   r.secciones.forEach(s => {
     if (y > 265) { doc.addPage(); y = 20; }
     doc.setFontSize(10); doc.setTextColor(...PDF_DARK);
     doc.text(s.nombre, 14, y);
-    const pctTxt = s.pct===null ? 'N/A' : s.pct+'%';
+    const ev = s.cumple + s.nocumple;
+    const pctTxt = s.pct===null ? 'N/A' : `${s.cumple}/${ev} · ${s.pct}%`;
     doc.setTextColor(...(s.pct===null?PDF_GRAY:_pdfColorEstado(s.pct)));
     doc.text(pctTxt, 196, y, {align:'right'});
     y += 6;
   });
   y += 4;
   doc.setTextColor(...PDF_DARK); doc.setFontSize(10);
-  const fort = document.getElementById('hp-fortalezas').value.trim();
-  const areas= document.getElementById('hp-areas').value.trim();
-  const obs  = document.getElementById('hp-obs').value.trim();
-  if (fort) { doc.text('Fortalezas:', 14, y); y+=5; doc.text(doc.splitTextToSize(fort,180), 14, y); y+=10; }
-  if (areas){ doc.text('Áreas a reforzar:', 14, y); y+=5; doc.text(doc.splitTextToSize(areas,180), 14, y); y+=10; }
-  if (obs)  { doc.text('Observaciones:', 14, y); y+=5; doc.text(doc.splitTextToSize(obs,180), 14, y); y+=10; }
+  const LH = 5; // alto de línea en mm
+  function bloqueTexto(titulo, texto) {
+    if (!texto) return;
+    if (y > 270) { doc.addPage(); y = 20; }
+    doc.setFont(undefined,'bold'); doc.setTextColor(...PDF_DARK); doc.setFontSize(10);
+    doc.text(titulo, 14, y); y += LH;
+    doc.setFont(undefined,'normal');
+    const lineas = texto.split('\n');
+    lineas.forEach(linea => {
+      if (!linea.trim()) { y += 2; return; }
+      const esBullet = linea.trim().startsWith('•');
+      if (!esBullet) { doc.setFont(undefined,'bold'); doc.setTextColor(...PDF_GOLD); doc.setFontSize(9); }
+      else           { doc.setFont(undefined,'normal'); doc.setTextColor(...PDF_DARK); doc.setFontSize(9.5); }
+      const wrapped = doc.splitTextToSize(linea, 178);
+      wrapped.forEach((w, wi) => {
+        if (y > 280) { doc.addPage(); y = 20; }
+        doc.text(w, esBullet ? 18 : 14, y);
+        y += LH;
+      });
+    });
+    y += 4; // espacio entre bloques
+  }
+  bloqueTexto('Fortalezas:', document.getElementById('hp-fortalezas').value.trim());
+  bloqueTexto('Áreas a reforzar:', document.getElementById('hp-areas').value.trim());
+  bloqueTexto('Observaciones:', document.getElementById('hp-obs').value.trim());
   doc.save(`Hospitalidad_${sucursal}_${colaborador}_${fecha}.pdf`.replace(/\s+/g,'_'));
 }
 
